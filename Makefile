@@ -1,0 +1,2 @@
+all:
+	@./framework/build.py
