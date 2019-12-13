@@ -1,14 +1,22 @@
-#include <test>
-
+#include <unittest>
+#include <cstdio>
+#include <cstring>
 #include <example.h>
 
 
-TEST_CASE( "Example test", "[test]" ) {
-    GIVEN("truthy") {
-        REQUIRE( IsTruthy() == true );
-    }
+describe("test example", []() {
+    char *text;
 
-    GIVEN("falsy") {
-        REQUIRE( IsFalsy() == false );
-    }
-}
+    beforeEach([&]() {
+        text = new char[32];
+        strcpy(text, "hello");
+    });
+
+    afterEach([&]() {
+        delete[] text;
+    });
+
+    it("does nothing", [&]() {
+        expect<bool>(IsTruthy()).toBe(false);
+    });
+});

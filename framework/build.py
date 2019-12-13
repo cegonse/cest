@@ -26,7 +26,7 @@ def compile(test_name, files):
     print '\033[1m\033[32m⌚ Building tests and sources\033[0m'
 
     binary = 'build/' + test_name.replace('.cpp', '')
-    cmd = 'g++ -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
+    cmd = 'g++ -Wno-write-strings -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
 
     if os.system(cmd) != 0:
         print '\033[1m\033[31m❌ Build failed\033[0m'

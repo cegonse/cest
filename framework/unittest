@@ -1,0 +1,103 @@
+#pragma once
+
+#include <functional>
+#include <cstdio>
+#include <cstring>
+#include <vector>
+
+#define kTEST_NAME_LENGTH       4096
+#define describe(x, y)          std::string test_suite_name = describe_function(x, y)
+#define it(x, y)                it_function(__FILE__, __LINE__, x, y)
+
+struct TestCase {
+    char name[kTEST_NAME_LENGTH];
+    char file[kTEST_NAME_LENGTH];
+    int line;
+    std::function<void()> test;
+};
+
+
+std::vector<TestCase *> test_cases;
+extern std::string test_suite_name;
+std::function<void()> before_each;
+std::function<void()> after_each;
+
+
+std::string describe_function(std::string test_name, std::function<void()> test)
+{
+    test();
+
+    return test_name;
+}
+
+
+void it_function(const char *file, int line, char *name, std::function<void()> test)
+{
+    TestCase *test_case = new TestCase();
+    
+    strcpy(test_case->name, name);
+    strcpy(test_case->file, file);
+    test_case->test = test;
+    test_case->line = line;
+
+    test_cases.push_back(test_case);
+}
+
+
+void beforeEach(std::function<void()> func)
+{
+    before_each = func;
+}
+
+
+void afterEach(std::function<void()> func)
+{
+    after_each = func;
+}
+
+
+template<class T>
+class Assertion
+{
+    public:
+        Assertion(T value)
+        {
+            actual = value;
+        }
+
+        void toBe(T expected)
+        {
+            if (expected != actual)
+            {
+                printf("Fail");
+            }
+        }
+
+    private:
+        T actual;
+};
+
+
+template<class T>
+Assertion<T> expect(T actual)
+{
+    return Assertion<T>(actual);
+}
+
+
+int main(void)
+{
+    printf("%s:\n\n", test_suite_name.c_str());
+
+    for (TestCase *test_case : test_cases) {
+        printf("%s:%d:it %s:", test_case->file, test_case->line, test_case->name);
+
+        if (before_each) before_each();
+        test_case->test();
+        if (after_each) after_each();
+
+        delete test_case;
+    }
+
+    return 0;
+}
