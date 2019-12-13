@@ -5,14 +5,16 @@
 #include <cstring>
 #include <vector>
 
-#define kTEST_NAME_LENGTH       4096
+#define ASCII_RED           "\033[1m\033[31m"
+#define ASCII_GREEN         "\033[1m\033[32m"
+#define ASCII_RESET         "\033[0m"
+#define TEST_NAME_LENGTH       4096
 #define describe(x, y)          std::string test_suite_name = describe_function(x, y)
-#define it(x, y)                it_function(__FILE__, __LINE__, x, y)
+#define it(x, y)                it_function(__FILE__, x, y)
 
 struct TestCase {
-    char name[kTEST_NAME_LENGTH];
-    char file[kTEST_NAME_LENGTH];
-    int line;
+    char name[TEST_NAME_LENGTH];
+    char file[TEST_NAME_LENGTH];
     std::function<void()> test;
 };
 
@@ -21,24 +23,23 @@ std::vector<TestCase *> test_cases;
 extern std::string test_suite_name;
 std::function<void()> before_each;
 std::function<void()> after_each;
+bool test_failed;
 
 
 std::string describe_function(std::string test_name, std::function<void()> test)
 {
     test();
-
     return test_name;
 }
 
 
-void it_function(const char *file, int line, char *name, std::function<void()> test)
+void it_function(const char *file, char *name, std::function<void()> test)
 {
     TestCase *test_case = new TestCase();
     
     strcpy(test_case->name, name);
     strcpy(test_case->file, file);
     test_case->test = test;
-    test_case->line = line;
 
     test_cases.push_back(test_case);
 }
@@ -67,14 +68,85 @@ class Assertion
 
         void toBe(T expected)
         {
-            if (expected != actual)
-            {
-                printf("Fail");
+            if (expected != actual) {
+                handleFailure();
+            }
+        }
+
+        void toContain(T expected)
+        {
+            if (actual.find(expected) == std::string::npos) {
+                handleFailure();
+            }
+        }
+
+        void toEqualMemory(T expected, int64_t length)
+        {
+            if (memcmp(expected, actual, length) != 0) {
+                handleFailure();
+            }
+        }
+
+        void toBeNotNull()
+        {
+            if (actual == NULL) {
+                handleFailure();
+            }
+        }
+
+        void toBeNull()
+        {
+            if (actual != NULL) {
+                handleFailure();
             }
         }
 
     private:
         T actual;
+
+        void handleFailure()
+        {
+            test_failed = true;
+        }
+};
+
+template <>
+class Assertion<std::string>
+{
+    public:
+        Assertion(std::string value)
+        {
+            actual = value;
+        }
+
+        void toBe(std::string expected)
+        {
+            if (expected != actual) {
+                handleFailure();
+            }
+        }
+
+        void toContain(std::string expected)
+        {
+            if (actual.find(expected) == std::string::npos) {
+                handleFailure();
+            }
+        }
+
+        void toHaveLength(int64_t length)
+        {
+            if (actual.length() != length) {
+                handleFailure();
+            }
+        }
+
+    private:
+        std::string actual;
+
+        void handleFailure()
+        {
+            test_failed = true;
+        }
 };
 
 
@@ -84,17 +156,45 @@ Assertion<T> expect(T actual)
     return Assertion<T>(actual);
 }
 
+Assertion<bool> expect(bool actual)
+{
+    return Assertion<bool>(actual);
+}
+
+Assertion<int64_t> expect(int64_t actual)
+{
+    return Assertion<int64_t>(actual);
+}
+
+Assertion<std::string> expect(std::string actual)
+{
+    return Assertion<std::string>(actual);
+}
+
+Assertion<std::string> expect(const char *actual)
+{
+    return Assertion<std::string>((std::string)actual);
+}
+
 
 int main(void)
 {
     printf("%s:\n\n", test_suite_name.c_str());
 
     for (TestCase *test_case : test_cases) {
-        printf("%s:%d:it %s:", test_case->file, test_case->line, test_case->name);
+        printf("%s 🡆 it %s 🡆 ", test_case->file, test_case->name);
 
         if (before_each) before_each();
+        test_failed = false;
+
         test_case->test();
         if (after_each) after_each();
+
+        if (test_failed) {
+            printf("%sFAIL%s\n", ASCII_RED, ASCII_RESET);
+        } else {
+            printf("%sPASS%s\n", ASCII_GREEN, ASCII_RESET);
+        }
 
         delete test_case;
     }
