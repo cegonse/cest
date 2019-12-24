@@ -5,15 +5,10 @@
 
 
 describe("test example", []() {
-    char *text;
-
     beforeEach([&]() {
-        text = new char[32];
-        strcpy(text, "hello");
     });
 
     afterEach([&]() {
-        delete[] text;
     });
 
     it("asserts booleans", [&]() {

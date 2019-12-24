@@ -26,10 +26,10 @@ def files_for_test(name, test):
 
 
 def compile(test_name, files):
-    print GREEN + '⌚ Building tests and sources' + RESET
+    print GREEN + 'Building tests and sources' + RESET
 
     binary = 'build/' + test_name.replace('.cpp', '')
-    cmd = 'g++ -Wno-write-strings -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
+    cmd = 'g++ -Wno-pointer-arith -Wno-write-strings -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
 
     if os.system(cmd) != 0:
         print RED + '❌ Build failed' + RESET
