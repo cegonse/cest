@@ -8,8 +8,14 @@
 #include <cstring>
 #include <vector>
 
+#define ASCII_BACKGROUND_GREEN  "\u001b[42m"
+#define ASCII_BACKGROUND_RED    "\u001b[41m"
+#define ASCII_BACKGROUND_BLUE   "\u001b[44m"
 #define ASCII_RED               "\033[1m\033[31m"
 #define ASCII_GREEN             "\033[1m\033[32m"
+#define ASCII_GRAY              "\u001b[38;5;243m"
+#define ASCII_BLACK             "\u001b[38;5;232m"
+#define ASCII_BOLD              "\u001b[1m"
 #define ASCII_RESET             "\033[0m"
 #define TEST_NAME_LENGTH        4096
 #define describe(x, y)          std::string test_suite_name = describe_function(x, y)
@@ -196,8 +202,6 @@ Assertion<std::string> expect_function(const char *file, int line, const char *a
 
 int main(void)
 {
-    std::cout << "🡆 " << test_suite_name << std::endl;
-
     for (TestCase *test_case : test_cases) {
         test_failed = false;
 
@@ -211,12 +215,14 @@ int main(void)
             after_each();
         }
 
-        std::cout << "  " << test_case->file << " 🡆 it " << test_case->name << " 🡆 ";
-
         if (test_failed) {
             std::cout << ASCII_RED << "FAIL" << ASCII_RESET << std::endl;
         } else {
-            std::cout << ASCII_GREEN << "PASS" << ASCII_RESET << std::endl;
+            std::cout <<
+                ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET <<
+                ASCII_GRAY << " " << test_case->file << ASCII_RESET <<
+                ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
+                std::endl;
         }
 
         std::cout << assertion_failures.str();
