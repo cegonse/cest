@@ -37,12 +37,12 @@ describe("test example", []() {
 
     it("asserts pointers", [&]() {
         void *address = (void *)0xFA101132;
-        char *string = "something";
+        char *string = (char *)"something";
         int year = 2019;
         float *this_is_null = NULL;
 
         expect(address).toBe((void *)0xFA101132);
-        expect(string).toEqualMemory("something", strlen("something") + 1);
+        expect(string).toEqualMemory((char *)"something", strlen("something") + 1);
         expect(&year).toBeNotNull();
         expect(this_is_null).toBeNull();
     });

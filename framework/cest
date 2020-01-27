@@ -18,14 +18,17 @@
 #define ASCII_BOLD              "\u001b[1m"
 #define ASCII_RESET             "\033[0m"
 #define TEST_NAME_LENGTH        4096
-#define describe(x, y)          std::string test_suite_name = describe_function(x, y)
-#define it(x, y)                it_function(__FILE__, x, y)
-#define expect(x)               expect_function(__FILE__, __LINE__, x)
+
+#define describe(x, y)          std::string test_suite_name = describeFunction(x, y)
+#define it(x, y)                itFunction(__FILE__, __LINE__, x, y)
+#define expect(x)               expectFunction(__FILE__, __LINE__, x)
 
 struct TestCase {
-    char name[TEST_NAME_LENGTH];
-    char file[TEST_NAME_LENGTH];
+    std::string name;
+    std::string file;
+    int line;
     std::function<void()> test;
+    bool test_failed;
 };
 
 
@@ -33,24 +36,25 @@ std::vector<TestCase *> test_cases;
 extern std::string test_suite_name;
 std::function<void()> before_each;
 std::function<void()> after_each;
-bool test_failed;
 std::stringstream assertion_failures;
+bool current_test_failed;
 
 
-std::string describe_function(std::string test_name, std::function<void()> test)
+std::string describeFunction(std::string test_name, std::function<void()> test)
 {
     test();
     return test_name;
 }
 
 
-void it_function(const char *file, char *name, std::function<void()> test)
+void itFunction(std::string file, int line, std::string name, std::function<void()> test)
 {
     TestCase *test_case = new TestCase();
     
-    strcpy(test_case->name, name);
-    strcpy(test_case->file, file);
+    test_case->name = name;
+    test_case->file = file;
     test_case->test = test;
+    test_case->line = line;
 
     test_cases.push_back(test_case);
 }
@@ -82,7 +86,7 @@ class Assertion
         void toBe(T expected)
         {
             if (expected != actual) {
-                test_failed = true;
+                current_test_failed = true;
                 assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected " << expected << ", was " << actual << std::endl;
                 assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
             }
@@ -94,7 +98,7 @@ class Assertion
 
             for (i=0; i<length; ++i) {
                 if (expected[i] != actual[i]) {
-                    test_failed = true;
+                    current_test_failed = true;
                     assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Memory mismatch at byte " << i << ", expected ";
                     assertion_failures << std::hex << std::uppercase << (int)expected[i] << " but was " << std::hex << std::uppercase << (int)actual[i] << std::endl;
                     assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
@@ -105,7 +109,7 @@ class Assertion
         void toBeNotNull()
         {
             if (actual == NULL) {
-                test_failed = true;
+                current_test_failed = true;
                 assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected 0x";
                 assertion_failures << std::hex << std::uppercase << actual << " to be not null" << std::endl;
                 assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
@@ -115,7 +119,7 @@ class Assertion
         void toBeNull()
         {
             if (actual != NULL) {
-                test_failed = true;
+                current_test_failed = true;
                 assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected ";
                 assertion_failures << std::hex << std::uppercase << actual << " to be null" << std::endl;
                 assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
@@ -142,7 +146,7 @@ class Assertion<std::string>
         void toBe(std::string expected)
         {
             if (expected != actual) {
-                test_failed = true;
+                current_test_failed = true;
                 assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected \"" << expected << "\", was \"" << actual << "\"" << std::endl;
                 assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
             }
@@ -151,7 +155,7 @@ class Assertion<std::string>
         void toContain(std::string expected)
         {
             if (actual.find(expected) == std::string::npos) {
-                test_failed = true;
+                current_test_failed = true;
                 assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " \"" << expected << "\" not present inside \"" << actual << "\"" << std::endl;
                 assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
             }
@@ -160,7 +164,7 @@ class Assertion<std::string>
         void toHaveLength(int64_t length)
         {
             if (actual.length() != length) {
-                test_failed = true;
+                current_test_failed = true;
                 assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Length of \"" << actual << "\" expected to be " << length << ", was " << actual.length() << std::endl;
                 assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
             }
@@ -174,36 +178,53 @@ class Assertion<std::string>
 
 
 template<class T>
-Assertion<T> expect_function(const char *file, int line, T actual)
+Assertion<T> expectFunction(const char *file, int line, T actual)
 {
     return Assertion<T>(file, line, actual);
 }
 
-Assertion<bool> expect_function(const char *file, int line, bool actual)
+Assertion<bool> expectFunction(const char *file, int line, bool actual)
 {
     return Assertion<bool>(file, line, actual);
 }
 
-Assertion<int64_t> expect_function(const char *file, int line, int64_t actual)
+Assertion<int64_t> expectFunction(const char *file, int line, int64_t actual)
 {
     return Assertion<int64_t>(file, line, actual);
 }
 
-Assertion<std::string> expect_function(const char *file, int line, std::string actual)
+Assertion<std::string> expectFunction(const char *file, int line, std::string actual)
 {
     return Assertion<std::string>(file, line, actual);
 }
 
-Assertion<std::string> expect_function(const char *file, int line, const char *actual)
+Assertion<std::string> expectFunction(const char *file, int line, const char *actual)
 {
     return Assertion<std::string>(file, line, (std::string)actual);
+}
+
+
+void printTestResult(TestCase *test_case)
+{
+    if (test_case->test_failed) {
+        std::cout << ASCII_RED << "FAIL" << ASCII_RESET << std::endl;
+    } else {
+        std::cout <<
+            ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET <<
+            ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET <<
+            ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
+            std::endl;
+    }
+
+    std::cout << assertion_failures.str();
+    assertion_failures.str(std::string());
 }
 
 
 int main(void)
 {
     for (TestCase *test_case : test_cases) {
-        test_failed = false;
+        current_test_failed = false;
 
         if (before_each) {
             before_each();
@@ -215,18 +236,9 @@ int main(void)
             after_each();
         }
 
-        if (test_failed) {
-            std::cout << ASCII_RED << "FAIL" << ASCII_RESET << std::endl;
-        } else {
-            std::cout <<
-                ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET <<
-                ASCII_GRAY << " " << test_case->file << ASCII_RESET <<
-                ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
-                std::endl;
-        }
+        test_case->test_failed = current_test_failed;
 
-        std::cout << assertion_failures.str();
-        assertion_failures.str(std::string());
+        printTestResult(test_case);
 
         delete test_case;
     }
