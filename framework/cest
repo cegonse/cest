@@ -215,12 +215,43 @@ namespace cest
         return Assertion<std::string>(file, line, (std::string)actual);
     }
 
-
-    std::string generateSuiteReport(std::vector<cest::TestCase *> test_cases)
+    void emitStringField(std::stringstream *stream, std::string key, std::string value, bool add_comma)
     {
-        std::stringstream xml_report;
+        (*stream) << "\"" << key << "\":" << "\"" << value << "\"" << (add_comma? "," : "");
+    }
 
-        return xml_report.str();
+    void emitIntegerField(std::stringstream *stream, std::string key, int value, bool add_comma)
+    {
+        (*stream) << "\"" << key << "\":" << value << (add_comma? "," : "");
+    }
+
+    std::string generateSuiteReport(TestSuite test_suite)
+    {
+        std::stringstream suite_report;
+
+        suite_report << "{";
+
+        emitStringField(&suite_report, "name", test_suite.test_suite_name, true);
+        emitIntegerField(&suite_report, "tests", test_suite.test_cases.size(), true);
+        emitIntegerField(&suite_report, "failures", 0, true);
+        emitIntegerField(&suite_report, "errors", 0, true);
+        emitIntegerField(&suite_report, "skipped", 0, true);
+        emitStringField(&suite_report, "time", "", true);
+        emitStringField(&suite_report, "timestamp", "", true);
+        emitStringField(&suite_report, "hostname", "", true);
+
+        suite_report << "\"test_cases\":[";
+        
+        if (test_suite.test_cases.size()) {
+            suite_report << "{";
+            emitStringField(&suite_report, "name", test_suite.test_cases[0]->name, true);
+            emitStringField(&suite_report, "time", "", false);
+            suite_report << "}";
+        }
+
+        suite_report << "]}";
+
+        return suite_report.str();
     }
 
 

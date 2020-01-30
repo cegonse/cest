@@ -1,6 +1,6 @@
 #include <cest>
+#include <helpers/test_suite_report_samples.h>
 
-extern std::string sample_json_with_zero_test_cases;
 
 describe("test suite result generation", []() {
     beforeEach([&]() {
@@ -9,29 +9,26 @@ describe("test suite result generation", []() {
     afterEach([&]() {
     });
 
-    it("should generate an empty report when no tests have been executed", []() {
+    it("generates an empty report when no tests have been executed", []() {
         cest::TestSuite test_suite;
         test_suite.test_suite_name = "test something";
 
-        auto xml_report = cest::generateSuiteReport(test_cases);
+        auto xml_report = cest::generateSuiteReport(test_suite);
 
         expect(xml_report).toBe(sample_json_with_zero_test_cases);
     });
+
+    it("generates a report when one test has passed", []() {
+        cest::TestCase test_case;
+        cest::TestSuite test_suite;
+
+        test_case.name = "should pass";
+        test_case.test_failed = false;
+        test_suite.test_suite_name = "test something";
+        test_suite.test_cases.push_back(&test_case);
+
+        auto xml_report = cest::generateSuiteReport(test_suite);
+
+        expect(xml_report).toBe(sample_json_with_one_passed_test_case);
+    });
 });
-
-
-std::string sample_json_with_zero_test_cases = "\
-[\
-{\
-\"name\":\"test something\",\
-\"tests\":0,\
-\"failures\":0,\
-\"errors\":0,\
-\"skipped\":0,\
-\"time\":\"\",\
-\"timestamp\":\"\",\
-\"hostname\":\"\",\
-\"test_cases\":[]\
-}\
-]\
-";

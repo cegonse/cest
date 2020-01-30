@@ -28,7 +28,7 @@ def files_for_test(name, test):
 
 def compile(test_name, files):
     binary = 'build/' + test_name.replace('.cpp', '')
-    cmd = 'g++ -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
+    cmd = 'g++ -Ispec -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
 
     if os.system(cmd) != 0:
         print RED + '❌ Build failed' + RESET
