@@ -22,12 +22,11 @@ def test_cases():
 
 
 def files_for_test(name, test):
-    return ['spec/{name}.cpp'.format(name=name)] + test['sources']
+    sources_to_build = test['sources'] if 'sources' in test else []
+    return ['spec/{name}.cpp'.format(name=name)] + sources_to_build
 
 
 def compile(test_name, files):
-    print GREEN + 'Building tests and sources' + RESET
-
     binary = 'build/' + test_name.replace('.cpp', '')
     cmd = 'g++ -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
 
@@ -42,9 +41,11 @@ def execute(test_name):
 
 tests, names = test_cases()
 
+print GREEN + 'Building tests and sources' + RESET
+
 for test_name in names:
     files = files_for_test(test_name, tests[test_name])
-
     compile(test_name, files)
 
+for test_name in names:
     execute(test_name)

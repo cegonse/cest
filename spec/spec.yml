@@ -1,3 +1,8 @@
-test_example:
-  sources:
-    - src/example.cpp
+test_assertions:
+  empty: True
+
+test_suite_result_generation:
+  empty: True
+
+test_greeting:
+  empty: True

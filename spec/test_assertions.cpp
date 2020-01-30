@@ -4,7 +4,7 @@
 #include <example.h>
 
 
-describe("test example", []() {
+describe("test common assertions", []() {
     beforeEach([&]() {
     });
 

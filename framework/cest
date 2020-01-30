@@ -35,6 +35,11 @@ namespace cest
         std::function<void()> test;
         bool test_failed;
     };
+
+    struct TestSuite {
+        std::vector<cest::TestCase *> test_cases;
+        std::string test_suite_name;
+    };
 }
 
 std::vector<cest::TestCase *> test_cases;
@@ -211,10 +216,22 @@ namespace cest
     }
 
 
+    std::string generateSuiteReport(std::vector<cest::TestCase *> test_cases)
+    {
+        std::stringstream xml_report;
+
+        return xml_report.str();
+    }
+
+
     void printTestResult(TestCase *test_case)
     {
         if (test_case->test_failed) {
-            std::cout << ASCII_RED << "FAIL" << ASCII_RESET << std::endl;
+            std::cout <<
+                ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET <<
+                ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET <<
+                ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
+                std::endl;
         } else {
             std::cout <<
                 ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET <<
@@ -231,7 +248,14 @@ namespace cest
 
 int main(void)
 {
-    for (cest::TestCase *test_case : test_cases) {
+    using namespace cest;
+
+    TestSuite test_suite;
+
+    test_suite.test_suite_name = test_suite_name;
+    test_suite.test_cases = test_cases;
+
+    for (TestCase *test_case : test_cases) {
         current_test_failed = false;
 
         if (before_each) {
