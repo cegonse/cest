@@ -33,3 +33,23 @@ std::string sample_json_with_one_passed_test_case = "\
 ]\
 }\
 ";
+
+std::string sample_json_with_one_failed_test_case = "\
+{\
+\"name\":\"test something\",\
+\"tests\":1,\
+\"failures\":1,\
+\"errors\":0,\
+\"skipped\":0,\
+\"time\":\"\",\
+\"timestamp\":\"\",\
+\"hostname\":\"\",\
+\"test_cases\":[\
+{\
+\"name\":\"should fail\",\
+\"time\":\"\",\
+\"failure_message\":\"expected blue, was red\"\
+}\
+]\
+}\
+";

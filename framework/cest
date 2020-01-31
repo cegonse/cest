@@ -34,6 +34,7 @@ namespace cest
         int line;
         std::function<void()> test;
         bool test_failed;
+        std::string failure_message;
     };
 
     struct TestSuite {
@@ -225,6 +226,19 @@ namespace cest
         (*stream) << "\"" << key << "\":" << value << (add_comma? "," : "");
     }
 
+    int countFailedTests(std::vector<TestCase *> test_cases)
+    {
+        int failed_tests = 0;
+
+        for (TestCase *test : test_cases) {
+            if (test->test_failed) {
+                failed_tests++;
+            }
+        }
+
+        return failed_tests;
+    }
+
     std::string generateSuiteReport(TestSuite test_suite)
     {
         std::stringstream suite_report;
@@ -233,7 +247,7 @@ namespace cest
 
         emitStringField(&suite_report, "name", test_suite.test_suite_name, true);
         emitIntegerField(&suite_report, "tests", test_suite.test_cases.size(), true);
-        emitIntegerField(&suite_report, "failures", 0, true);
+        emitIntegerField(&suite_report, "failures", countFailedTests(test_suite.test_cases), true);
         emitIntegerField(&suite_report, "errors", 0, true);
         emitIntegerField(&suite_report, "skipped", 0, true);
         emitStringField(&suite_report, "time", "", true);
@@ -245,7 +259,12 @@ namespace cest
         if (test_suite.test_cases.size()) {
             suite_report << "{";
             emitStringField(&suite_report, "name", test_suite.test_cases[0]->name, true);
-            emitStringField(&suite_report, "time", "", false);
+            emitStringField(&suite_report, "time", "", test_suite.test_cases[0]->test_failed);
+
+            if (test_suite.test_cases[0]->test_failed) {
+                emitStringField(&suite_report, "failure_message", test_suite.test_cases[0]->failure_message, false);
+            }
+
             suite_report << "}";
         }
 
