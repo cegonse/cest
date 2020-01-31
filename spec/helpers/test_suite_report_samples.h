@@ -53,3 +53,25 @@ std::string sample_json_with_one_failed_test_case = "\
 ]\
 }\
 ";
+
+std::string sample_json_with_two_passed_test_cases = "\
+{\
+\"name\":\"test something\",\
+\"tests\":2,\
+\"failures\":0,\
+\"errors\":0,\
+\"skipped\":0,\
+\"time\":\"\",\
+\"timestamp\":\"\",\
+\"hostname\":\"\",\
+\"test_cases\":[\
+{\
+\"name\":\"should pass\",\
+\"time\":\"\"\
+},\
+{\
+\"name\":\"should also pass\",\
+\"time\":\"\"\
+}\
+]\
+}";
