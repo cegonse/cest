@@ -255,17 +255,17 @@ namespace cest
         emitStringField(&suite_report, "hostname", "", true);
 
         suite_report << "\"test_cases\":[";
-        
-        if (test_suite.test_cases.size()) {
-            suite_report << "{";
-            emitStringField(&suite_report, "name", test_suite.test_cases[0]->name, true);
-            emitStringField(&suite_report, "time", "", test_suite.test_cases[0]->test_failed);
 
-            if (test_suite.test_cases[0]->test_failed) {
-                emitStringField(&suite_report, "failure_message", test_suite.test_cases[0]->failure_message, false);
+        for (int i=0; i<test_suite.test_cases.size(); ++i) {
+            suite_report << "{";
+            emitStringField(&suite_report, "name", test_suite.test_cases[i]->name, true);
+            emitStringField(&suite_report, "time", "", test_suite.test_cases[i]->test_failed);
+
+            if (test_suite.test_cases[i]->test_failed) {
+                emitStringField(&suite_report, "failure_message", test_suite.test_cases[i]->failure_message, false);
             }
 
-            suite_report << "}";
+            suite_report << "}" << (i==test_suite.test_cases.size()-1? "" : ",");
         }
 
         suite_report << "]}";
