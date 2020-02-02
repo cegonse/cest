@@ -4,9 +4,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <cstdio>
-#include <cstring>
 #include <vector>
+#include <algorithm>
 
 #define ASCII_BACKGROUND_GREEN  "\u001b[42m"
 #define ASCII_BACKGROUND_RED    "\u001b[41m"
@@ -99,7 +98,7 @@ namespace cest
             {
                 if (expected != actual) {
                     current_test_failed = true;
-                    assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected " << expected << ", was " << actual << std::endl;
+                    assertion_failures << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " Expected " << expected << ", was " << actual << std::endl;
                     assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
                 }
             }
@@ -111,7 +110,7 @@ namespace cest
                 for (i=0; i<length; ++i) {
                     if (expected[i] != actual[i]) {
                         current_test_failed = true;
-                        assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Memory mismatch at byte " << i << ", expected ";
+                        assertion_failures << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " Memory mismatch at byte " << i << ", expected ";
                         assertion_failures << std::hex << std::uppercase << (int)expected[i] << " but was " << std::hex << std::uppercase << (int)actual[i] << std::endl;
                         assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
                     }
@@ -122,7 +121,7 @@ namespace cest
             {
                 if (actual == NULL) {
                     current_test_failed = true;
-                    assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected 0x";
+                    assertion_failures << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " Expected 0x";
                     assertion_failures << std::hex << std::uppercase << actual << " to be not null" << std::endl;
                     assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
                 }
@@ -132,7 +131,7 @@ namespace cest
             {
                 if (actual != NULL) {
                     current_test_failed = true;
-                    assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected ";
+                    assertion_failures << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " Expected ";
                     assertion_failures << std::hex << std::uppercase << actual << " to be null" << std::endl;
                     assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
                 }
@@ -159,7 +158,7 @@ namespace cest
             {
                 if (expected != actual) {
                     current_test_failed = true;
-                    assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Expected \"" << expected << "\", was \"" << actual << "\"" << std::endl;
+                    assertion_failures << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " Expected \"" << expected << "\", was \"" << actual << "\"" << std::endl;
                     assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
                 }
             }
@@ -168,7 +167,7 @@ namespace cest
             {
                 if (actual.find(expected) == std::string::npos) {
                     current_test_failed = true;
-                    assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " \"" << expected << "\" not present inside \"" << actual << "\"" << std::endl;
+                    assertion_failures << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " \"" << expected << "\" not present inside \"" << actual << "\"" << std::endl;
                     assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
                 }
             }
@@ -177,7 +176,7 @@ namespace cest
             {
                 if (actual.length() != length) {
                     current_test_failed = true;
-                    assertion_failures << ASCII_RED << "    ✖ Assertion Failed:" << ASCII_RESET << " Length of \"" << actual << "\" expected to be " << length << ", was " << actual.length() << std::endl;
+                    assertion_failures << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " Length of \"" << actual << "\" expected to be " << length << ", was " << actual.length() << std::endl;
                     assertion_failures << "                        " << assertion_file << ":" << assertion_line << std::endl;
                 }
             }
@@ -274,6 +273,13 @@ namespace cest
         std::cout << assertion_failures.str();
         assertion_failures.str(std::string());
     }
+
+    bool anyTestFailed()
+    {
+        return std::any_of(test_cases.begin(), test_cases.end(), [](cest::TestCase *test_case) {
+            return test_case->test_failed;
+        });
+    }
 }
 
 
@@ -306,5 +312,5 @@ int main(void)
         delete test_case;
     }
 
-    return 0;
+    return anyTestFailed();
 }

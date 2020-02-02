@@ -36,7 +36,7 @@ def compile(test_name, files):
 
 
 def execute(test_name):
-    os.system('build/' + test_name + ' -s')
+    return os.system('build/' + test_name + ' -s')
 
 
 tests, names = test_cases()
@@ -47,5 +47,10 @@ for test_name in names:
     files = files_for_test(test_name, tests[test_name])
     compile(test_name, files)
 
+tests_failed = False
+
 for test_name in names:
-    execute(test_name)
+    if execute(test_name) != 0:
+        tests_failed = True
+
+sys.exit(1 if tests_failed else 0)
