@@ -39,7 +39,21 @@ def execute(test_name):
     return os.system('build/' + test_name + ' -s')
 
 
+def clean_test_results():
+    try:
+        os.remove('log.xml')
+    except:
+        pass
+
+    try:
+        os.remove('test_summary.jsonl')
+    except:
+        pass
+
+
 tests, names = test_cases()
+
+clean_test_results()
 
 print GREEN + 'Building tests and sources' + RESET
 
