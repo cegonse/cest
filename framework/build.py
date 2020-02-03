@@ -38,6 +38,8 @@ def compile(test_name, files):
 def execute(test_name):
     return os.system('build/' + test_name + ' -s')
 
+def generate_junit_report():
+    os.system('framework/junit.py')
 
 tests, names = test_cases()
 
@@ -52,5 +54,7 @@ tests_failed = False
 for test_name in names:
     if execute(test_name) != 0:
         tests_failed = True
+
+generate_junit_report()
 
 sys.exit(1 if tests_failed else 0)
