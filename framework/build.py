@@ -38,22 +38,10 @@ def compile(test_name, files):
 def execute(test_name):
     return os.system('build/' + test_name + ' -s')
 
-
-def clean_test_results():
-    try:
-        os.remove('log.xml')
-    except:
-        pass
-
-    try:
-        os.remove('test_summary.jsonl')
-    except:
-        pass
-
+def generate_junit_report():
+    os.system('framework/junit.py')
 
 tests, names = test_cases()
-
-clean_test_results()
 
 print GREEN + 'Building tests and sources' + RESET
 
@@ -66,5 +54,7 @@ tests_failed = False
 for test_name in names:
     if execute(test_name) != 0:
         tests_failed = True
+
+generate_junit_report()
 
 sys.exit(1 if tests_failed else 0)

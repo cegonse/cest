@@ -1,5 +1,5 @@
 build/
 .vscode/
 .idea/
-out.xml
+log.xml
 test_summary.jsonl

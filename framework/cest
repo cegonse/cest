@@ -248,21 +248,18 @@ namespace cest
         return failed_tests;
     }
 
-    std::string escape(std::string text)
+    std::string sanitize(std::string text)
     {
-        std::string updated_text = text;
+        int start=0;
+        std::string from("\"");
+        std::string to("\\\"");
 
-        if (text == "") {
-            return "";
+        while ((start = text.find(from, start)) != std::string::npos) {
+            text.replace(start, from.length(), to);
+            start += to.length();
         }
 
-        for (int i=0; i<text.size(); ++i) {
-            if (text[i] == '"') {
-                updated_text = text.insert(i, updated_text);
-            }
-        }
-
-        return updated_text;
+        return text;
     }
 
     std::string generateSuiteReport(TestSuite test_suite)
@@ -271,7 +268,7 @@ namespace cest
 
         suite_report << "{";
 
-        emitStringField(&suite_report, "name", escape(test_suite.test_suite_name), true);
+        emitStringField(&suite_report, "name", test_suite.test_suite_name, true);
         emitIntegerField(&suite_report, "tests", test_suite.test_cases.size(), true);
         emitIntegerField(&suite_report, "failures", countFailedTests(test_suite.test_cases), true);
         emitIntegerField(&suite_report, "errors", 0, true);
@@ -284,11 +281,11 @@ namespace cest
 
         for (int i=0; i<test_suite.test_cases.size(); ++i) {
             suite_report << "{";
-            emitStringField(&suite_report, "name", escape(test_suite.test_cases[i]->name), true);
+            emitStringField(&suite_report, "name", test_suite.test_cases[i]->name, true);
             emitStringField(&suite_report, "time", "", test_suite.test_cases[i]->test_failed);
 
             if (test_suite.test_cases[i]->test_failed) {
-                emitStringField(&suite_report, "failure_message", escape(test_suite.test_cases[i]->failure_message), false);
+                emitStringField(&suite_report, "failure_message", sanitize(test_suite.test_cases[i]->failure_message), false);
             }
 
             suite_report << "}" << (i==test_suite.test_cases.size()-1? "" : ",");
