@@ -91,8 +91,14 @@ namespace Coiner
         return amount;
     }
 
-    bool isValidCurrency(string money) {
-        return money.find('E') == string::npos;
+    bool isValidCurrency(string money)
+    {
+        return money.find('E') != string::npos;
+    }
+
+    string extractIntegerAmount(string money)
+    {
+        return money.substr(0, money.find('E'));
     }
 
     Amount parse(string money)
@@ -105,7 +111,7 @@ namespace Coiner
             return amount;
         }
 
-        integer_part_descriptor = money.substr(0, money.find('E'));
+        integer_part_descriptor = extractIntegerAmount(money);
         amount.integer_part = stoi(integer_part_descriptor);
 
         if (amount.integer_part < 0) {
