@@ -6,3 +6,6 @@ test_suite_result_generation:
 
 test_greeting:
   empty: True
+
+test_money:
+  empty: True
