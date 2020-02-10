@@ -9,3 +9,6 @@ test_greeting:
 
 test_money:
   empty: True
+
+test_description:
+  empty: True

@@ -50,7 +50,7 @@ def sanitize(text):
     sanitized = sanitized.replace('<', '&lt;')
     sanitized = sanitized.replace('>', '&gt;')
 
-    return sanitized
+    return sanitized.encode('utf-8')
 
 def generate_junit_xml(test_suites):
     junit_xml = '<?xml version="1.0" encoding="utf-8"?>'
