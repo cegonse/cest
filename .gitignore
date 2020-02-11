@@ -3,3 +3,6 @@ build/
 .idea/
 log.xml
 test_summary.jsonl
+__pycache__/
+.pytest_cache/
+*.pyc

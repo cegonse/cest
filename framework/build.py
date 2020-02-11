@@ -4,6 +4,9 @@ import os
 import sys
 import yaml
 
+from compilation import test_suites
+from compilation import files
+
 RED = '\033[1m\033[31m'
 GREEN = '\033[1m\033[32m'
 RESET = '\033[0m'
@@ -16,18 +19,8 @@ def read_file(file):
     return data
 
 
-def test_cases():
-    spec = yaml.load(read_file('spec/spec.yml'))
-    return spec, spec.keys()
-
-
-def files_for_test(name, test):
-    sources_to_build = test['sources'] if 'sources' in test else []
-    return ['spec/{name}.cpp'.format(name=name)] + sources_to_build
-
-
 def compile(test_name, files):
-    binary = 'build/' + test_name.replace('.cpp', '')
+    binary = 'build/' + test_name
     cmd = 'g++ -Ispec -Iinclude -Iframework -O0 -g {srcs} -o {obj}'.format(srcs=' '.join(files), obj=binary)
 
     if os.system(cmd) != 0:
@@ -41,18 +34,18 @@ def execute(test_name):
 def generate_junit_report():
     os.system('framework/junit.py')
 
-tests, names = test_cases()
-
 print GREEN + 'Building tests and sources' + RESET
 
-for test_name in names:
-    files = files_for_test(test_name, tests[test_name])
-    compile(test_name, files)
+spec_files = files.all_files_in('spec')
+tests = test_suites.all_suites(spec_files)
+
+for test in tests:
+    compile(test.name, ['spec/' + test.path])
 
 tests_failed = False
 
-for test_name in names:
-    if execute(test_name) != 0:
+for test in tests:
+    if execute(test.name) != 0:
         tests_failed = True
 
 generate_junit_report()
