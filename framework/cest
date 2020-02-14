@@ -19,8 +19,8 @@
 #define ASCII_RESET             "\033[0m"
 #define TEST_NAME_LENGTH        4096
 
-#define describe(x, y)          std::string test_suite_name = cest::describeFunction(x, y)
-#define it(x, y)                cest::itFunction(__FILE__, __LINE__, x, y)
+#define describe(...)           std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
+#define it(...)                 cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define expect(x)               cest::expectFunction(__FILE__, __LINE__, x)
 #define beforeEach(x)           cest::beforeEachFunction(x)
 #define afterEach(x)            cest::afterEachFunction(x)
