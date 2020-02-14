@@ -3,10 +3,18 @@ name: CI
 on: [push]
 
 jobs:
-  test:
+  cpp_tests:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@master
-    - name: Run tests
+    - name: Run C++ tests
       run: make all
+
+  python_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Run Python tests
+      run: PYTHONPATH=framework/ pytest framework/spec
