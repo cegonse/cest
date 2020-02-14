@@ -15,6 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+    - uses: cclauss/GitHub-Action-for-pytest@master
     - name: Run Python tests
       run: PYTHONPATH=framework/ pytest framework/spec
