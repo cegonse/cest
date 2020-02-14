@@ -3,6 +3,7 @@
 import os
 import sys
 import yaml
+import argparse
 
 from compilation import test_suites
 from compilation import files
@@ -10,13 +11,6 @@ from compilation import files
 RED = '\033[1m\033[31m'
 GREEN = '\033[1m\033[32m'
 RESET = '\033[0m'
-
-def read_file(file):
-    f = open(file, 'r')
-    data = f.read()
-    f.close()
-
-    return data
 
 
 def compile(test_name, files):
@@ -31,23 +25,42 @@ def compile(test_name, files):
 def execute(test_name):
     return os.system('build/' + test_name + ' -s')
 
+
 def generate_junit_report():
     os.system('framework/junit.py')
 
-print GREEN + 'Building tests and sources' + RESET
 
-spec_files = files.all_files_in('spec')
-tests = test_suites.all_suites(spec_files)
+def parse_args():
+    if len(sys.argv) == 2:
+        return { 'tests': sys.argv[1] }
 
-for test in tests:
-    compile(test.name, ['spec/' + test.path])
+    return { 'tests': 'all' }
 
-tests_failed = False
 
-for test in tests:
-    if execute(test.name) != 0:
-        tests_failed = True
+def main():
+    print GREEN + 'Building tests and sources' + RESET
 
-generate_junit_report()
+    args = parse_args()
 
-sys.exit(1 if tests_failed else 0)
+    spec_files = files.all_files_in('spec')
+    tests = test_suites.all_suites(spec_files)
+
+    if args['tests'] != 'all':
+        tests = filter(lambda test: args['tests'] in test.name, tests)
+
+    for test in tests:
+        compile(test.name, ['spec/' + test.path])
+
+    tests_failed = False
+
+    for test in tests:
+        if execute(test.name) != 0:
+            tests_failed = True
+
+    generate_junit_report()
+
+    sys.exit(1 if tests_failed else 0)
+
+
+if __name__ == '__main__':
+    main()
