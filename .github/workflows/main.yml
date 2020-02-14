@@ -3,10 +3,20 @@ name: CI
 on: [push]
 
 jobs:
-  test:
+  cpp_tests:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@master
-    - name: Run tests
+    - name: Run C++ tests
       run: make all
+
+  python_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Run Python tests
+      uses: cclauss/GitHub-Action-for-pytest@master
+      with:
+        args: pip install mock && PYTHONPATH=framework/ pytest framework/spec
