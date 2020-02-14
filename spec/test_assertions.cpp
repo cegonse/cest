@@ -12,10 +12,11 @@ describe("test common assertions", []() {
     });
 
     it("asserts booleans", [&]() {
-        bool variable = false;
+        bool first = true;
+        bool second = false;
 
-        expect(true).toBe(true);
-        expect(variable).toBe(false);
+        expect(first).toBe(true);
+        expect(second).toBe(false);
     });
 
     it("asserts integers", [&]() {
