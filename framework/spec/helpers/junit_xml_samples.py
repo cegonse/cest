@@ -2,7 +2,7 @@ empty_junit_xml = (
     '<?xml version="1.0" encoding="utf-8"?>'
     '<testsuites name="Cest Test Results" time="" tests="0" failures="0" disabled="" errors="">'
     '</testsuites>'
-)
+).encode('utf-8')
 
 junit_xml_with_one_executed_test_suite_and_one_passed_test = (
     '<?xml version="1.0" encoding="utf-8"?>'
@@ -12,7 +12,7 @@ junit_xml_with_one_executed_test_suite_and_one_passed_test = (
             '</testcase>'
         '</testsuite>'
     '</testsuites>'
-)
+).encode('utf-8')
 
 junit_xml_with_one_executed_test_suite_and_one_failed_test = (
     '<?xml version="1.0" encoding="utf-8"?>'
@@ -23,7 +23,7 @@ junit_xml_with_one_executed_test_suite_and_one_failed_test = (
             '</testcase>'
         '</testsuite>'
     '</testsuites>'
-)
+).encode('utf-8')
 
 junit_xml_with_one_executed_test_suite_and_many_passed_tests = (
     '<?xml version="1.0" encoding="utf-8"?>'
@@ -35,7 +35,7 @@ junit_xml_with_one_executed_test_suite_and_many_passed_tests = (
             '</testcase>'
         '</testsuite>'
     '</testsuites>'
-)
+).encode('utf-8')
 
 junit_xml_with_one_executed_test_suite_and_many_passed_and_failed_tests = (
     '<?xml version="1.0" encoding="utf-8"?>'
@@ -48,7 +48,7 @@ junit_xml_with_one_executed_test_suite_and_many_passed_and_failed_tests = (
             '</testcase>'
         '</testsuite>'
     '</testsuites>'
-)
+).encode('utf-8')
 
 junit_xml_with_many_executed_test_suites_and_one_passed_test_in_each = (
     '<?xml version="1.0" encoding="utf-8"?>'
@@ -62,7 +62,7 @@ junit_xml_with_many_executed_test_suites_and_one_passed_test_in_each = (
             '</testcase>'
         '</testsuite>'
     '</testsuites>'
-)
+).encode('utf-8')
 
 junit_xml_with_many_executed_test_suites_and_many_passed_and_failed_tests = (
     '<?xml version="1.0" encoding="utf-8"?>'
@@ -81,4 +81,4 @@ junit_xml_with_many_executed_test_suites_and_many_passed_and_failed_tests = (
             '</testcase>'
         '</testsuite>'
     '</testsuites>'
-)
+).encode('utf-8')
