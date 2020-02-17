@@ -58,4 +58,4 @@ def generate_junit_xml(test_suites):
         junit_xml += '</testsuite>'
     junit_xml += '</testsuites>'
 
-    return junit_xml
+    return junit_xml.encode('utf-8')
