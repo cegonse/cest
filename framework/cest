@@ -88,6 +88,8 @@ namespace cest
         (*stream) << "                        " << file << ":" << line << std::endl;
     }
 
+    class AssertionError : public std::exception {};
+
     template<class T>
     class Assertion
     {
@@ -105,7 +107,9 @@ namespace cest
                     current_test_failed = true;
                     failure_message << "Expected " << expected << ", was " << actual;
                     current_test_case->failure_message = failure_message.str();
+
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
                 }
             }
 
@@ -119,7 +123,9 @@ namespace cest
                         failure_message << "Memory mismatch at byte " << i << ", expected ";
                         failure_message << std::hex << std::uppercase << (int)expected[i] << " but was " << std::hex << std::uppercase << (int)actual[i];
                         current_test_case->failure_message = failure_message.str();
+
                         appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                        throw AssertionError();
                     }
                 }
             }
@@ -130,7 +136,9 @@ namespace cest
                     current_test_failed = true;
                     failure_message << "Expected 0x" << std::hex << std::uppercase << actual << " to be not null";
                     current_test_case->failure_message = failure_message.str();
+
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
                 }
             }
 
@@ -140,7 +148,9 @@ namespace cest
                     current_test_failed = true;
                     failure_message << "Expected 0x" << std::hex << std::uppercase << actual << " to be null";
                     current_test_case->failure_message = failure_message.str();
+
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
                 }
             }
 
@@ -168,7 +178,9 @@ namespace cest
                     current_test_failed = true;
                     failure_message << "Expected \"" << expected << "\", was \"" << actual << "\"";
                     current_test_case->failure_message = failure_message.str();
+
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
                 }
             }
 
@@ -178,7 +190,9 @@ namespace cest
                     current_test_failed = true;
                     failure_message << "\"" << expected << "\" not present inside \"" << actual << "\"";
                     current_test_case->failure_message = failure_message.str();
+
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
                 }
             }
 
@@ -188,7 +202,9 @@ namespace cest
                     current_test_failed = true;
                     failure_message << "Length of \"" << actual << "\" expected to be " << length << ", was " << actual.length();
                     current_test_case->failure_message = failure_message.str();
+
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
                 }
             }
 
@@ -352,7 +368,14 @@ int main(void)
             before_each();
         }
 
-        test_case->test();
+        try {
+            test_case->test();
+        } catch (AssertionError error) {
+            current_test_failed = true;
+            test_case->test_failed = true;
+
+            printTestResult(test_case);
+        }
 
         if (after_each) {
             after_each();
