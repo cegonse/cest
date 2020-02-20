@@ -12,3 +12,6 @@ clean:
 	@rm -rf build/*
 	@rm -f log.xml
 	@rm -f test_summary.jsonl
+
+python_tests:
+	@PYTHONPATH=framework/ pytest framework/spec -vv

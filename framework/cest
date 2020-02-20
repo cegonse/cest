@@ -113,6 +113,11 @@ namespace cest
                 }
             }
 
+            void toEqual(T expected)
+            {
+                toBe(expected);
+            }
+
             void toEqualMemory(T expected, int64_t length)
             {
                 int i;
@@ -161,6 +166,85 @@ namespace cest
             int assertion_line;
     };
 
+    template <class T>
+    class Assertion<std::vector<T> >
+    {
+        public:
+            Assertion(const char *file, int line, std::vector<T> value)
+            {
+                actual = value;
+                assertion_file = std::string(file);
+                assertion_line = line;
+            }
+
+            void toBe(std::vector<T> expected)
+            {
+                if (expected.size() != actual.size()) {
+                    current_test_failed = true;
+                    failure_message << "Vector sizes do not match, expected " << expected.size() << " items but had " << actual.size() << " items";
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+
+                for (int i=0; i<expected.size(); ++i) {
+                    if (expected[i] != actual[i]) {
+                        current_test_failed = true;
+                        failure_message << "Vector item mismatch at position " << i << ", expected " << expected[i] << " but was " << actual[i];
+                        current_test_case->failure_message = failure_message.str();
+
+                        appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                        throw AssertionError();
+                    }
+                }
+            }
+
+            void toEqual(std::vector<T> expected)
+            {
+                toBe(expected);
+            }
+
+            void toContain(T item)
+            {
+                bool found = false;
+
+                for (int i=0; i<actual.size(); ++i) {
+                    if (actual[i] == item) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    current_test_failed = true;
+                    failure_message << "Item " << item << " not found in vector";
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+            void toHaveLength(int size)
+            {
+                if (actual.size() != size) {
+                    current_test_failed = true;
+                    failure_message << "Vector sizes does not match, expected " << size << " items but had " << actual.size() << " items";
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+        private:
+            std::vector<T> actual;
+            std::string assertion_file;
+            std::stringstream failure_message;
+            int assertion_line;
+    };
+
     template <>
     class Assertion<std::string>
     {
@@ -182,6 +266,11 @@ namespace cest
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
                     throw AssertionError();
                 }
+            }
+
+            void toEqual(std::string expected)
+            {
+                toBe(expected);
             }
 
             void toContain(std::string expected)

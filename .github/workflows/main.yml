@@ -19,4 +19,4 @@ jobs:
     - name: Run Python tests
       uses: cclauss/GitHub-Action-for-pytest@master
       with:
-        args: PYTHONPATH=framework/ pytest framework/spec -vv
+        args: make python_tests
