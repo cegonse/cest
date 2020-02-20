@@ -5,13 +5,13 @@
 
 
 describe("test common assertions", []() {
-    beforeEach([&]() {
+    beforeEach([]() {
     });
 
-    afterEach([&]() {
+    afterEach([]() {
     });
 
-    it("asserts booleans", [&]() {
+    it("asserts booleans", []() {
         bool first = true;
         bool second = false;
 
@@ -19,7 +19,7 @@ describe("test common assertions", []() {
         expect(second).toBe(false);
     });
 
-    it("asserts integers", [&]() {
+    it("asserts integers", []() {
         unsigned int variable = 12;
         int negative = -32;
         int64_t big_number = 1000202029292923;
@@ -30,13 +30,13 @@ describe("test common assertions", []() {
         expect(big_number).toBe(1000202029292923);
     });
 
-    it("asserts strings", [&]() {
+    it("asserts strings", []() {
         expect("hello").toBe("hello");
         expect("world").toContain("rld");
         expect("cest").toHaveLength(4);
     });
 
-    it("asserts pointers", [&]() {
+    it("asserts pointers", []() {
         void *address = (void *)0xFA101132;
         char *string = (char *)"something";
         int year = 2019;
@@ -46,5 +46,13 @@ describe("test common assertions", []() {
         expect(string).toEqualMemory((char *)"something", strlen("something") + 1);
         expect(&year).toBeNotNull();
         expect(this_is_null).toBeNull();
+    });
+
+    it("asserts lists", []() {
+        std::vector<int> numbers({ 10, 20, 30 });
+
+        expect(numbers).toContain(30);
+        expect(numbers).toBe(numbers);
+        expect(numbers).toHaveLength(3);
     });
 });
