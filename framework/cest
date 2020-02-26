@@ -21,7 +21,7 @@
 
 #define describe(...)           std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
 #define it(...)                 cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
-#define expect(x)               cest::expectFunction(__FILE__, __LINE__, x)
+#define expect(...)             cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define beforeEach(x)           cest::beforeEachFunction(x)
 #define afterEach(x)            cest::afterEachFunction(x)
 
@@ -84,7 +84,7 @@ namespace cest
 
     void appendAssertionFailure(std::stringstream *stream, std::string message, std::string file, int line)
     {
-        (*stream) << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " " << current_test_case->failure_message << std::endl;
+        (*stream) << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " " << message << std::endl;
         (*stream) << "                        " << file << ":" << line << std::endl;
     }
 
@@ -157,6 +157,17 @@ namespace cest
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
                     throw AssertionError();
                 }
+            }
+
+            template <class E>
+            void toRaise()
+            {
+                try {
+
+                } catch (E error) {
+
+                }
+
             }
 
         private:
@@ -436,6 +447,22 @@ namespace cest
             return test_case->test_failed;
         });
     }
+
+    void handleFailedTest(TestCase *test_case)
+    {
+        current_test_failed = true;
+        test_case->test_failed = true;
+    }
+
+    void handleTestException(TestCase *test_case, std::exception *error)
+    {
+        std::string exception_message("Unhandled exception in test case: ");
+
+        exception_message += error->what();
+
+        appendAssertionFailure(&assertion_failures, exception_message, test_case->file, test_case->line);
+        handleFailedTest(test_case);
+    }
 }
 
 
@@ -460,10 +487,9 @@ int main(void)
         try {
             test_case->test();
         } catch (AssertionError error) {
-            current_test_failed = true;
-            test_case->test_failed = true;
-
-            printTestResult(test_case);
+            handleFailedTest(test_case);
+        } catch (std::exception error) {
+            handleTestException(test_case, &error);
         }
 
         if (after_each) {
