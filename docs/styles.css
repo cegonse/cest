@@ -1,0 +1,111 @@
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.editorContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.codeEditor {
+    width: 40%;
+    height: 600px;
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+    background-color: #f0f0f0;
+}
+
+.testResults {
+    width: 30%;
+    height: 600px;
+    background-color: #e6e6e6;
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.runButton {
+    position: absolute;
+    top: calc(600px + 1.5em);
+    left: calc(100% - 21em);
+    height: 2em;
+    width: 5em;
+    border-radius: 4px;
+
+    background-color: #1aaa55;
+    border: 1px solid #168f48;
+    color: white;
+    cursor: pointer;
+    text-shadow: none;
+    box-shadow: none;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 120%;
+
+    transition: background-color 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+.runButton:hover {
+    background-color: #199e50;
+}
+
+.runButton:active {
+    background-color: #137a3e;
+}
+
+.testResult {
+    background-color: #cfcfcf;
+    border-radius: 4px;
+    margin: 1vh;
+    padding: 0.5vh;
+    height: 1.8em;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+.testPassed {
+    font-family: 'Roboto', sans-serif;
+    background-color: #308d1d;
+    color: white;
+    font-weight: bold;
+    height: 1.05em;
+    width: 2em;
+    
+    border-radius: 4px;
+    margin: 0.5vh;
+    padding: 0.5vh 1vw 0.5vh 0.7vw;
+}
+
+.testFailed {
+    font-family: 'Roboto', sans-serif;
+    background-color: #be1818;
+    color: white;
+    font-weight: bold;
+    height: 1.05em;
+    width: 2em;
+    
+    border-radius: 4px;
+    margin: 0.5vh;
+    padding: 0.5vh 1vw 0.5vh 1vw;
+}
+
+.testName {
+    padding-left: 1vw;
+    font-family: 'Roboto', sans-serif;
+}

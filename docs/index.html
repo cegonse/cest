@@ -2,7 +2,33 @@
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
+        <title>Cest C++ Testing Framework</title>
+        <script src="https://pagecdn.io/lib/ace/1.4.8/ace.js" crossorigin="anonymous" integrity="sha256-+svOVB1WmhKhTy7N21gWvtyXn91qF0r52P2hIArRRug="></script>
+        <script src="https://pagecdn.io/lib/ace/1.4.8/theme-xcode.min.js" crossorigin="anonymous"></script>
+        <script src="https://pagecdn.io/lib/ace/1.4.8/mode-c_cpp.min.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     </head>
     <body>
+        <h1>Cest C++ testing framework</h1>
+        <div class="editorContainer">
+            <div id="editor" class="codeEditor"></div>
+            <div class="testResults">
+                <div class="testResult">
+                    <span class="testPassed">PASS</span>
+                    <span class="testName">adds 1 + 2 to equal 3</span>
+                </div>
+                <div class="testResult">
+                    <span class="testPassed">PASS</span>
+                    <span class="testName">this test also passes</span>
+                </div>
+                <div class="testResult">
+                    <span class="testFailed">FAIL</span>
+                    <span class="testName">this does not, sadly</span>
+                </div>
+                <button class="runButton">Run!</button>
+            </div>
+        </div>
+        <script src="src/main.js"></script>
     </body>
 </html>
