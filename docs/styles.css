@@ -37,6 +37,14 @@ h1 {
     justify-content: start;
 }
 
+.testResultsTitle {
+    font-family: 'Roboto', sans-serif;
+    align-self: center;
+    font-size: 150%;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
 .runButton {
     height: 2em;
     width: 5em;
@@ -58,11 +66,16 @@ h1 {
     transition-timing-function: ease-in-out;
 }
 
-.runButton:hover {
+.runButton:disabled {
+    background-color: #727272;
+    border-color: #444444;
+}
+
+.runButton:hover:enabled {
     background-color: #199e50;
 }
 
-.runButton:active {
+.runButton:active:enabled {
     background-color: #137a3e;
     color: #d6d6d6;
 }
@@ -70,7 +83,7 @@ h1 {
 .testResult {
     background-color: #cfcfcf;
     border-radius: 4px;
-    margin: 1vh;
+    margin: 0.5vh;
     padding: 0.5vh;
     height: 1.8em;
 
@@ -109,4 +122,66 @@ h1 {
 .testName {
     padding-left: 1vw;
     font-family: 'Roboto', sans-serif;
+}
+
+.failureMessage {
+    font-family: 'Roboto', sans-serif;
+    font-size: 80%;
+    padding: 8px;
+}
+
+.errorToast {
+    position: fixed;
+    height: 4em;
+    width: 30%;
+    left: 35%;
+    bottom: 10%;
+    background-color: #aa2626;
+    border: 1px solid #790000;
+    border-radius: 4px;
+    box-shadow: 0px 0px 16px #888888;
+
+    transition: 0.5s;
+    transition-timing-function: ease-in-out;
+}
+
+.hiddenErrorToast {
+    opacity: 0;
+    bottom: -2em;
+}
+
+.closeToast {
+    position: absolute;
+    font-size: 150%;
+    background-color: #e00000;
+    border: 1px solid #790000;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+
+    top: 0.6em;
+    right: 0.6em;
+    height: 1.5em;
+    width: 1.5em;
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+.closeToast:hover:enabled {
+    background-color: #b60101;
+}
+
+.closeToast:active:enabled {
+    background-color: #a00101;
+    color: #d6d6d6;
+}
+
+.toastMessage {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+
+    position: absolute;
+    font-size: 120%;
+    padding-top: 20px;
+    padding-left: 40px;
 }

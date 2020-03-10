@@ -19,6 +19,13 @@ def create_text_file(path, contents):
     file.close()
 
 
+def delete_file(path):
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        pass
+
+
 def parse_jsonl(text):
     result = []
     lines = text.splitlines()

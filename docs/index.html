@@ -7,28 +7,29 @@
         <script src="https://pagecdn.io/lib/ace/1.4.8/theme-xcode.min.js" crossorigin="anonymous"></script>
         <script src="https://pagecdn.io/lib/ace/1.4.8/mode-c_cpp.min.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="styles.css">
-        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
     </head>
     <body>
         <h1>Cest C++ testing framework</h1>
         <div class="editorContainer">
             <div id="editor" class="codeEditor"></div>
             <div class="testResults">
-                <div class="testResult">
-                    <span class="testPassed">PASS</span>
-                    <span class="testName">adds 1 + 2 to equal 3</span>
-                </div>
-                <div class="testResult">
-                    <span class="testPassed">PASS</span>
-                    <span class="testName">this test also passes</span>
-                </div>
-                <div class="testResult">
-                    <span class="testFailed">FAIL</span>
-                    <span class="testName">this does not, sadly</span>
-                </div>
-                <button class="runButton">Run!</button>
+                <p class="testResultsTitle">
+                    Test Results
+                </p>
+                <div id="testResultsContainer"></div>
+                <button class="runButton" id="runTestButton">Run!</button>
             </div>
         </div>
+        <div id="errorToast" class="errorToast hiddenErrorToast">
+            <span id="toastMessage" class="toastMessage">Something wrong happened!</span>
+            <button id="closeToast" class="closeToast"><i class="fa fa-times"></i></buttomn>
+        </div>
         <script src="src/main.js"></script>
+        <script src="src/api.js"></script>
+        <script src="src/events.js"></script>
+        <script src="src/event_bus.js"></script>
+        <script src="src/presentation.js"></script>
     </body>
 </html>
