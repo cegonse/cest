@@ -1,4 +1,4 @@
-RUN_TEST_URL = 'http://172.26.11.47:3000/test'
+RUN_TEST_URL = 'http://localhost:3000/test'
 
 
 class Api {

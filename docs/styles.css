@@ -10,10 +10,17 @@ h1 {
     font-family: 'Roboto', sans-serif;
 }
 
+h2 {
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
 .editorContainer {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin-bottom: 64px;
+    margin-top: 32px;
 }
 
 .codeEditor {
@@ -184,4 +191,62 @@ h1 {
     font-size: 120%;
     padding-top: 20px;
     padding-left: 40px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 32px;
+    padding: 32px;
+    justify-content: center;
+    background-color: #f7f7f7;
+}
+
+.descriptionText {
+    font-size: 200%;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+.mainFeatures {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 32px;
+    margin-right: 32px;
+}
+
+.mainFeatures > p::first-line {
+    font-weight: bold;
+    color: #c2a813;
+    font-size: 150%;
+}
+
+.code {
+    font-family: 'Courier New', Courier, monospace;
+    color: #168f48;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 32px;
+    margin-right: 32px;
+}
+
+.header > span {
+    font-size: 140%;
+    background-color: #feffcd;
+    height: 32px;
+    border-radius: 4px;
+    margin-left: auto;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
+    margin-top: 12px;
+    border-color: #c2a813;
+    border-width: 2px;
 }
