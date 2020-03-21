@@ -24,6 +24,8 @@
 #define expect(...)             cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define beforeEach(x)           cest::beforeEachFunction(x)
 #define afterEach(x)            cest::afterEachFunction(x)
+#define pass()                  cest::forcedPass()
+#define fail()                  cest::forcedFailure(__FILE__, __LINE__)
 
 
 namespace cest
@@ -35,6 +37,7 @@ namespace cest
         std::function<void()> test;
         bool test_failed;
         std::string failure_message;
+        bool forced_pass;
     };
 
     struct TestSuite {
@@ -54,6 +57,9 @@ cest::TestCase *current_test_case;
 
 namespace cest
 {
+    class AssertionError : public std::exception {};
+    class ForcedPassError : public std::exception {};
+
     std::string describeFunction(std::string test_name, std::function<void()> test)
     {
         test();
@@ -72,6 +78,27 @@ namespace cest
         test_cases.push_back(test_case);
     }
 
+    void forcedPass()
+    {
+        throw ForcedPassError();
+    }
+
+    void appendAssertionFailure(std::stringstream *stream, std::string message, std::string file, int line)
+    {
+        (*stream) << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " " << message << std::endl;
+        (*stream) << "                        " << file << ":" << line << std::endl;
+    }
+
+    void forcedFailure(std::string file, int line)
+    {
+        current_test_failed = true;
+        current_test_case->failure_message = "Test failure forced manually";
+
+        appendAssertionFailure(&assertion_failures, current_test_case->failure_message, file, line);
+
+        throw AssertionError();
+    }
+
     void beforeEachFunction(std::function<void()> func)
     {
         before_each = func;
@@ -81,14 +108,6 @@ namespace cest
     {
         after_each = func;
     }
-
-    void appendAssertionFailure(std::stringstream *stream, std::string message, std::string file, int line)
-    {
-        (*stream) << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " " << message << std::endl;
-        (*stream) << "                        " << file << ":" << line << std::endl;
-    }
-
-    class AssertionError : public std::exception {};
 
     template<class T>
     class Assertion
@@ -157,17 +176,6 @@ namespace cest
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
                     throw AssertionError();
                 }
-            }
-
-            template <class E>
-            void toRaise()
-            {
-                try {
-
-                } catch (E error) {
-
-                }
-
             }
 
         private:
@@ -488,6 +496,13 @@ int main(void)
             test_case->test();
         } catch (AssertionError error) {
             handleFailedTest(test_case);
+        } catch (ForcedPassError error) {
+            if (after_each) {
+                after_each();
+            }
+
+            printTestResult(test_case);
+            continue;
         } catch (std::exception error) {
             handleTestException(test_case, &error);
         }
