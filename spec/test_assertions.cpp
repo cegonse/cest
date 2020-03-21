@@ -55,4 +55,10 @@ describe("test common assertions", []() {
         expect(numbers).toBe(numbers);
         expect(numbers).toHaveLength(3);
     });
+
+    it("can be forced to always pass", []() {
+        pass();
+
+        expect(false).toBe(true);
+    });
 });
