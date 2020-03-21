@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <functional>
 #include <iostream>
 #include <sstream>
@@ -44,6 +45,11 @@ namespace cest
         std::vector<cest::TestCase *> test_cases;
         std::string test_suite_name;
     };
+
+    struct CommandLineOptions {
+        bool quiet;
+        bool help;
+    };
 }
 
 std::vector<cest::TestCase *> test_cases;
@@ -53,6 +59,7 @@ std::function<void()> after_each;
 std::stringstream assertion_failures;
 bool current_test_failed;
 cest::TestCase *current_test_case;
+cest::CommandLineOptions command_line_options;
 
 
 namespace cest
@@ -422,6 +429,16 @@ namespace cest
 
     void printTestResult(TestCase *test_case)
     {
+        if (command_line_options.quiet) {
+            if (test_case->test_failed) {
+                std::cout << ASCII_RED << "F" << ASCII_RESET;
+            } else {
+                std::cout << ".";
+            }
+
+            return;
+        }
+
         if (test_case->test_failed) {
             std::cout <<
                 ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET <<
@@ -471,15 +488,57 @@ namespace cest
         appendAssertionFailure(&assertion_failures, exception_message, test_case->file, test_case->line);
         handleFailedTest(test_case);
     }
+
+    cest::CommandLineOptions parseArgs(int argc, const char *argv[])
+    {
+        cest::CommandLineOptions options = {0};
+
+        if (argc > 1) {
+            for (int i=0; i<argc; ++i) {
+                if (strcmp(argv[i], "--quiet") == 0) {
+                    options.quiet = true;
+                }
+
+                if (strcmp(argv[i], "-q") == 0) {
+                    options.quiet = true;
+                }
+
+                if (strcmp(argv[i], "--help") == 0) {
+                    options.help = true;
+                }
+
+                if (strcmp(argv[i], "-h") == 0) {
+                    options.help = true;
+                }
+            }
+        }
+
+        return options;
+    }
+
+    void showHelp(std::string binary)
+    {
+        std::cout << "usage: " << binary << " [options]" << std::endl << std::endl;
+        std::cout << "Command line options:" << std::endl;
+        std::cout << "    -q/--quiet: Supress output (use only . and " << ASCII_RED << "F" << ASCII_RESET << " as output)";
+        std::cout << std::endl;
+    }
 }
 
 
-int main(void)
+int main(int argc, const char *argv[])
 {
     using namespace cest;
 
     int return_code = 0;
     TestSuite test_suite;
+
+    command_line_options = parseArgs(argc, argv);
+
+    if (command_line_options.help) {
+        showHelp(argv[0]);
+        return 0;
+    }
 
     test_suite.test_suite_name = test_suite_name;
     test_suite.test_cases = test_cases;
@@ -522,6 +581,10 @@ int main(void)
 
     for (TestCase *test_case : test_cases) {
         delete test_case;
+    }
+
+    if (command_line_options.quiet) {
+        std::cout << std::endl;
     }
 
     return return_code;
