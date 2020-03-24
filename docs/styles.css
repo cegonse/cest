@@ -148,13 +148,12 @@ h2 {
     border-radius: 4px;
     box-shadow: 0px 0px 16px #888888;
 
-    transition: 0.5s;
+    transition: 0.2s;
     transition-timing-function: ease-in-out;
 }
 
 .hiddenErrorToast {
     opacity: 0;
-    bottom: -2em;
 }
 
 .closeToast {
@@ -237,16 +236,36 @@ h2 {
     margin-right: 32px;
 }
 
-.header > span {
-    font-size: 140%;
-    background-color: #feffcd;
+#getFromGithub {
+    font-size: 120%;
+    background-color: #ffffff;
     height: 32px;
-    border-radius: 4px;
+    border-radius: 6px;
     margin-left: auto;
     padding-left: 8px;
     padding-right: 8px;
     padding-top: 8px;
     margin-top: 12px;
-    border-color: #c2a813;
-    border-width: 2px;
+    border: 1px solid #000000;
+    text-decoration: none;
+    color: black;
+
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+#getFromGithub:hover {
+    background-color: #f3f2f2;
+}
+
+#githubCi {
+    height: 24px;
+    width: 110px;
+
+    margin-left: 32px;
+    margin-top: 22px;
+
+    background-image: url("https://github.com/cegonse/cest/workflows/CI/badge.svg?branch=master");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
