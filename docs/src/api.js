@@ -1,4 +1,4 @@
-RUN_TEST_URL = 'http://localhost:3000/test'
+RUN_TEST_URL = 'http://vps807276.ovh.net:3322/test'
 
 
 class Api {
