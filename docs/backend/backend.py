@@ -76,4 +76,4 @@ class CompilationError(RuntimeError):
     pass
 
 
-app.run(host='0.0.0.0', port=3322)
+app.run(host='0.0.0.0', port=3322, ssl_context='adhoc')
