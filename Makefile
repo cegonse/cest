@@ -15,3 +15,6 @@ clean:
 
 python_tests:
 	@PYTHONPATH=framework/ pytest framework/spec -vv
+
+backend:
+	@PYTHONPATH=framework/ python3 docs/backend/backend.py 2> backend.log

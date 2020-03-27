@@ -6,3 +6,4 @@ test_summary.jsonl
 __pycache__/
 .pytest_cache/
 *.pyc
+backend.log
