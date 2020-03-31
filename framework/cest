@@ -29,8 +29,8 @@
 #define afterEach(x)            cest::afterEachFunction(x)
 #define beforeAll(x)            cest::beforeAllFunction(x)
 #define afterAll(x)             cest::afterAllFunction(x)
-#define pass()                  cest::forcedPass()
-#define fail()                  cest::forcedFailure(__FILE__, __LINE__)
+#define passTest()              cest::forcedPass()
+#define failTest()              cest::forcedFailure(__FILE__, __LINE__)
 
 
 namespace cest
