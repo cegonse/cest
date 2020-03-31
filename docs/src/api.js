@@ -1,4 +1,4 @@
-RUN_TEST_URL = 'http://api.cestframework.com:3322/test'
+RUN_TEST_URL = 'https://api.cestframework.com:3322/test'
 
 
 class Api {
