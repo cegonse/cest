@@ -3,6 +3,7 @@ import json
 import time
 import uuid
 import os
+import sys
 import subprocess
 
 from compilation import files
@@ -75,5 +76,11 @@ def run_test(executable):
 class CompilationError(RuntimeError):
     pass
 
+certificate = os.getenv('CERT')
+private_key = os.getenv('PRIVKEY')
 
-app.run(host='0.0.0.0', port=3322, ssl_context='adhoc')
+if not certificate or not private_key:
+    print('Failed to start backend: SSL keys not provided')
+    sys.exit(1)
+
+app.run(host='0.0.0.0', port=3322, ssl_context=(certificate, private_key))
