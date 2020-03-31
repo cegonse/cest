@@ -2,6 +2,10 @@
 
 
 describe("a Cest test suite", []() {
+    beforeAll([]() { });
+
+    afterAll([]() { });
+
     beforeEach([]() { });
 
     afterEach([]() { });

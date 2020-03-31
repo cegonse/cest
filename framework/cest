@@ -27,6 +27,8 @@
 #define expect(...)             cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define beforeEach(x)           cest::beforeEachFunction(x)
 #define afterEach(x)            cest::afterEachFunction(x)
+#define beforeAll(x)            cest::beforeAllFunction(x)
+#define afterAll(x)             cest::afterAllFunction(x)
 #define pass()                  cest::forcedPass()
 #define fail()                  cest::forcedFailure(__FILE__, __LINE__)
 
@@ -58,6 +60,8 @@ std::vector<cest::TestCase *> test_cases;
 extern std::string test_suite_name;
 std::function<void()> before_each;
 std::function<void()> after_each;
+std::function<void()> before_all;
+std::function<void()> after_all;
 std::stringstream assertion_failures;
 bool current_test_failed;
 cest::TestCase *current_test_case;
@@ -117,6 +121,16 @@ namespace cest
     void afterEachFunction(std::function<void()> func)
     {
         after_each = func;
+    }
+
+    void beforeAllFunction(std::function<void()> func)
+    {
+        before_all = func;
+    }
+
+    void afterAllFunction(std::function<void()> func)
+    {
+        after_all = func;
     }
 
     template<class T>
@@ -566,6 +580,10 @@ int main(int argc, const char *argv[])
     test_suite.test_suite_name = test_suite_name;
     test_suite.test_cases = test_cases;
 
+    if (before_all) {
+        before_all();
+    }
+
     for (TestCase *test_case : test_cases) {
         current_test_failed = false;
         current_test_case = test_case;
@@ -597,6 +615,10 @@ int main(int argc, const char *argv[])
         test_case->test_failed = current_test_failed;
 
         printTestResult(test_case);
+    }
+
+    if (after_all) {
+        after_all();
     }
 
     return_code = anyTestFailed();
