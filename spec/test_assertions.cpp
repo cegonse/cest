@@ -57,7 +57,7 @@ describe("test common assertions", []() {
     });
 
     it("can be forced to always pass", []() {
-        pass();
+        passTest();
 
         expect(false).toBe(true);
     });
