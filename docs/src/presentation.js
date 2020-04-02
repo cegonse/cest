@@ -28,7 +28,6 @@ const buildFailedTest = (name, message) => {
     </div>`
 }
 
-
 var editor = null
 
 
@@ -42,9 +41,11 @@ class Presentation {
         editor.insert(CEST_TEST_TEMPLATE)
     }
 
-    static showErrorToast() {
+    static showErrorToast(message) {
         const error_toast = document.querySelector('#errorToast')
+        const toast_message = document.querySelector('#toastMessage')
 
+        toast_message.textContent = message
         error_toast.classList.remove('hiddenErrorToast')
     }
 
@@ -95,8 +96,20 @@ class Presentation {
         Presentation.enableRunningTests()
     }
 
-    static onRunTestFailure(cause) {
-        Presentation.showErrorToast()
+    static onRunTestFailure(problems) {
+        var message = 'Something wrong happened!'
+
+        if (problems) {
+            if (problems.timed_out) {
+                message = `Test execution timed out after ${problems.timed_out} seconds!`
+            }
+
+            if (problems.compilation) {
+                message = 'Test compilation failed!'
+            }
+        }
+
+        Presentation.showErrorToast(message)
         Presentation.enableRunningTests()
     }
 
