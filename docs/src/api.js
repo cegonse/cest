@@ -13,15 +13,19 @@ class Api {
             },
             body: test_file
         }).then((data) => {
-            data.json().then((results) => {
-                if (results.problems) {
-                    window.bus.publish(Events.Api.RunTestFailure, results.problems)        
-                } else {
+            if (data.status == 200) {
+                data.json().then((results) => {
                     window.bus.publish(Events.Api.RunTestResponse, results)
-                }
-            })
+                })
+            } else {
+                data.json().then((results) => {
+                    window.bus.publish(Events.Api.RunTestFailure, results.problems)
+                }).catch((reason) => {
+                    window.bus.publish(Events.Api.RunTestFailure, null)
+                })
+            }
         }).catch((reason) => {
-            window.bus.publish(Events.Api.RunTestFailure, reason)
+            window.bus.publish(Events.Api.RunTestFailure, null)
         })
     }
 }

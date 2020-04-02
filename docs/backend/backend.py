@@ -5,6 +5,7 @@ import uuid
 import os
 import sys
 import subprocess
+from subprocess import TimeoutExpired
 
 from compilation import files
 from flask import Flask
@@ -15,6 +16,7 @@ from flask_cors import CORS, cross_origin
 app = Flask('backend')
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+run_test_timeout = 0.1
 
 
 @app.route('/test', methods=['POST'])
@@ -31,7 +33,10 @@ def run_test():
     except CompilationError as err:
         return json.dumps({'problems': {'compilation': str(err)}}), 400
 
-    run_test(name)
+    try:
+        run_test(name)
+    except TimeoutExpired:
+        return json.dumps({'problems': {'timed_out': run_test_timeout}}), 408
 
     result = files.read_file('/tmp/test_summary.jsonl')
 
@@ -69,12 +74,17 @@ def run_test(executable):
         f'cd /tmp && ./{executable}',
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        shell=True
+        shell=True,
+        timeout=run_test_timeout
     )
 
 
 class CompilationError(RuntimeError):
     pass
+
+if os.getenv('UNSAFE'):
+     app.run(host='0.0.0.0', port=3322)
+     sys.exit(0)
 
 certificate = os.getenv('CERT')
 private_key = os.getenv('PRIVKEY')
