@@ -16,5 +16,11 @@ clean:
 python_tests:
 	@PYTHONPATH=framework/ pytest framework/spec -vv
 
-backend:
-	@PYTHONPATH=framework/ python3 docs/backend/backend.py 2> backend.log
+backend-build:
+	docker build -t cest_backend:latest .
+
+backend-start:
+	docker run -d -p 3322:3322 --env-file .env cest_backend:latest
+
+backend-stop:
+	docker kill $(docker ps -q --filter ancestor=cest_backend)
