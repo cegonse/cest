@@ -6,7 +6,7 @@ WORKDIR /app/docs/backend
 
 RUN pip3 install -r requirements.txt
 
-ENV PYTHONPATH=../../framework
+ENV PYTHONPATH=/app/framework
 
 ENTRYPOINT ["python3"]
 

@@ -20,7 +20,7 @@ backend-build:
 	docker build -t cest_backend:latest .
 
 backend-start:
-	docker run -d -p 3322:3322 --env-file .env cest_backend:latest
+	docker run -d -v ~/certs:/certs:ro -p 3322:3322 --cpu-quota 25000 --env-file .env cest_backend:latest
 
 backend-stop:
 	docker kill $(docker ps -q --filter ancestor=cest_backend)
