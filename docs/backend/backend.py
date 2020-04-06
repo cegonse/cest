@@ -70,13 +70,14 @@ def compile(path):
 
 
 def run_test(executable):
-    process = subprocess.run(
+    process = subprocess.Popen(
         f'cd /tmp && ./{executable}',
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        shell=True,
-        timeout=run_test_timeout
+        shell=True
     )
+
+    process.communicate(timeout=run_test_timeout)
 
 
 class CompilationError(RuntimeError):
