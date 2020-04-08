@@ -218,8 +218,13 @@ h2 {
 
 .mainFeatures > p::first-line {
     font-weight: bold;
-    color: #c2a813;
+    color: #621c5f;
     font-size: 150%;
+}
+
+.featureIcon {
+    color: #621c5f;
+    padding-bottom: 20px;
 }
 
 .code {
@@ -268,4 +273,30 @@ h2 {
     background-image: url("https://github.com/cegonse/cest/workflows/CI/badge.svg?branch=master");
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+footer {
+    color: #cacaca;
+    background-color: #252525;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.socialMedia {
+    padding-left: 32px;
+}
+
+.socialMediaBadge {
+    padding-left: 10px;
+    font-size: 150%;
+    color: #cacaca;
+
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+.socialMediaBadge:hover {
+    color: #ffffff;
 }
