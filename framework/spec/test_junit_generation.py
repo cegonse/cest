@@ -206,3 +206,28 @@ class TestJunitGeneration(unittest.TestCase):
         xml = junit_generation.generate_junit_xml(test_suite_results)
 
         assert xml == junit_xml_samples.junit_xml_with_many_executed_test_suites_and_many_passed_and_failed_tests
+
+    def test_generating_a_junit_report_when_one_test_suite_has_been_executed_and_one_test_has_been_skipped(self):
+        test_suite_results = [
+            {
+                'name': 'example test',
+                'tests': 1,
+                'failures': 0,
+                'errors': 0,
+                'skipped': 1,
+                'time': '',
+                'timestamp': '',
+                'hostname': '',
+                'test_cases': [
+                    {
+                        'name': 'should not run',
+                        'time': '',
+                        'skipped': True
+                    }
+                ]
+            }
+        ]
+
+        xml = junit_generation.generate_junit_xml(test_suite_results)
+
+        assert xml == junit_xml_samples.junit_xml_with_one_executed_test_suite_and_one_skipped_test

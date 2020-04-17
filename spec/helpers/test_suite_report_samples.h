@@ -122,3 +122,23 @@ std::string sample_json_with_two_passed_and_one_failed_test_cases = "\
 }\
 ]\
 }";
+
+std::string sample_json_with_one_skipped_test_case = "\
+{\
+\"name\":\"test something\",\
+\"tests\":1,\
+\"failures\":0,\
+\"errors\":0,\
+\"skipped\":1,\
+\"time\":\"\",\
+\"timestamp\":\"\",\
+\"hostname\":\"\",\
+\"test_cases\":[\
+{\
+\"name\":\"should not run\",\
+\"time\":\"\",\
+\"skipped\":true\
+}\
+]\
+}\
+";
