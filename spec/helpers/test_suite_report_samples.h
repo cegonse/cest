@@ -54,6 +54,26 @@ std::string sample_json_with_one_failed_test_case = "\
 }\
 ";
 
+std::string sample_json_with_one_failed_test_case_and_escaped_backslashes_and_double_quotes = "\
+{\
+\"name\":\"test something\",\
+\"tests\":1,\
+\"failures\":1,\
+\"errors\":0,\
+\"skipped\":0,\
+\"time\":\"\",\
+\"timestamp\":\"\",\
+\"hostname\":\"\",\
+\"test_cases\":[\
+{\
+\"name\":\"should fail\",\
+\"time\":\"\",\
+\"failure_message\":\"Expected pattern .*\\\\d+ apples did not match with I have 12 \\\"apples\"\
+}\
+]\
+}\
+";
+
 std::string sample_json_with_two_passed_test_cases = "\
 {\
 \"name\":\"test something\",\

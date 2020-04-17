@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <regex>
 
 #define ASCII_BACKGROUND_GREEN  "\u001b[42m"
 #define ASCII_BACKGROUND_RED    "\u001b[41m"
@@ -31,6 +32,7 @@
 #define afterAll(x)             cest::afterAllFunction(x)
 #define passTest()              cest::forcedPass()
 #define failTest()              cest::forcedFailure(__FILE__, __LINE__)
+#define Regex(x)                x, std::regex(x)
 
 
 namespace cest
@@ -311,6 +313,22 @@ namespace cest
                 }
             }
 
+            void toMatch(std::string expected)
+            {
+                toContain(expected);
+            }
+
+            void toMatch(std::string expected_string, std::regex expected)
+            {
+                if (!std::regex_search(actual, expected)) {
+                    current_test_failed = true;
+                    failure_message << "Expected pattern " << expected_string << " did not match with " << actual;
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                }
+            }
+
             void toEqual(std::string expected)
             {
                 toBe(expected);
@@ -396,16 +414,25 @@ namespace cest
         return failed_tests;
     }
 
-    std::string sanitize(std::string text)
+    std::string replace_all(std::string text, std::string from, std::string to)
     {
-        int start=0;
-        std::string from("\"");
-        std::string to("\\\"");
+    int start=0;
 
         while ((start = text.find(from, start)) != std::string::npos) {
             text.replace(start, from.length(), to);
             start += to.length();
         }
+
+        return text;
+    }
+
+    std::string sanitize(std::string text)
+    {
+        std::string from("\"");
+        std::string to("\\\"");
+
+        text = replace_all(text, "\\", "\\\\");
+        text = replace_all(text, "\"", "\\\"");
 
         return text;
     }
