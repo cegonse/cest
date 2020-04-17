@@ -36,6 +36,18 @@ describe("test common assertions", []() {
         expect("cest").toHaveLength(4);
     });
 
+    it("asserts string matches", []() {
+        expect("hello").toMatch("hell");
+        expect("world").toMatch("orld");
+        expect("cest").toMatch("cest");
+    });
+
+    it("asserts regexs matches", []() {
+        expect("Hello world cest").toMatch(Regex("^Hell.*cest$"));
+        expect("I have 12 apples").toMatch(Regex(".*\\d+ apples"));
+        expect("To match a partial match").toMatch(Regex("\\w match$"));
+    });
+
     it("asserts pointers", []() {
         void *address = (void *)0xFA101132;
         char *string = (char *)"something";

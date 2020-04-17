@@ -47,6 +47,21 @@ describe("test suite result generation", []() {
         expect(xml_report).toBe(sample_json_with_one_failed_test_case);
     });
 
+    it("generates a report when one test has failed containing backslash or double quotes", []() {
+        cest::TestCase test_case;
+        cest::TestSuite test_suite;
+
+        test_case.name = "should fail";
+        test_case.test_failed = true;
+        test_case.failure_message = "Expected pattern .*\\d+ apples did not match with I have 12 \"apples";
+        test_suite.test_suite_name = "test something";
+        test_suite.test_cases.push_back(&test_case);
+
+        auto xml_report = cest::generateSuiteReport(test_suite);
+
+        expect(xml_report).toBe(sample_json_with_one_failed_test_case_and_escaped_backslashes_and_double_quotes);
+    });
+
     it("generates a report when many tests have passed", []() {
         cest::TestCase first_test_case;
         cest::TestCase second_test_case;
