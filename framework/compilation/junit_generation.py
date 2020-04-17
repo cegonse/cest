@@ -49,6 +49,9 @@ def generate_junit_xml(test_suites):
                 time=test_case['time']
             )
 
+            if 'skipped' in test_case:
+                junit_xml += u'<skipped/>'
+
             if 'failure_message' in test_case:
                 junit_xml += u'<failure message="{message}"/>'.format(
                     message=sanitize(test_case['failure_message'])

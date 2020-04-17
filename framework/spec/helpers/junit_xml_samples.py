@@ -82,3 +82,14 @@ junit_xml_with_many_executed_test_suites_and_many_passed_and_failed_tests = (
         '</testsuite>'
     '</testsuites>'
 ).encode('utf-8')
+
+junit_xml_with_one_executed_test_suite_and_one_skipped_test = (
+    '<?xml version="1.0" encoding="utf-8"?>'
+    '<testsuites name="Cest Test Results" time="" tests="1" failures="0" disabled="" errors="">'
+        '<testsuite name="example test" tests="1" failures="0" time="" skipped="1" timestamp="" hostname="">'
+            '<testcase name="should not run" time="">'
+                '<skipped/>'
+            '</testcase>'
+        '</testsuite>'
+    '</testsuites>'
+).encode('utf-8')

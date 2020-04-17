@@ -13,4 +13,6 @@ describe("a Cest test suite", []() {
     it("can contain test cases", []() { });
 
     it("can also have test cases with unicode symbols 😀", []() { });
+
+    xit("can be skipped", []() { });
 });

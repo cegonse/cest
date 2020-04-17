@@ -104,4 +104,20 @@ describe("test suite result generation", []() {
 
         expect(xml_report).toBe(sample_json_with_two_passed_and_one_failed_test_cases);
     });
+
+    it("generates a report when one test has been skipped", []() {
+        cest::TestCase test_case;
+        cest::TestSuite test_suite;
+
+        test_case.name = "should not run";
+        test_case.test_failed = false;
+        test_case.skip = true;
+        test_case.failure_message = "expected blue, was red";
+        test_suite.test_suite_name = "test something";
+        test_suite.test_cases.push_back(&test_case);
+
+        auto xml_report = cest::generateSuiteReport(test_suite);
+
+        expect(xml_report).toBe(sample_json_with_one_skipped_test_case);
+    });
 });

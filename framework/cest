@@ -13,8 +13,8 @@
 #include <regex>
 
 #define ASCII_BACKGROUND_GREEN  "\u001b[42m"
+#define ASCII_BACKGROUND_YELLOW "\u001b[43m"
 #define ASCII_BACKGROUND_RED    "\u001b[41m"
-#define ASCII_BACKGROUND_BLUE   "\u001b[44m"
 #define ASCII_RED               "\033[1m\033[31m"
 #define ASCII_GREEN             "\033[1m\033[32m"
 #define ASCII_GRAY              "\u001b[38;5;243m"
@@ -25,6 +25,7 @@
 
 #define describe(...)           std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
 #define it(...)                 cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
+#define xit(...)                cest::xitFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define expect(...)             cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define beforeEach(x)           cest::beforeEachFunction(x)
 #define afterEach(x)            cest::afterEachFunction(x)
@@ -45,6 +46,11 @@ namespace cest
         bool test_failed;
         std::string failure_message;
         bool forced_pass;
+        bool skip;
+
+        TestCase() : skip(false), forced_pass(false), test_failed(false)
+        {
+        }
     };
 
     struct TestSuite {
@@ -90,6 +96,20 @@ namespace cest
         test_case->file = file;
         test_case->test = test;
         test_case->line = line;
+        test_case->skip = false;
+
+        test_cases.push_back(test_case);
+    }
+
+    void xitFunction(std::string file, int line, std::string name, std::function<void()> test)
+    {
+        TestCase *test_case = new TestCase();
+        
+        test_case->name = name;
+        test_case->file = file;
+        test_case->test = test;
+        test_case->line = line;
+        test_case->skip = true;
 
         test_cases.push_back(test_case);
     }
@@ -401,6 +421,11 @@ namespace cest
         (*stream) << "\"" << key << "\":" << value << (add_comma? "," : "");
     }
 
+    void emitBooleanField(std::stringstream *stream, std::string key, bool value, bool add_comma)
+    {
+        (*stream) << "\"" << key << "\":" << (value ? "true" : "false") << (add_comma? "," : "");
+    }
+
     int countFailedTests(std::vector<TestCase *> test_cases)
     {
         int failed_tests = 0;
@@ -412,6 +437,19 @@ namespace cest
         }
 
         return failed_tests;
+    }
+
+    int countSkippedTests(std::vector<TestCase *> test_cases)
+    {
+        int skipped_tests = 0;
+
+        for (TestCase *test : test_cases) {
+            if (test->skip) {
+                skipped_tests++;
+            }
+        }
+
+        return skipped_tests;
     }
 
     std::string replace_all(std::string text, std::string from, std::string to)
@@ -447,7 +485,7 @@ namespace cest
         emitIntegerField(&suite_report, "tests", test_suite.test_cases.size(), true);
         emitIntegerField(&suite_report, "failures", countFailedTests(test_suite.test_cases), true);
         emitIntegerField(&suite_report, "errors", 0, true);
-        emitIntegerField(&suite_report, "skipped", 0, true);
+        emitIntegerField(&suite_report, "skipped", countSkippedTests(test_suite.test_cases), true);
         emitStringField(&suite_report, "time", "", true);
         emitStringField(&suite_report, "timestamp", "", true);
         emitStringField(&suite_report, "hostname", "", true);
@@ -457,10 +495,14 @@ namespace cest
         for (int i=0; i<test_suite.test_cases.size(); ++i) {
             suite_report << "{";
             emitStringField(&suite_report, "name", test_suite.test_cases[i]->name, true);
-            emitStringField(&suite_report, "time", "", test_suite.test_cases[i]->test_failed);
+            emitStringField(&suite_report, "time", "", test_suite.test_cases[i]->test_failed || test_suite.test_cases[i]->skip);
 
             if (test_suite.test_cases[i]->test_failed) {
                 emitStringField(&suite_report, "failure_message", sanitize(test_suite.test_cases[i]->failure_message), false);
+            }
+
+            if (test_suite.test_cases[i]->skip) {
+                emitBooleanField(&suite_report, "skipped", test_suite.test_cases[i]->skip, false);
             }
 
             suite_report << "}" << (i==test_suite.test_cases.size()-1? "" : ",");
@@ -484,18 +526,17 @@ namespace cest
         }
 
         if (test_case->test_failed) {
-            std::cout <<
-                ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET <<
-                ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET <<
-                ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
-                std::endl;
+            std::cout <<  ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET;
+        } else if (test_case->skip) {
+            std::cout << ASCII_BACKGROUND_YELLOW << ASCII_BLACK << ASCII_BOLD << " SKIP " << ASCII_RESET;
         } else {
-            std::cout <<
-                ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET <<
-                ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET <<
-                ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
-                std::endl;
+            std::cout << ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET;
         }
+
+        std::cout <<
+            ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET <<
+            ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
+            std::endl;
 
         std::cout << assertion_failures.str();
         assertion_failures.str(std::string());
@@ -620,6 +661,10 @@ int main(int argc, const char *argv[])
         }
 
         try {
+            if (test_case->skip) {
+                throw ForcedPassError();
+            }
+
             test_case->test();
             setjmp(jump_env);
         } catch (AssertionError error) {
