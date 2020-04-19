@@ -29,7 +29,7 @@ string Greet(string name)
 
 string greetManyPeople(vector<string> names)
 {
-    int i;
+    size_t i;
     string greeting = "Hello ";
 
     for (i=0; i<names.size(); ++i) {

@@ -44,11 +44,11 @@ namespace cest
         int line;
         std::function<void()> test;
         bool test_failed;
-        std::string failure_message;
         bool forced_pass;
         bool skip;
+        std::string failure_message;
 
-        TestCase() : skip(false), forced_pass(false), test_failed(false)
+        TestCase() : test_failed(false), forced_pass(false), skip(false)
         {
         }
     };
@@ -253,7 +253,7 @@ namespace cest
                     throw AssertionError();
                 }
 
-                for (int i=0; i<expected.size(); ++i) {
+                for (size_t i=0; i<expected.size(); ++i) {
                     if (expected[i] != actual[i]) {
                         current_test_failed = true;
                         failure_message << "Vector item mismatch at position " << i << ", expected " << expected[i] << " but was " << actual[i];
@@ -274,7 +274,7 @@ namespace cest
             {
                 bool found = false;
 
-                for (int i=0; i<actual.size(); ++i) {
+                for (size_t i=0; i<actual.size(); ++i) {
                     if (actual[i] == item) {
                         found = true;
                         break;
@@ -291,7 +291,7 @@ namespace cest
                 }
             }
 
-            void toHaveLength(int size)
+            void toHaveLength(size_t size)
             {
                 if (actual.size() != size) {
                     current_test_failed = true;
@@ -366,7 +366,7 @@ namespace cest
                 }
             }
 
-            void toHaveLength(int64_t length)
+            void toHaveLength(size_t length)
             {
                 if (actual.length() != length) {
                     current_test_failed = true;
@@ -454,7 +454,7 @@ namespace cest
 
     std::string replace_all(std::string text, std::string from, std::string to)
     {
-    int start=0;
+    size_t start=0;
 
         while ((start = text.find(from, start)) != std::string::npos) {
             text.replace(start, from.length(), to);
@@ -492,7 +492,7 @@ namespace cest
 
         suite_report << "\"test_cases\":[";
 
-        for (int i=0; i<test_suite.test_cases.size(); ++i) {
+        for (size_t i=0; i<test_suite.test_cases.size(); ++i) {
             suite_report << "{";
             emitStringField(&suite_report, "name", test_suite.test_cases[i]->name, true);
             emitStringField(&suite_report, "time", "", test_suite.test_cases[i]->test_failed || test_suite.test_cases[i]->skip);
