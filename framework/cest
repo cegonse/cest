@@ -44,11 +44,11 @@ namespace cest
         int line;
         std::function<void()> test;
         bool test_failed;
-        std::string failure_message;
         bool forced_pass;
         bool skip;
+        std::string failure_message;
 
-        TestCase() : skip(false), forced_pass(false), test_failed(false)
+        TestCase() : test_failed(false), forced_pass(false), skip(false)
         {
         }
     };
