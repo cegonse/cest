@@ -28,6 +28,13 @@ const buildFailedTest = (name, message) => {
     </div>`
 }
 
+const buildSkippedTest = (name) => {
+    return `<div class="testResult">
+        <span class="testSkipped">SKIP</span>
+        <span class="testName">${name}</span>
+    </div>`
+}
+
 var editor = null
 
 
@@ -76,6 +83,8 @@ class Presentation {
 
         if (test_case.failure_message) {
             new_node.innerHTML = buildFailedTest(test_case.name, test_case.failure_message)
+        } else if (test_case.skipped) {
+            new_node.innerHTML = buildSkippedTest(test_case.name)
         } else {
             new_node.innerHTML = buildPassedTest(test_case.name)
         }

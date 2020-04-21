@@ -126,6 +126,19 @@ h2 {
     padding: 0.5vh 1vw 0.5vh 1vw;
 }
 
+.testSkipped {
+    font-family: 'Roboto', sans-serif;
+    background-color: #8c8f00;
+    color: white;
+    font-weight: bold;
+    height: 1.05em;
+    width: 2em;
+
+    border-radius: 4px;
+    margin: 0.5vh;
+    padding: 0.5vh 1vw 0.5vh 1vw;
+}
+
 .testName {
     padding-left: 1vw;
     font-family: 'Roboto', sans-serif;
