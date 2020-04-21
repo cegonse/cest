@@ -26,6 +26,7 @@
 #define describe(...)           std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
 #define it(...)                 cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define xit(...)                cest::xitFunction(__FILE__, __LINE__, __VA_ARGS__)
+#define fit(...)                cest::fitFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define expect(...)             cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
 #define beforeEach(x)           cest::beforeEachFunction(x)
 #define afterEach(x)            cest::afterEachFunction(x)
@@ -46,6 +47,7 @@ namespace cest
         bool test_failed;
         bool forced_pass;
         bool skip;
+        bool fit;
         std::string failure_message;
 
         TestCase() : test_failed(false), forced_pass(false), skip(false)
@@ -97,6 +99,7 @@ namespace cest
         test_case->test = test;
         test_case->line = line;
         test_case->skip = false;
+        test_case->fit = false;
 
         test_cases.push_back(test_case);
     }
@@ -110,6 +113,21 @@ namespace cest
         test_case->test = test;
         test_case->line = line;
         test_case->skip = true;
+        test_case->fit = false;
+
+        test_cases.push_back(test_case);
+    }
+
+    void fitFunction(std::string file, int line, std::string name, std::function<void()> test)
+    {
+        TestCase *test_case = new TestCase();
+        
+        test_case->name = name;
+        test_case->file = file;
+        test_case->test = test;
+        test_case->line = line;
+        test_case->skip = false;
+        test_case->fit = true;
 
         test_cases.push_back(test_case);
     }
@@ -564,11 +582,11 @@ namespace cest
         test_case->test_failed = true;
     }
 
-    void handleTestException(TestCase *test_case, std::exception *error)
+    void handleTestException(TestCase *test_case, const std::exception& error)
     {
         std::string exception_message("Unhandled exception in test case: ");
 
-        exception_message += error->what();
+        exception_message += error.what();
 
         appendAssertionFailure(&assertion_failures, exception_message, test_case->file, test_case->line);
         handleFailedTest(test_case);
@@ -620,6 +638,28 @@ namespace cest
 
         longjmp(jump_env, 1);
     }
+
+    void configureFittedTests(TestSuite *test_suite)
+    {
+        TestCase *fitted_test = NULL;
+
+        for (TestCase *test : test_suite->test_cases) {
+            if (test->fit) {
+                fitted_test = test;
+                break;
+            }
+        }
+
+        if (!fitted_test) {
+            return;
+        }
+
+        for (TestCase *test : test_suite->test_cases) {
+            if (test != fitted_test) {
+                test->skip = true;
+            }
+        } 
+    }
 }
 
 
@@ -647,6 +687,8 @@ int main(int argc, const char *argv[])
 
     test_suite.test_suite_name = test_suite_name;
     test_suite.test_cases = test_cases;
+    
+    configureFittedTests(&test_suite);
 
     if (before_all) {
         before_all();
@@ -667,17 +709,17 @@ int main(int argc, const char *argv[])
 
             test_case->test();
             setjmp(jump_env);
-        } catch (AssertionError error) {
+        } catch (const AssertionError& error) {
             handleFailedTest(test_case);
-        } catch (ForcedPassError error) {
+        } catch (const ForcedPassError& error) {
             if (after_each) {
                 after_each();
             }
 
             printTestResult(test_case);
             continue;
-        } catch (std::exception error) {
-            handleTestException(test_case, &error);
+        } catch (const std::exception& error) {
+            handleTestException(test_case, error);
         }
 
         if (after_each) {
