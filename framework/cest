@@ -22,6 +22,7 @@
 #define ASCII_BOLD              "\u001b[1m"
 #define ASCII_RESET             "\033[0m"
 #define TEST_NAME_LENGTH        4096
+#define CLIP_STRING_LENGTH      16
 
 #define describe(...)           std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
 #define it(...)                 cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
@@ -343,9 +344,15 @@ namespace cest
             {
                 if (expected != actual) {
                     current_test_failed = true;
-                    failure_message << "Expected \"" << expected << "\", was \"" << actual << "\"";
-                    current_test_case->failure_message = failure_message.str();
+                    if (expected.size() > CLIP_STRING_LENGTH || actual.size() > CLIP_STRING_LENGTH) {
+                        failure_message << "String mismatch," << std::endl;
+                        failure_message << "  Expected: \"" << expected << "\"" << std::endl;
+                        failure_message << "  Actual  : \"" << actual << "\"";
+                    } else {
+                        failure_message << "Expected \"" << expected << "\", was \"" << actual << "\"";
+                    }
 
+                    current_test_case->failure_message = failure_message.str();
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
                     throw AssertionError();
                 }
@@ -360,10 +367,17 @@ namespace cest
             {
                 if (!std::regex_search(actual, expected)) {
                     current_test_failed = true;
-                    failure_message << "Expected pattern " << expected_string << " did not match with " << actual;
-                    current_test_case->failure_message = failure_message.str();
+                    if (expected_string.size() > CLIP_STRING_LENGTH || actual.size() > CLIP_STRING_LENGTH) {
+                        failure_message << "Expected pattern mismatch," << std::endl;
+                        failure_message << "  Regexp: \"" << expected_string << "\"" << std::endl;
+                        failure_message << "  Actual: \"" << actual << "\"";
+                    } else {
+                        failure_message << "Expected pattern \"" << expected_string << "\" did not match with \"" << actual << "\"";
+                    }
 
+                    current_test_case->failure_message = failure_message.str();
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
                 }
             }
 
@@ -376,9 +390,16 @@ namespace cest
             {
                 if (actual.find(expected) == std::string::npos) {
                     current_test_failed = true;
-                    failure_message << "\"" << expected << "\" not present inside \"" << actual << "\"";
-                    current_test_case->failure_message = failure_message.str();
 
+                    if (expected.size() > CLIP_STRING_LENGTH || actual.size() > CLIP_STRING_LENGTH) {
+                        failure_message << "Substring not found," << std::endl;
+                        failure_message << "  Expected: \"" << expected << "\"" << std::endl;
+                        failure_message << "  Actual  : \"" << actual << "\"";
+                    } else {
+                        failure_message << "\"" << expected << "\" not present inside \"" << actual << "\"";
+                    }
+
+                    current_test_case->failure_message = failure_message.str();
                     appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
                     throw AssertionError();
                 }
@@ -489,6 +510,7 @@ namespace cest
 
         text = replace_all(text, "\\", "\\\\");
         text = replace_all(text, "\"", "\\\"");
+        text = replace_all(text, "\n", "\\n");
 
         return text;
     }
