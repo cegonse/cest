@@ -11,18 +11,21 @@
 #include <vector>
 #include <algorithm>
 #include <regex>
+#include <chrono>
+#include <random>
 
-#define ASCII_BACKGROUND_GREEN  "\u001b[42m"
-#define ASCII_BACKGROUND_YELLOW "\u001b[43m"
-#define ASCII_BACKGROUND_RED    "\u001b[41m"
-#define ASCII_RED               "\033[1m\033[31m"
-#define ASCII_GREEN             "\033[1m\033[32m"
-#define ASCII_GRAY              "\u001b[38;5;243m"
-#define ASCII_BLACK             "\u001b[38;5;232m"
-#define ASCII_BOLD              "\u001b[1m"
-#define ASCII_RESET             "\033[0m"
-#define TEST_NAME_LENGTH        4096
-#define CLIP_STRING_LENGTH      16
+#define ASCII_BACKGROUND_GREEN   "\u001b[42m"
+#define ASCII_BACKGROUND_YELLOW  "\u001b[43m"
+#define ASCII_BACKGROUND_RED     "\u001b[41m"
+#define ASCII_BACKGROUND_MAGENTA "\u001b[45;1m"
+#define ASCII_RED                "\033[1m\033[31m"
+#define ASCII_GREEN              "\033[1m\033[32m"
+#define ASCII_GRAY               "\u001b[38;5;243m"
+#define ASCII_BLACK              "\u001b[38;5;232m"
+#define ASCII_BOLD               "\u001b[1m"
+#define ASCII_RESET              "\033[0m"
+#define TEST_NAME_LENGTH         4096
+#define CLIP_STRING_LENGTH       16
 
 #define describe(...)           std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
 #define it(...)                 cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
@@ -64,6 +67,9 @@ namespace cest
     struct CommandLineOptions {
         bool quiet;
         bool help;
+        bool randomize;
+        unsigned int random_seed;
+        bool random_seed_present;
     };
 }
 
@@ -78,6 +84,7 @@ bool current_test_failed;
 cest::TestCase *current_test_case;
 cest::CommandLineOptions command_line_options;
 jmp_buf jump_env;
+unsigned int random_seed;
 
 
 namespace cest
@@ -620,20 +627,25 @@ namespace cest
 
         if (argc > 1) {
             for (int i=0; i<argc; ++i) {
-                if (strcmp(argv[i], "--quiet") == 0) {
+                if (strcmp(argv[i], "--quiet") == 0 || strcmp(argv[i], "-q") == 0) {
                     options.quiet = true;
                 }
 
-                if (strcmp(argv[i], "-q") == 0) {
-                    options.quiet = true;
-                }
-
-                if (strcmp(argv[i], "--help") == 0) {
+                if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
                     options.help = true;
                 }
 
-                if (strcmp(argv[i], "-h") == 0) {
-                    options.help = true;
+                if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--randomize") == 0) {
+                    options.randomize = true;
+                }
+
+                if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--seed") == 0) {
+                    if (i + 1 < argc) {
+                        try {
+                            options.random_seed = std::stoi(argv[i+1]);
+                            options.random_seed_present = true;
+                        } catch (const std::exception& err) {}
+                    }
                 }
             }
         }
@@ -645,7 +657,9 @@ namespace cest
     {
         std::cout << "usage: " << binary << " [options]" << std::endl << std::endl;
         std::cout << "Command line options:" << std::endl;
-        std::cout << "    -q/--quiet: Supress output (use only . and " << ASCII_RED << "F" << ASCII_RESET << " as output)";
+        std::cout << "    -q/--quiet: Supress output (use only . and " << ASCII_RED << "F" << ASCII_RESET << " as output)" << std::endl;
+        std::cout << "    -r/--randomize: Randomize test executions" << std::endl;
+        std::cout << "    -s/--seed <seed>: Inject seed for randomization uses (unsigned integer)";
         std::cout << std::endl;
     }
 
@@ -682,6 +696,14 @@ namespace cest
             }
         } 
     }
+
+    void configureRandomizedTests(TestSuite *test_suite, unsigned int seed)
+    {
+        std::cout << ASCII_BACKGROUND_MAGENTA << ASCII_BLACK << ASCII_BOLD << " SEED "
+            << ASCII_RESET << " Randomizing test execution order with seed " << seed << std::endl;
+
+        std::shuffle(test_suite->test_cases.begin(), test_suite->test_cases.end(), std::default_random_engine(seed));
+    }
 }
 
 
@@ -712,11 +734,21 @@ int main(int argc, const char *argv[])
     
     configureFittedTests(&test_suite);
 
+    if (command_line_options.random_seed_present) {
+        random_seed = command_line_options.random_seed;
+    } else {
+        random_seed = std::chrono::system_clock::now().time_since_epoch().count();
+    }
+
+    if (command_line_options.randomize) {
+        configureRandomizedTests(&test_suite, random_seed);
+    }
+
     if (before_all) {
         before_all();
     }
 
-    for (TestCase *test_case : test_cases) {
+    for (TestCase *test_case : test_suite.test_cases) {
         current_test_failed = false;
         current_test_case = test_case;
 
