@@ -23,7 +23,7 @@ def compile(test_name, files):
 
 
 def execute(test_name):
-    return os.system('build/' + test_name + ' -s')
+    return os.system('build/' + test_name)
 
 
 def generate_junit_report():

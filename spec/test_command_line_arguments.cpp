@@ -51,4 +51,66 @@ describe("Cest command line options", []() {
 
         expect(options.help).toBe(true);
     });
+
+    it("will randomize test execution if -r is present", []() {
+        int argc = 2;
+        const char *argv[] = { "/bin/cest", "-r" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.randomize).toBe(true);
+    });
+
+    it("will randomize test execution if --random is present", []() {
+        int argc = 2;
+        const char *argv[] = { "/bin/cest", "--randomize" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.randomize).toBe(true);
+    });
+
+    it("will use provided seed for randomized tests if -s is present", []() {
+        int argc = 3;
+        const char *argv[] = { "/bin/cest", "-s", "112233" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.random_seed_present).toBe(true);
+        expect(options.random_seed).toBe(112233);
+    });
+
+    it("will use provided seed for randomized tests if --seed is present", []() {
+        int argc = 3;
+        const char *argv[] = { "/bin/cest", "--seed", "112233" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.random_seed_present).toBe(true);
+        expect(options.random_seed).toBe(112233);
+    });
+
+    it("will fail to use provided seed for randomized tests if seed is not present", []() {
+        int argc = 2;
+        const char *argv[] = { "/bin/cest", "-s" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.random_seed_present).toBe(false);
+    });
+
+    it("will fail to use provided seed for randomized tests if seed is not an integer", []() {
+        int argc = 3;
+        const char *argv[] = { "/bin/cest", "-s", "blue" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.random_seed_present).toBe(false);
+    });
 });
