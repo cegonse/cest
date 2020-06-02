@@ -644,7 +644,7 @@ namespace cest
                         try {
                             options.random_seed = std::stoi(argv[i+1]);
                             options.random_seed_present = true;
-                        } catch (const std::exception& err) {}
+                        } catch (const std::invalid_argument& err) {}
                     }
                 }
             }
