@@ -151,6 +151,27 @@ namespace cest
         (*stream) << "                        " << file << ":" << line << std::endl;
     }
 
+    template<class T>
+    void assertRaises(std::function<void()> expression)
+    {
+        int line = current_test_case->line;
+        std::string file = current_test_case->file;
+
+        try {
+            expression();
+        } catch (const T& err) {
+            return;
+        } catch (const std::exception& err) {
+            current_test_failed = true;
+            current_test_case->failure_message = "Expected exception not raised";
+            appendAssertionFailure(&assertion_failures, current_test_case->failure_message, file, line);
+        }
+
+        current_test_failed = true;
+        current_test_case->failure_message = "Expected exception not raised";
+        appendAssertionFailure(&assertion_failures, current_test_case->failure_message, file, line);
+    }
+
     void forcedFailure(std::string file, int line)
     {
         current_test_failed = true;
