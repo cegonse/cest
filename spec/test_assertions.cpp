@@ -3,6 +3,7 @@
 #include <cstring>
 #include <example.h>
 
+using namespace cest;
 
 describe("test common assertions", []() {
     beforeEach([]() {
@@ -72,5 +73,13 @@ describe("test common assertions", []() {
         passTest();
 
         expect(false).toBe(true);
+    });
+
+    it("can assert exceptions", []() {
+        std::string number = "potato";
+
+        assertRaises<std::invalid_argument>([=]() {
+            std::stoi(number);
+        });
     });
 });
