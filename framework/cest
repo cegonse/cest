@@ -145,31 +145,36 @@ namespace cest
         throw ForcedPassError();
     }
 
+    template <class T>
+    class Parameter {
+        public:
+            Parameter() {}
+
+            Parameter<T> withValue(T v) {
+                values.push_back(v);
+                return *this;
+            }
+
+            void thenDo(std::function<void(T)> call) {
+                for (T v : values) {
+                    call(v);
+                }
+            }
+
+        private:
+            std::vector<T> values;
+    };
+
+    template <class T>
+    Parameter<T> withParameter()
+    {
+        return Parameter<T>();
+    }
+
     void appendAssertionFailure(std::stringstream *stream, std::string message, std::string file, int line)
     {
         (*stream) << ASCII_RED << "    ❌ Assertion Failed:" << ASCII_RESET << " " << message << std::endl;
         (*stream) << "                        " << file << ":" << line << std::endl;
-    }
-
-    template<class T>
-    void assertRaises(std::function<void()> expression)
-    {
-        int line = current_test_case->line;
-        std::string file = current_test_case->file;
-
-        try {
-            expression();
-        } catch (const T& err) {
-            return;
-        } catch (const std::exception& err) {
-            current_test_failed = true;
-            current_test_case->failure_message = "Expected exception not raised";
-            appendAssertionFailure(&assertion_failures, current_test_case->failure_message, file, line);
-        }
-
-        current_test_failed = true;
-        current_test_case->failure_message = "Expected exception not raised";
-        appendAssertionFailure(&assertion_failures, current_test_case->failure_message, file, line);
     }
 
     void forcedFailure(std::string file, int line)
@@ -203,6 +208,27 @@ namespace cest
     }
 
     template<class T>
+    void assertRaises(std::function<void()> expression)
+    {
+        int line = current_test_case->line;
+        std::string file = current_test_case->file;
+
+        try {
+            expression();
+        } catch (const T& err) {
+            return;
+        } catch (const std::exception& err) {
+            current_test_failed = true;
+            current_test_case->failure_message = "Expected exception not raised";
+            appendAssertionFailure(&assertion_failures, current_test_case->failure_message, file, line);
+        }
+
+        current_test_failed = true;
+        current_test_case->failure_message = "Expected exception not raised";
+        appendAssertionFailure(&assertion_failures, current_test_case->failure_message, file, line);
+    }
+
+    template<class T>
     class Assertion
     {
         public:
@@ -211,6 +237,30 @@ namespace cest
                 actual = value;
                 assertion_file = std::string(file);
                 assertion_line = line;
+            }
+
+            void toBeTruthy()
+            {
+                if (!actual) {
+                    current_test_failed = true;
+                    failure_message << "Expresion is not truthy";
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+            void toBeFalsy()
+            {
+                if (actual) {
+                    current_test_failed = true;
+                    failure_message << "Expresion is not falsy";
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
             }
 
             void toBe(T expected)
