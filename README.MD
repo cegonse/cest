@@ -32,12 +32,13 @@ describe("testing additions", []() {
 });
 ```
 
-Run your new test and Cest will print the results:
+Build the project and Cest will run your new test:
 
 ```bash
-make test_sum
+make
 
 Building tests and sources
+
  PASS  spec/test_sum.cpp:11 it adds 1 + 2 to equal 3
 ```
 
@@ -46,13 +47,11 @@ Building tests and sources
 Integrating Cest in an existing build system
 --------------------------------------------
 
-The Cest core is a single C++ header. To integrate it into your build system, simply add the `framework/` directory to your include path and include `cest` in your tests.
+The Cest core is a single C++ header. To integrate it into your build system, simply add the `vendor/` directory to your include path and include `cest` in your tests.
 
 The framework header already includes a `main()` function, so tests must be linked *without* any additional entry point.
 
-Cest runner will execute all tests inside the suite and return **0 on success** and **1 on failure**. Besides the console output showing the results, a [JSONL](http://jsonlines.org/) file is generated containing the test suite results in JSON format, where each execution of a test suite will append its results to the file.
-
-There is a [JUnit](https://github.com/junit-team/junit5/blob/master/platform-tests/src/test/resources/jenkins-junit.xsd) converter included in the `framework/` folder (`junit.py`) which will convert any `test_summary.jsonl` file present in the working directory and generate a JUnit XML file called `log.xml`, which can be parsed by Jenkins or GitHub.
+Cest runner will execute all tests inside the suite and return **0 on success** and **1 on failure**.
 
 To see an integration example, check the [cpm package manager](https://github.com/jorsanpe/cpm).
 
