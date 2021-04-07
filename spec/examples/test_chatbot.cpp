@@ -3,6 +3,7 @@
 */
 
 #include <cest>
+#include <map>
 
 
 class Message {
