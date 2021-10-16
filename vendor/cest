@@ -70,6 +70,7 @@ namespace cest
         bool randomize;
         unsigned int random_seed;
         bool random_seed_present;
+        bool generate_test_report;
     };
 }
 
@@ -663,8 +664,10 @@ namespace cest
     void writeTestSummaryToFile(TestSuite test_suite)
     {
         std::ofstream summary_file;
+        std::stringstream file_name;
 
-        summary_file.open("test_summary.jsonl", std::ios_base::app);
+        file_name << test_suite_name << "_summary.jsonl";
+        summary_file.open(file_name.str(), std::ios_base::trunc);
         summary_file << generateSuiteReport(test_suite) << std::endl;
         summary_file.close();
     }
@@ -708,6 +711,10 @@ namespace cest
 
                 if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--randomize") == 0) {
                     options.randomize = true;
+                }
+
+                if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--report") == 0) {
+                    options.generate_test_report = true;
                 }
 
                 if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--seed") == 0) {
@@ -862,7 +869,9 @@ int main(int argc, const char *argv[])
 
     return_code = anyTestFailed();
 
-    writeTestSummaryToFile(test_suite);
+    if (command_line_options.generate_test_report) {
+        writeTestSummaryToFile(test_suite);
+    }
 
     for (TestCase *test_case : test_cases) {
         delete test_case;

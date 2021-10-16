@@ -31,6 +31,6 @@ run:
 clean:
 	@$(CLEANFLAGS)
 	@rm -f log.xml
-	@rm -f test_summary.jsonl
+	@rm -f *.jsonl
 
 .PHONY: clean run

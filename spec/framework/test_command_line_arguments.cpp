@@ -113,4 +113,14 @@ describe("Cest command line options", []() {
 
         expect(options.random_seed_present).toBe(false);
     });
+
+    it("generates test suite summary when -p is present", []() {
+        int argc = 2;
+        const char *argv[] = { "/bin/cest", "-p" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.generate_test_report).toBe(true);
+    });
 });
