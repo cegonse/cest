@@ -17,12 +17,12 @@ backend.log
 # Test results
 log.xml
 test_summary.jsonl
-/spec/examples/test_assertions
-/spec/examples/test_chatbot
-/spec/examples/test_description
-/spec/examples/test_greeting
-/spec/examples/test_money
-/spec/examples/test_parametrized_tests
-/spec/examples/test_roman_to_arabic_converter
-/spec/framework/test_command_line_arguments
-/spec/framework/test_floating_point
+spec/examples/test_assertions
+spec/examples/test_chatbot
+spec/examples/test_description
+spec/examples/test_greeting
+spec/examples/test_money
+spec/examples/test_parametrized_tests
+spec/examples/test_roman_to_arabic_converter
+spec/framework/test_command_line_arguments
+spec/framework/test_floating_point
