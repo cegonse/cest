@@ -342,7 +342,7 @@ namespace cest
 
             void toBe(double expected, double epsilon = 0.0000001)
             {
-                if (fabs(actual - expected) < epsilon) {
+                if (fabs(actual - expected) > epsilon) {
                     current_test_failed = true;
                     failure_message << "Expected " << expected << ", was " << actual;
                     current_test_case->failure_message = failure_message.str();
@@ -354,7 +354,7 @@ namespace cest
 
             void toEqual(double expected, double epsilon = 0.0000001)
             {
-                toBe(expected);
+                toBe(expected, epsilon);
             }
 
             void toBeGreaterThan(double expected)
@@ -399,9 +399,9 @@ namespace cest
                 assertion_line = line;
             }
 
-            void toBe(float expected, float epsilon = 0.00001)
-            {std::cout << fabs(actual - expected) << std::endl;
-                if (fabs(actual - expected) < epsilon) {
+            void toBe(float expected, float epsilon = 0.00001f)
+            {
+                if (fabs(actual - expected) > epsilon) {
                     current_test_failed = true;
                     failure_message << "Expected " << expected << ", was " << actual;
                     current_test_case->failure_message = failure_message.str();
@@ -411,9 +411,9 @@ namespace cest
                 }
             }
 
-            void toEqual(float expected, float epsilon = 0.0000001)
+            void toEqual(float expected, float epsilon = 0.00001f)
             {
-                toBe(expected);
+                toBe(expected, epsilon);
             }
 
             void toBeGreaterThan(float expected)
