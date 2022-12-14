@@ -329,6 +329,124 @@ namespace cest
             int assertion_line;
     };
 
+    template<>
+    class Assertion<double>
+    {
+        public:
+            Assertion(const char *file, int line, double value)
+            {
+                actual = value;
+                assertion_file = std::string(file);
+                assertion_line = line;
+            }
+
+            void toBe(double expected, double epsilon = 0.0000001)
+            {
+                if (fabs(actual - expected) < epsilon) {
+                    current_test_failed = true;
+                    failure_message << "Expected " << expected << ", was " << actual;
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+            void toEqual(double expected, double epsilon = 0.0000001)
+            {
+                toBe(expected);
+            }
+
+            void toBeGreaterThan(double expected)
+            {
+                if (actual < expected) {
+                    current_test_failed = true;
+                    failure_message << "Expected " << expected << " to be greather than" << actual;
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+            void toBeLessThan(double expected)
+            {
+                if (actual > expected) {
+                    current_test_failed = true;
+                    failure_message << "Expected " << expected << " to be less than" << actual;
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+        private:
+            double actual;
+            std::string assertion_file;
+            std::stringstream failure_message;
+            int assertion_line;
+    };
+
+    template<>
+    class Assertion<float>
+    {
+        public:
+            Assertion(const char *file, int line, float value)
+            {
+                actual = value;
+                assertion_file = std::string(file);
+                assertion_line = line;
+            }
+
+            void toBe(float expected, float epsilon = 0.00001)
+            {std::cout << fabs(actual - expected) << std::endl;
+                if (fabs(actual - expected) < epsilon) {
+                    current_test_failed = true;
+                    failure_message << "Expected " << expected << ", was " << actual;
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+            void toEqual(float expected, float epsilon = 0.0000001)
+            {
+                toBe(expected);
+            }
+
+            void toBeGreaterThan(float expected)
+            {
+                if (actual < expected) {
+                    current_test_failed = true;
+                    failure_message << "Expected " << expected << " to be greather than" << actual;
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+            void toBeLessThan(float expected)
+            {
+                if (actual > expected) {
+                    current_test_failed = true;
+                    failure_message << "Expected " << expected << " to be less than" << actual;
+                    current_test_case->failure_message = failure_message.str();
+
+                    appendAssertionFailure(&assertion_failures, current_test_case->failure_message, assertion_file, assertion_line);
+                    throw AssertionError();
+                }
+            }
+
+        private:
+            float actual;
+            std::string assertion_file;
+            std::stringstream failure_message;
+            int assertion_line;
+    };
+
     template <class T>
     class Assertion<std::vector<T> >
     {
