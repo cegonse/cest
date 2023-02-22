@@ -803,11 +803,9 @@ namespace cest
         test_case->test_failed = true;
     }
 
-    void handleTestException(TestCase *test_case, const std::exception& error)
+    void handleTestException(TestCase *test_case)
     {
-        std::string exception_message("Unhandled exception in test case: ");
-
-        exception_message += error.what();
+        std::string exception_message("Unhandled exception in test case");
 
         appendAssertionFailure(&assertion_failures, exception_message, test_case->file, test_case->line);
         handleFailedTest(test_case);
@@ -968,8 +966,8 @@ int main(int argc, const char *argv[])
 
             printTestResult(test_case);
             continue;
-        } catch (const std::exception& error) {
-            handleTestException(test_case, error);
+        } catch (...) {
+            handleTestException(test_case);
         }
 
         if (after_each) {
