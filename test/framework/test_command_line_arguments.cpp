@@ -9,27 +9,8 @@ describe("Cest command line options", []() {
 
         options = cest::parseArgs(argc, argv);
 
-        expect(options.quiet).toBe(false);
-    });
-
-    it("will supress output if --quiet is present", []() {
-        int argc = 2;
-        const char *argv[] = { "/bin/cest", "--quiet" };
-        cest::CommandLineOptions options;
-
-        options = cest::parseArgs(argc, argv);
-
-        expect(options.quiet).toBe(true);
-    });
-
-    it("will supress output if -q is present", []() {
-        int argc = 2;
-        const char *argv[] = { "/bin/cest", "-q" };
-        cest::CommandLineOptions options;
-
-        options = cest::parseArgs(argc, argv);
-
-        expect(options.quiet).toBe(true);
+        expect(options.randomize).toBe(false);
+        expect(options.help).toBe(false);
     });
 
     it("will show help if --help is present", []() {

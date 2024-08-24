@@ -14,36 +14,38 @@
 #include <chrono>
 #include <random>
 
-#define ASCII_BACKGROUND_GREEN   "\u001b[42m"
-#define ASCII_BACKGROUND_YELLOW  "\u001b[43m"
-#define ASCII_BACKGROUND_RED     "\u001b[41m"
+#include "arg-parser.hpp"
+
+#define ASCII_BACKGROUND_GREEN "\u001b[42m"
+#define ASCII_BACKGROUND_YELLOW "\u001b[43m"
+#define ASCII_BACKGROUND_RED "\u001b[41m"
 #define ASCII_BACKGROUND_MAGENTA "\u001b[45;1m"
-#define ASCII_RED                "\033[1m\033[31m"
-#define ASCII_GREEN              "\033[1m\033[32m"
-#define ASCII_GRAY               "\u001b[38;5;243m"
-#define ASCII_BLACK              "\u001b[38;5;232m"
-#define ASCII_BOLD               "\u001b[1m"
-#define ASCII_RESET              "\033[0m"
-#define TEST_NAME_LENGTH         4096
-#define CLIP_STRING_LENGTH       16
+#define ASCII_RED "\033[1m\033[31m"
+#define ASCII_GREEN "\033[1m\033[32m"
+#define ASCII_GRAY "\u001b[38;5;243m"
+#define ASCII_BLACK "\u001b[38;5;232m"
+#define ASCII_BOLD "\u001b[1m"
+#define ASCII_RESET "\033[0m"
+#define TEST_NAME_LENGTH 4096
+#define CLIP_STRING_LENGTH 16
 
-#define describe(...)           std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
-#define it(...)                 cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
-#define xit(...)                cest::xitFunction(__FILE__, __LINE__, __VA_ARGS__)
-#define fit(...)                cest::fitFunction(__FILE__, __LINE__, __VA_ARGS__)
-#define expect(...)             cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
-#define beforeEach(x)           cest::beforeEachFunction(x)
-#define afterEach(x)            cest::afterEachFunction(x)
-#define beforeAll(x)            cest::beforeAllFunction(x)
-#define afterAll(x)             cest::afterAllFunction(x)
-#define passTest()              cest::forcedPass()
-#define failTest()              cest::forcedFailure(__FILE__, __LINE__)
-#define Regex(x)                x, std::regex(x)
-
+#define describe(...) std::string test_suite_name = cest::describeFunction(__VA_ARGS__)
+#define it(...) cest::itFunction(__FILE__, __LINE__, __VA_ARGS__)
+#define xit(...) cest::xitFunction(__FILE__, __LINE__, __VA_ARGS__)
+#define fit(...) cest::fitFunction(__FILE__, __LINE__, __VA_ARGS__)
+#define expect(...) cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
+#define beforeEach(x) cest::beforeEachFunction(x)
+#define afterEach(x) cest::afterEachFunction(x)
+#define beforeAll(x) cest::beforeAllFunction(x)
+#define afterAll(x) cest::afterAllFunction(x)
+#define passTest() cest::forcedPass()
+#define failTest() cest::forcedFailure(__FILE__, __LINE__)
+#define Regex(x) x, std::regex(x)
 
 namespace cest
 {
-    struct TestCase {
+    struct TestCase
+    {
         std::string name;
         std::string file;
         int line;
@@ -59,18 +61,10 @@ namespace cest
         }
     };
 
-    struct TestSuite {
+    struct TestSuite
+    {
         std::vector<cest::TestCase *> test_cases;
         std::string test_suite_name;
-    };
-
-    struct CommandLineOptions {
-        bool quiet;
-        bool help;
-        bool randomize;
-        unsigned int random_seed;
-        bool random_seed_present;
-        bool generate_test_report;
     };
 }
 
@@ -87,11 +81,14 @@ cest::CommandLineOptions command_line_options;
 jmp_buf jump_env;
 unsigned int random_seed;
 
-
 namespace cest
 {
-    class AssertionError : public std::exception {};
-    class ForcedPassError : public std::exception {};
+    class AssertionError : public std::exception
+    {
+    };
+    class ForcedPassError : public std::exception
+    {
+    };
 
     std::string describeFunction(std::string test_name, std::function<void()> test)
     {
@@ -102,7 +99,7 @@ namespace cest
     void itFunction(std::string file, int line, std::string name, std::function<void()> test)
     {
         TestCase *test_case = new TestCase();
-        
+
         test_case->name = name;
         test_case->file = file;
         test_case->test = test;
@@ -116,7 +113,7 @@ namespace cest
     void xitFunction(std::string file, int line, std::string name, std::function<void()> test)
     {
         TestCase *test_case = new TestCase();
-        
+
         test_case->name = name;
         test_case->file = file;
         test_case->test = test;
@@ -130,7 +127,7 @@ namespace cest
     void fitFunction(std::string file, int line, std::string name, std::function<void()> test)
     {
         TestCase *test_case = new TestCase();
-        
+
         test_case->name = name;
         test_case->file = file;
         test_case->test = test;
@@ -147,23 +144,27 @@ namespace cest
     }
 
     template <class T>
-    class Parameter {
-        public:
-            Parameter() {}
+    class Parameter
+    {
+    public:
+        Parameter() {}
 
-            Parameter<T> withValue(T v) {
-                values.push_back(v);
-                return *this;
+        Parameter<T> withValue(T v)
+        {
+            values.push_back(v);
+            return *this;
+        }
+
+        void thenDo(std::function<void(T)> call)
+        {
+            for (T v : values)
+            {
+                call(v);
             }
+        }
 
-            void thenDo(std::function<void(T)> call) {
-                for (T v : values) {
-                    call(v);
-                }
-            }
-
-        private:
-            std::vector<T> values;
+    private:
+        std::vector<T> values;
     };
 
     template <class T>
@@ -647,27 +648,14 @@ namespace cest
         return Assertion<std::string>(file, line, (std::string)actual);
     }
 
-    void emitStringField(std::stringstream *stream, std::string key, std::string value, bool add_comma)
-    {
-        (*stream) << "\"" << key << "\":" << "\"" << value << "\"" << (add_comma? "," : "");
-    }
-
-    void emitIntegerField(std::stringstream *stream, std::string key, int value, bool add_comma)
-    {
-        (*stream) << "\"" << key << "\":" << value << (add_comma? "," : "");
-    }
-
-    void emitBooleanField(std::stringstream *stream, std::string key, bool value, bool add_comma)
-    {
-        (*stream) << "\"" << key << "\":" << (value ? "true" : "false") << (add_comma? "," : "");
-    }
-
     int countFailedTests(std::vector<TestCase *> test_cases)
     {
         int failed_tests = 0;
 
-        for (TestCase *test : test_cases) {
-            if (test->test_failed) {
+        for (TestCase *test : test_cases)
+        {
+            if (test->test_failed)
+            {
                 failed_tests++;
             }
         }
@@ -679,8 +667,10 @@ namespace cest
     {
         int skipped_tests = 0;
 
-        for (TestCase *test : test_cases) {
-            if (test->skip) {
+        for (TestCase *test : test_cases)
+        {
+            if (test->skip)
+            {
                 skipped_tests++;
             }
         }
@@ -688,113 +678,31 @@ namespace cest
         return skipped_tests;
     }
 
-    std::string replace_all(std::string text, std::string from, std::string to)
-    {
-    size_t start=0;
-
-        while ((start = text.find(from, start)) != std::string::npos) {
-            text.replace(start, from.length(), to);
-            start += to.length();
-        }
-
-        return text;
-    }
-
-    std::string sanitize(std::string text)
-    {
-        std::string from("\"");
-        std::string to("\\\"");
-
-        text = replace_all(text, "\\", "\\\\");
-        text = replace_all(text, "\"", "\\\"");
-        text = replace_all(text, "\n", "\\n");
-
-        return text;
-    }
-
-    std::string generateSuiteReport(TestSuite test_suite)
-    {
-        std::stringstream suite_report;
-
-        suite_report << "{";
-
-        emitStringField(&suite_report, "name", test_suite.test_suite_name, true);
-        emitIntegerField(&suite_report, "tests", test_suite.test_cases.size(), true);
-        emitIntegerField(&suite_report, "failures", countFailedTests(test_suite.test_cases), true);
-        emitIntegerField(&suite_report, "errors", 0, true);
-        emitIntegerField(&suite_report, "skipped", countSkippedTests(test_suite.test_cases), true);
-        emitStringField(&suite_report, "time", "", true);
-        emitStringField(&suite_report, "timestamp", "", true);
-        emitStringField(&suite_report, "hostname", "", true);
-
-        suite_report << "\"test_cases\":[";
-
-        for (size_t i=0; i<test_suite.test_cases.size(); ++i) {
-            suite_report << "{";
-            emitStringField(&suite_report, "name", test_suite.test_cases[i]->name, true);
-            emitStringField(&suite_report, "time", "", test_suite.test_cases[i]->test_failed || test_suite.test_cases[i]->skip);
-
-            if (test_suite.test_cases[i]->test_failed) {
-                emitStringField(&suite_report, "failure_message", sanitize(test_suite.test_cases[i]->failure_message), false);
-            }
-
-            if (test_suite.test_cases[i]->skip) {
-                emitBooleanField(&suite_report, "skipped", test_suite.test_cases[i]->skip, false);
-            }
-
-            suite_report << "}" << (i==test_suite.test_cases.size()-1? "" : ",");
-        }
-
-        suite_report << "]}";
-
-        return suite_report.str();
-    }
-
     void printTestResult(TestCase *test_case)
     {
-        if (command_line_options.quiet) {
-            if (test_case->test_failed) {
-                std::cout << ASCII_RED << "F" << ASCII_RESET;
-            } else {
-                std::cout << ".";
-            }
-
-            return;
+        if (test_case->test_failed)
+        {
+            std::cout << ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET;
         }
-
-        if (test_case->test_failed) {
-            std::cout <<  ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET;
-        } else if (test_case->skip) {
+        else if (test_case->skip)
+        {
             std::cout << ASCII_BACKGROUND_YELLOW << ASCII_BLACK << ASCII_BOLD << " SKIP " << ASCII_RESET;
-        } else {
+        }
+        else
+        {
             std::cout << ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET;
         }
 
-        std::cout <<
-            ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET <<
-            ASCII_BOLD << " it " << test_case->name << ASCII_RESET <<
-            std::endl;
+        std::cout << ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET << ASCII_BOLD << " it " << test_case->name << ASCII_RESET << std::endl;
 
         std::cout << assertion_failures.str();
         assertion_failures.str(std::string());
     }
 
-    void writeTestSummaryToFile(TestSuite test_suite)
-    {
-        std::ofstream summary_file;
-        std::stringstream file_name;
-
-        file_name << test_suite_name << "_summary.jsonl";
-        summary_file.open(file_name.str(), std::ios_base::trunc);
-        summary_file << generateSuiteReport(test_suite) << std::endl;
-        summary_file.close();
-    }
-
     bool anyTestFailed()
     {
-        return std::any_of(test_cases.begin(), test_cases.end(), [](cest::TestCase *test_case) {
-            return test_case->test_failed;
-        });
+        return std::any_of(test_cases.begin(), test_cases.end(), [](cest::TestCase *test_case)
+                           { return test_case->test_failed; });
     }
 
     void handleFailedTest(TestCase *test_case)
@@ -811,47 +719,11 @@ namespace cest
         handleFailedTest(test_case);
     }
 
-    cest::CommandLineOptions parseArgs(int argc, const char *argv[])
-    {
-        cest::CommandLineOptions options = {0};
-
-        if (argc > 1) {
-            for (int i=0; i<argc; ++i) {
-                if (strcmp(argv[i], "--quiet") == 0 || strcmp(argv[i], "-q") == 0) {
-                    options.quiet = true;
-                }
-
-                if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
-                    options.help = true;
-                }
-
-                if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--randomize") == 0) {
-                    options.randomize = true;
-                }
-
-                if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--report") == 0) {
-                    options.generate_test_report = true;
-                }
-
-                if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--seed") == 0) {
-                    if (i + 1 < argc) {
-                        try {
-                            options.random_seed = std::stoi(argv[i+1]);
-                            options.random_seed_present = true;
-                        } catch (const std::invalid_argument& err) {}
-                    }
-                }
-            }
-        }
-
-        return options;
-    }
-
     void showHelp(std::string binary)
     {
-        std::cout << "usage: " << binary << " [options]" << std::endl << std::endl;
+        std::cout << "usage: " << binary << " [options]" << std::endl
+                  << std::endl;
         std::cout << "Command line options:" << std::endl;
-        std::cout << "    -q/--quiet: Supress output (use only . and " << ASCII_RED << "F" << ASCII_RESET << " as output)" << std::endl;
         std::cout << "    -r/--randomize: Randomize test executions" << std::endl;
         std::cout << "    -s/--seed <seed>: Inject seed for randomization uses (unsigned integer)";
         std::cout << std::endl;
@@ -873,33 +745,37 @@ namespace cest
     {
         TestCase *fitted_test = NULL;
 
-        for (TestCase *test : test_suite->test_cases) {
-            if (test->fit) {
+        for (TestCase *test : test_suite->test_cases)
+        {
+            if (test->fit)
+            {
                 fitted_test = test;
                 break;
             }
         }
 
-        if (!fitted_test) {
+        if (!fitted_test)
+        {
             return;
         }
 
-        for (TestCase *test : test_suite->test_cases) {
-            if (test != fitted_test) {
+        for (TestCase *test : test_suite->test_cases)
+        {
+            if (test != fitted_test)
+            {
                 test->skip = true;
             }
-        } 
+        }
     }
 
     void configureRandomizedTests(TestSuite *test_suite, unsigned int seed)
     {
         std::cout << ASCII_BACKGROUND_MAGENTA << ASCII_BLACK << ASCII_BOLD << " SEED "
-            << ASCII_RESET << " Randomizing test execution order with seed " << seed << std::endl;
+                  << ASCII_RESET << " Randomizing test execution order with seed " << seed << std::endl;
 
         std::shuffle(test_suite->test_cases.begin(), test_suite->test_cases.end(), std::default_random_engine(seed));
     }
 }
-
 
 int main(int argc, const char *argv[])
 {
@@ -910,7 +786,8 @@ int main(int argc, const char *argv[])
 
     command_line_options = parseArgs(argc, argv);
 
-    if (command_line_options.help) {
+    if (command_line_options.help)
+    {
         showHelp(argv[0]);
         return 0;
     }
@@ -925,52 +802,69 @@ int main(int argc, const char *argv[])
 
     test_suite.test_suite_name = test_suite_name;
     test_suite.test_cases = test_cases;
-    
+
     configureFittedTests(&test_suite);
 
-    if (command_line_options.random_seed_present) {
+    if (command_line_options.random_seed_present)
+    {
         random_seed = command_line_options.random_seed;
-    } else {
+    }
+    else
+    {
         random_seed = std::chrono::system_clock::now().time_since_epoch().count();
     }
 
-    if (command_line_options.randomize) {
+    if (command_line_options.randomize)
+    {
         configureRandomizedTests(&test_suite, random_seed);
     }
 
-    if (before_all) {
+    if (before_all)
+    {
         before_all();
     }
 
-    for (TestCase *test_case : test_suite.test_cases) {
+    for (TestCase *test_case : test_suite.test_cases)
+    {
         current_test_failed = false;
         current_test_case = test_case;
 
-        if (before_each) {
+        if (before_each)
+        {
             before_each();
         }
 
-        try {
-            if (test_case->skip) {
+        try
+        {
+            if (test_case->skip)
+            {
                 throw ForcedPassError();
             }
 
             test_case->test();
             setjmp(jump_env);
-        } catch (const AssertionError& error) {
+        }
+        catch (const AssertionError &error)
+        {
             handleFailedTest(test_case);
-        } catch (const ForcedPassError& error) {
-            if (after_each) {
+        }
+        catch (const ForcedPassError &error)
+        {
+            if (after_each)
+            {
                 after_each();
             }
 
             printTestResult(test_case);
             continue;
-        } catch (...) {
+        }
+        catch (...)
+        {
             handleTestException(test_case);
         }
 
-        if (after_each) {
+        if (after_each)
+        {
             after_each();
         }
 
@@ -979,22 +873,16 @@ int main(int argc, const char *argv[])
         printTestResult(test_case);
     }
 
-    if (after_all) {
+    if (after_all)
+    {
         after_all();
     }
 
     return_code = anyTestFailed();
 
-    if (command_line_options.generate_test_report) {
-        writeTestSummaryToFile(test_suite);
-    }
-
-    for (TestCase *test_case : test_cases) {
+    for (TestCase *test_case : test_cases)
+    {
         delete test_case;
-    }
-
-    if (command_line_options.quiet) {
-        std::cout << std::endl;
     }
 
     return return_code;

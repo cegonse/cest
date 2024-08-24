@@ -14,6 +14,8 @@ backend.log
 **/*.dSYM/
 *_result_generation
 
+build/
+
 # Test results
 log.xml
 test_summary.jsonl
