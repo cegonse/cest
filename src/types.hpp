@@ -27,4 +27,11 @@ namespace cest
     std::vector<cest::TestCase *> test_cases;
     std::string test_suite_name;
   };
+
+  class AssertionError : public std::exception
+  {
+  };
+  class ForcedPassError : public std::exception
+  {
+  };
 }

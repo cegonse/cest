@@ -50,13 +50,6 @@ unsigned int random_seed;
 
 namespace cest
 {
-    class AssertionError : public std::exception
-    {
-    };
-    class ForcedPassError : public std::exception
-    {
-    };
-
     std::string describeFunction(std::string test_name, std::function<void()> test)
     {
         test();
