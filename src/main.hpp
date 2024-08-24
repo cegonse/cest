@@ -124,9 +124,7 @@ namespace cest
         void thenDo(std::function<void(T)> call)
         {
             for (T v : values)
-            {
                 call(v);
-            }
         }
 
     private:
@@ -621,9 +619,7 @@ namespace cest
         for (TestCase *test : test_cases)
         {
             if (test->test_failed)
-            {
                 failed_tests++;
-            }
         }
 
         return failed_tests;
@@ -636,9 +632,7 @@ namespace cest
         for (TestCase *test : test_cases)
         {
             if (test->skip)
-            {
                 skipped_tests++;
-            }
         }
 
         return skipped_tests;
@@ -690,16 +684,12 @@ namespace cest
         }
 
         if (!fitted_test)
-        {
             return;
-        }
 
         for (TestCase *test : test_suite->test_cases)
         {
             if (test != fitted_test)
-            {
                 test->skip = true;
-            }
         }
     }
 
@@ -714,16 +704,14 @@ namespace cest
 
 int main(int argc, const char *argv[])
 {
-    using namespace cest;
-
     int return_code = 0;
-    TestSuite test_suite;
+    cest::TestSuite test_suite;
 
-    command_line_options = parseArgs(argc, argv);
+    command_line_options = cest::parseArgs(argc, argv);
 
     if (command_line_options.help)
     {
-        showHelp(argv[0]);
+        cest::showHelp(argv[0]);
         return 0;
     }
 
@@ -738,7 +726,7 @@ int main(int argc, const char *argv[])
     test_suite.test_suite_name = test_suite_name;
     test_suite.test_cases = test_cases;
 
-    configureFittedTests(&test_suite);
+    cest::configureFittedTests(&test_suite);
 
     if (command_line_options.random_seed_present)
         random_seed = command_line_options.random_seed;
@@ -746,12 +734,12 @@ int main(int argc, const char *argv[])
         random_seed = std::chrono::system_clock::now().time_since_epoch().count();
 
     if (command_line_options.randomize)
-        configureRandomizedTests(&test_suite, random_seed);
+        cest::configureRandomizedTests(&test_suite, random_seed);
 
     if (before_all)
         before_all();
 
-    for (TestCase *test_case : test_suite.test_cases)
+    for (cest::TestCase *test_case : test_suite.test_cases)
     {
         current_test_failed = false;
         current_test_case = test_case;
@@ -762,16 +750,16 @@ int main(int argc, const char *argv[])
         try
         {
             if (test_case->skip)
-                throw ForcedPassError();
+                throw cest::ForcedPassError();
 
             test_case->test();
             setjmp(jump_env);
         }
-        catch (const AssertionError &error)
+        catch (const cest::AssertionError &error)
         {
             handleFailedTest(test_case);
         }
-        catch (const ForcedPassError &error)
+        catch (const cest::ForcedPassError &error)
         {
             if (after_each)
                 after_each();
@@ -795,9 +783,9 @@ int main(int argc, const char *argv[])
     if (after_all)
         after_all();
 
-    return_code = anyTestFailed();
+    return_code = cest::anyTestFailed();
 
-    for (TestCase *test_case : test_cases)
+    for (cest::TestCase *test_case : test_cases)
         delete test_case;
 
     return return_code;
