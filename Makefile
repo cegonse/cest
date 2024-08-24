@@ -4,22 +4,22 @@ UNAME_S := $(shell uname -s)
 # Linux build flags
 ifeq ($(UNAME_S),Linux)
 	CC = g++
-	CXXFLAGS = -O0 -g -Ivendor -Ispec/framework -Wall
+	CXXFLAGS = -O0 -g -Ivendor -Itest/framework -Wall
 	LDFLAGS =
-	CLEANFLAGS = find spec -type f -executable -delete
-	RUNFLAGS = find spec -type f -executable -print0 | xargs -0 -I % sh -c %
+	CLEANFLAGS = find test -type f -executable -delete
+	RUNFLAGS = find test -type f -executable -print0 | xargs -0 -I % sh -c %
 endif
 # macOS build flags
 ifeq ($(UNAME_S),Darwin)
 	CC = clang++
-	CXXFLAGS = -O0 -g -Ivendor -Ispec/framework -Wall --std=c++14
+	CXXFLAGS = -O0 -g -Ivendor -Itest/framework -Wall --std=c++14
 	LDFLAGS =
-	CLEANFLAGS = find spec -type f -perm +111 -delete
-	RUNFLAGS = find spec -type f -perm +111 -print0 | xargs -0 -I % sh -c %
+	CLEANFLAGS = find test -type f -perm +111 -delete
+	RUNFLAGS = find test -type f -perm +111 -print0 | xargs -0 -I % sh -c %
 endif
 
 
-TEST_SRCS := $(shell find spec -name '*.cpp')
+TEST_SRCS := $(shell find test -name '*.cpp')
 TESTS := $(basename $(TEST_SRCS))
 
 
