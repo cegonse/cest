@@ -57,12 +57,27 @@ Cest runner will execute all tests inside the suite and return **0 on success** 
 
 To see an integration example, check the [cpm package manager](https://github.com/jorsanpe/cpm).
 
-Contributing
-------------
-
-Feel free to create any issues or pull requests with new functionality you deem useful! I will review issues created by others first.
-
 License
 -------
 
 Cest is MIT licensed.
+
+Contributing and roadmap
+------------------------
+
+Feel free to create any issues or pull requests with new functionality you deem useful! I will review issues created by others first.
+
+Documentation is hosted in GitHub Pages in a different repository, found here: https://github.com/cegonse/cest-docs. Please create any issues related to the documentation in the main repository (cegonse/cest) instead of the docs one.
+
+**Roadmap**
+
+- [x] Basic test support (it, xit, fit)
+- [x] macOS and Linux support
+- [x] Test parametrization support
+- [x] Basic expect matchers
+- [ ] Test cases run in an subprocess to avoid crashing the whole suite
+- [ ] `cest-runner` for watch mode functionality of multiple suites
+- [ ] Integrated optional malloc / free overrides
+- [ ] Complex expect matchers (comprehensive STD collection support)
+- [ ] Simple integration of custom expect matchers
+- [ ] Windows support
