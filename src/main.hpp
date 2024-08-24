@@ -17,6 +17,7 @@
 #include "types.hpp"
 #include "output.hpp"
 #include "arg-parser.hpp"
+#include "parametrized.hpp"
 
 #define TEST_NAME_LENGTH 4096
 #define CLIP_STRING_LENGTH 16
@@ -107,34 +108,6 @@ namespace cest
     void forcedPass()
     {
         throw ForcedPassError();
-    }
-
-    template <class T>
-    class Parameter
-    {
-    public:
-        Parameter() {}
-
-        Parameter<T> withValue(T v)
-        {
-            values.push_back(v);
-            return *this;
-        }
-
-        void thenDo(std::function<void(T)> call)
-        {
-            for (T v : values)
-                call(v);
-        }
-
-    private:
-        std::vector<T> values;
-    };
-
-    template <class T>
-    Parameter<T> withParameter()
-    {
-        return Parameter<T>();
     }
 
     void appendAssertionFailure(std::stringstream *stream, std::string message, std::string file, int line)
