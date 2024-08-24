@@ -13,6 +13,7 @@ backend.log
 # macOS products
 **/*.dSYM/
 *_result_generation
+.DS_store
 
 build/
 

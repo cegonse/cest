@@ -14,18 +14,10 @@
 #include <chrono>
 #include <random>
 
+#include "types.hpp"
+#include "output.hpp"
 #include "arg-parser.hpp"
 
-#define ASCII_BACKGROUND_GREEN "\u001b[42m"
-#define ASCII_BACKGROUND_YELLOW "\u001b[43m"
-#define ASCII_BACKGROUND_RED "\u001b[41m"
-#define ASCII_BACKGROUND_MAGENTA "\u001b[45;1m"
-#define ASCII_RED "\033[1m\033[31m"
-#define ASCII_GREEN "\033[1m\033[32m"
-#define ASCII_GRAY "\u001b[38;5;243m"
-#define ASCII_BLACK "\u001b[38;5;232m"
-#define ASCII_BOLD "\u001b[1m"
-#define ASCII_RESET "\033[0m"
 #define TEST_NAME_LENGTH 4096
 #define CLIP_STRING_LENGTH 16
 
@@ -41,32 +33,6 @@
 #define passTest() cest::forcedPass()
 #define failTest() cest::forcedFailure(__FILE__, __LINE__)
 #define Regex(x) x, std::regex(x)
-
-namespace cest
-{
-    struct TestCase
-    {
-        std::string name;
-        std::string file;
-        int line;
-        std::function<void()> test;
-        bool test_failed;
-        bool forced_pass;
-        bool skip;
-        bool fit;
-        std::string failure_message;
-
-        TestCase() : test_failed(false), forced_pass(false), skip(false)
-        {
-        }
-    };
-
-    struct TestSuite
-    {
-        std::vector<cest::TestCase *> test_cases;
-        std::string test_suite_name;
-    };
-}
 
 std::vector<cest::TestCase *> test_cases;
 extern std::string test_suite_name;
@@ -678,27 +644,6 @@ namespace cest
         return skipped_tests;
     }
 
-    void printTestResult(TestCase *test_case)
-    {
-        if (test_case->test_failed)
-        {
-            std::cout << ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET;
-        }
-        else if (test_case->skip)
-        {
-            std::cout << ASCII_BACKGROUND_YELLOW << ASCII_BLACK << ASCII_BOLD << " SKIP " << ASCII_RESET;
-        }
-        else
-        {
-            std::cout << ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET;
-        }
-
-        std::cout << ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET << ASCII_BOLD << " it " << test_case->name << ASCII_RESET << std::endl;
-
-        std::cout << assertion_failures.str();
-        assertion_failures.str(std::string());
-    }
-
     bool anyTestFailed()
     {
         return std::any_of(test_cases.begin(), test_cases.end(), [](cest::TestCase *test_case)
@@ -717,16 +662,6 @@ namespace cest
 
         appendAssertionFailure(&assertion_failures, exception_message, test_case->file, test_case->line);
         handleFailedTest(test_case);
-    }
-
-    void showHelp(std::string binary)
-    {
-        std::cout << "usage: " << binary << " [options]" << std::endl
-                  << std::endl;
-        std::cout << "Command line options:" << std::endl;
-        std::cout << "    -r/--randomize: Randomize test executions" << std::endl;
-        std::cout << "    -s/--seed <seed>: Inject seed for randomization uses (unsigned integer)";
-        std::cout << std::endl;
     }
 
     void onSignalRaised(int sig)
@@ -806,23 +741,15 @@ int main(int argc, const char *argv[])
     configureFittedTests(&test_suite);
 
     if (command_line_options.random_seed_present)
-    {
         random_seed = command_line_options.random_seed;
-    }
     else
-    {
         random_seed = std::chrono::system_clock::now().time_since_epoch().count();
-    }
 
     if (command_line_options.randomize)
-    {
         configureRandomizedTests(&test_suite, random_seed);
-    }
 
     if (before_all)
-    {
         before_all();
-    }
 
     for (TestCase *test_case : test_suite.test_cases)
     {
@@ -830,16 +757,12 @@ int main(int argc, const char *argv[])
         current_test_case = test_case;
 
         if (before_each)
-        {
             before_each();
-        }
 
         try
         {
             if (test_case->skip)
-            {
                 throw ForcedPassError();
-            }
 
             test_case->test();
             setjmp(jump_env);
@@ -851,11 +774,9 @@ int main(int argc, const char *argv[])
         catch (const ForcedPassError &error)
         {
             if (after_each)
-            {
                 after_each();
-            }
 
-            printTestResult(test_case);
+            cest::printTestResult(test_case, assertion_failures);
             continue;
         }
         catch (...)
@@ -864,26 +785,20 @@ int main(int argc, const char *argv[])
         }
 
         if (after_each)
-        {
             after_each();
-        }
 
         test_case->test_failed = current_test_failed;
 
-        printTestResult(test_case);
+        cest::printTestResult(test_case, assertion_failures);
     }
 
     if (after_all)
-    {
         after_all();
-    }
 
     return_code = anyTestFailed();
 
     for (TestCase *test_case : test_cases)
-    {
         delete test_case;
-    }
 
     return return_code;
 }
