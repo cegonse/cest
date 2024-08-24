@@ -3,10 +3,12 @@ name: CI
 on: [push]
 
 jobs:
-  cpp_tests:
+  cpp-tests:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@master
-    - name: Run C++ tests
+    - name: Install dependencies
+      run: pip install quom
+    - name: Build and run C++ tests
       run: make all
