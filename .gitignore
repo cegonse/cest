@@ -23,6 +23,7 @@ test_summary.jsonl
 test/examples/test_assertions
 test/examples/test_chatbot
 test/examples/test_description
+test/examples/test_nested_suites
 test/examples/test_greeting
 test/examples/test_money
 test/examples/test_parametrized_tests

@@ -1,6 +1,5 @@
 #include <cest>
 
-
 describe("a Cest test suite", []() {
     beforeAll([]() { });
 

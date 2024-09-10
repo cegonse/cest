@@ -28,7 +28,10 @@ test: all
 all: build $(TESTS) run
 
 build:
-	mkdir -p build && quom src/main.hpp build/cest
+	mkdir -p build
+	quom src/main.hpp build/cest
+	python scripts/remove_duplicated_headers.py build/cest
+	python scripts/remove_duplicated_once_blocks.py build/cest
 
 run:
 	@$(RUNFLAGS)

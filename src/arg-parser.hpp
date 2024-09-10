@@ -1,18 +1,10 @@
 #pragma once
+#include "types.hpp"
 #include <stdexcept>
 #include <string>
 
 namespace cest
 {
-  struct CommandLineOptions
-  {
-    bool help;
-    bool randomize;
-    unsigned int random_seed;
-    bool random_seed_present;
-    bool generate_test_report;
-  };
-
   CommandLineOptions parseArgs(int argc, const char *argv[])
   {
     CommandLineOptions options = {0};

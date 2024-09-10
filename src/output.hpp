@@ -29,23 +29,23 @@ namespace cest
     std::cout << std::endl;
   }
 
-  void printTestResult(TestCase *test_case, const std::stringstream & assertion_failures)
-  {
-    if (test_case->test_failed)
-    {
-      std::cout << ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET;
-    }
-    else if (test_case->skip)
-    {
-      std::cout << ASCII_BACKGROUND_YELLOW << ASCII_BLACK << ASCII_BOLD << " SKIP " << ASCII_RESET;
-    }
-    else
-    {
-      std::cout << ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET;
-    }
+  // void printTestResult(TestCaseDeprecated *test_case, const std::stringstream & assertion_failures)
+  // {
+  //   if (test_case->test_failed)
+  //   {
+  //     std::cout << ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET;
+  //   }
+  //   else if (test_case->skip)
+  //   {
+  //     std::cout << ASCII_BACKGROUND_YELLOW << ASCII_BLACK << ASCII_BOLD << " SKIP " << ASCII_RESET;
+  //   }
+  //   else
+  //   {
+  //     std::cout << ASCII_BACKGROUND_GREEN << ASCII_BLACK << ASCII_BOLD << " PASS " << ASCII_RESET;
+  //   }
 
-    std::cout << ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET << ASCII_BOLD << " it " << test_case->name << ASCII_RESET << std::endl;
+  //   std::cout << ASCII_GRAY << " " << test_case->file << ":" << test_case->line << ASCII_RESET << ASCII_BOLD << " it " << test_case->name << ASCII_RESET << std::endl;
 
-    std::cout << assertion_failures.str();
-  }
+  //   std::cout << assertion_failures.str();
+  // }
 }
