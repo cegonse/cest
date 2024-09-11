@@ -1,5 +1,4 @@
 #pragma once
-
 #include <functional>
 #include <map>
 #include <string>
@@ -68,8 +67,6 @@ namespace cest
     TestSuite *current_test_suite;
     TestCase *current_test_case;
     jmp_buf jump_env;
-    CommandLineOptions command_line_options;
-    unsigned int random_seed;
 
     CestGlobals() : current_test_suite(nullptr) {}
   };

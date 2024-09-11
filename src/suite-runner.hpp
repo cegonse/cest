@@ -1,6 +1,7 @@
-#include "globals.hpp"
-
+#pragma once
 #include <iostream>
+
+#include "globals.hpp"
 
 namespace cest
 {
