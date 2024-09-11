@@ -49,7 +49,6 @@ namespace cest
       actual = value;
       assertion_file = std::string(file);
       assertion_line = line;
-      std::cout << "assertion file -> " << file << ":" << line << std::endl;
     }
 
     void toBeTruthy()

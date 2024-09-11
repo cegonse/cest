@@ -30,3 +30,4 @@ test/examples/test_parametrized_tests
 test/examples/test_roman_to_arabic_converter
 test/examples/test_floating_point
 test/framework/test_command_line_arguments
+test/framework/test_randomized_tests
