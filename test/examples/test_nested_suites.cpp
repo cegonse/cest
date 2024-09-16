@@ -1,8 +1,8 @@
 #include <cest>
 
-describe("the first test suite", []() {
-  int v = 0;
+int v = 0;
 
+describe("the first test suite", []() {
   beforeEach([&]() {
     v = 10;
   });
