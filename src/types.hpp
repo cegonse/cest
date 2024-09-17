@@ -25,6 +25,10 @@ namespace cest
     std::string name;
     TestCaseCondition condition;
     TestFunction fn;
+    bool failed;
+    std::string failure_message;
+    std::string failure_file;
+    int failure_line;
   };
 
   struct TestSuite

@@ -27,6 +27,7 @@ namespace cest
       test->fn.file = file;
       test->fn.line = line;
       test->fn.fn = fn;
+      test->failed = false;
     }
 
     TestCaseBuilder *skipped()

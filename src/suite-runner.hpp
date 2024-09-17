@@ -6,26 +6,25 @@
 
 namespace cest
 {
+  void handleFailedTest(cest::TestCase *test_case, std::string message, std::string file, int line)
+  {
+    test_case->failed = true;
+    test_case->failure_message = message;
+    test_case->failure_file = file;
+    test_case->failure_line = line;
+  }
+
   void runTestSuite(TestSuite *suite, std::string name)
   {
-    std::cout << "Running test suite -> " << name << std::endl;
-
     if (suite->before_all.fn)
-    {
-      std::cout << "beforeAll() for " << name << std::endl;
       suite->before_all.fn();
-    }
 
     for (cest::TestCase *test_case : suite->test_cases)
     {
-      std::cout << "Running test case -> " << test_case->name << std::endl;
       __cest_globals.current_test_case = test_case;
 
       if (suite->before_each.fn)
-      {
-        std::cout << "beforeEach() for " << name << std::endl;
         suite->before_each.fn();
-      }
 
       try
       {
@@ -37,40 +36,29 @@ namespace cest
       }
       catch (const cest::AssertionError &error)
       {
-        // handleFailedTest(test_case);
-        std::cout << "Failed test -> " << error.file << " , " << error.line << " , " << error.message << std::endl;
+        handleFailedTest(test_case, error.message, error.file, error.line);
       }
       catch (const cest::ForcedPassError &error)
       {
-        if (suite->after_each.fn)
-          suite->after_each.fn();
-
-        // cest::printTestResult(test_case, assertion_failures);
-        continue;
+      }
+      catch (const std::exception &error)
+      {
+        std::string message = "Unhandled exception: ";
+        message += error.what();
+        handleFailedTest(test_case, message, test_case->fn.file, test_case->fn.line);
       }
       catch (...)
       {
-        // handleTestException(test_case);
-        if (suite->after_each.fn)
-          suite->after_each.fn();
-        continue;
+        std::string message = "Unhandled exception, non recoverable exception.";
+        handleFailedTest(test_case, message, test_case->fn.file, test_case->fn.line);
       }
 
       if (suite->after_each.fn)
-      {
-        std::cout << "afterEach() for " << name << std::endl;
         suite->after_each.fn();
-      }
-
-      // test_case->test_failed = current_test_failed;
-      // cest::printTestResult(test_case, assertion_failures);
     }
 
     if (suite->after_all.fn)
-    {
-      std::cout << "beforeAll() for " << name << std::endl;
       suite->after_all.fn();
-    }
 
     for (auto &pair : suite->test_suites)
       runTestSuite(pair.second, pair.first);
