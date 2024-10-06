@@ -31,5 +31,7 @@ int main(int argc, const char *argv[])
   }
 
   cest::runTestSuite(root_suite, root_suite->name);
+  cest::printTestSuiteResult(root_suite);
+
   return 0;
 }
