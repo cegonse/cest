@@ -11,6 +11,7 @@
 #include "expect.hpp"
 #include "randomized-tests.hpp"
 #include "signal-handler.hpp"
+#include "focus-test-suite.hpp"
 
 int main(int argc, const char *argv[])
 {
@@ -30,6 +31,7 @@ int main(int argc, const char *argv[])
     cest::randomizeTests(root_suite, seed, cest::defaultRandomFn);
   }
 
+  cest::configureFocusedTestSuite(root_suite);
   cest::runTestSuite(root_suite, root_suite->name);
   cest::printTestSuiteResult(root_suite);
 
