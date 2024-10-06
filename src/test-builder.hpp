@@ -36,9 +36,9 @@ namespace cest
       return this;
     }
 
-    TestCaseBuilder *fitted()
+    TestCaseBuilder *Focused()
     {
-      test->condition = TestCaseCondition::Fitted;
+      test->condition = TestCaseCondition::Focused;
       return this;
     }
 
@@ -76,7 +76,7 @@ namespace cest
 
   void fitFn(std::string file, int line, std::string name, std::function<void()> fn)
   {
-    TestCase *test = TestCaseBuilder(file, line, name, fn).fitted()->build();
+    TestCase *test = TestCaseBuilder(file, line, name, fn).Focused()->build();
     __cest_globals.current_test_suite->test_cases.push_back(test);
   }
 

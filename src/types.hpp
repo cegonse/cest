@@ -17,7 +17,7 @@ namespace cest
   {
     Normal,
     Skipped,
-    Fitted
+    Focused
   };
 
   struct TestCase

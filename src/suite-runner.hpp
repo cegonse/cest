@@ -14,7 +14,7 @@ namespace cest
     test_case->failure_line = line;
   }
 
-  void runTestSuite(TestSuite *suite, std::string name)
+  void runTestSuite(TestSuite *suite)
   {
     if (suite->before_all.fn)
       suite->before_all.fn();
@@ -64,6 +64,6 @@ namespace cest
       suite->after_all.fn();
 
     for (auto &pair : suite->test_suites)
-      runTestSuite(pair.second, pair.first);
+      runTestSuite(pair.second);
   }
 }

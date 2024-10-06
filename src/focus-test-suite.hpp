@@ -9,7 +9,7 @@ namespace cest
     for (int i = 0; i < (int)test_suite->test_cases.size(); i++)
     {
       cest::TestCase *test_case = test_suite->test_cases[i];
-      if (test_case->condition == cest::TestCaseCondition::Fitted)
+      if (test_case->condition == cest::TestCaseCondition::Focused)
       {
         focused_test_idx = i;
         break;
