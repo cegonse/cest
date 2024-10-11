@@ -63,6 +63,7 @@ namespace cest
     unsigned int random_seed;
     bool random_seed_present;
     bool generate_test_report;
+    bool only_test_suite_result;
   };
 
   struct CestGlobals

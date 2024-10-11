@@ -1,7 +1,8 @@
 #pragma once
 #include "types.hpp"
 #include <stdexcept>
-#include <string>
+#include <iostream>
+#include <cstring>
 
 namespace cest
 {
@@ -28,6 +29,11 @@ namespace cest
           options.generate_test_report = true;
         }
 
+        if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--only-suite-result") == 0)
+        {
+          options.only_test_suite_result = true;
+        }
+
         if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--seed") == 0)
         {
           if (i + 1 < argc)
@@ -39,6 +45,7 @@ namespace cest
             }
             catch (const std::invalid_argument &err)
             {
+              std::cout << "Invalid seed value: " << argv[i + 1] << std::endl;
             }
           }
         }

@@ -33,7 +33,11 @@ int main(int argc, const char *argv[])
 
   cest::configureFocusedTestSuite(root_suite);
   cest::runTestSuite(root_suite);
-  cest::printTestSuiteResult(root_suite);
+
+  if (command_line_options.only_test_suite_result)
+    cest::printSuiteSummaryResult(root_suite);
+  else
+    cest::printTestSuiteResult(root_suite);
 
   return 0;
 }
