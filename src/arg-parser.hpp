@@ -34,6 +34,11 @@ namespace cest
           options.only_test_suite_result = true;
         }
 
+        if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--tree-suite-result") == 0)
+        {
+          options.tree_test_suite_result = true;
+        }
+
         if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--seed") == 0)
         {
           if (i + 1 < argc)

@@ -64,6 +64,7 @@ namespace cest
     bool random_seed_present;
     bool generate_test_report;
     bool only_test_suite_result;
+    bool tree_test_suite_result;
   };
 
   struct CestGlobals

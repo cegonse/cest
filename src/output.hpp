@@ -13,8 +13,12 @@
 #define ASCII_GREEN "\033[1m\033[32m"
 #define ASCII_GRAY "\u001b[38;5;243m"
 #define ASCII_BLACK "\u001b[38;5;232m"
+#define ASCII_YELLOW "\u001b[33m"
 #define ASCII_BOLD "\u001b[1m"
 #define ASCII_RESET "\033[0m"
+#define ASCII_CROSS "\u2715"
+#define ASCII_CHECK "\u2713"
+#define ASCII_TRIANGLE "\u25CB"
 
 namespace cest
 {
@@ -25,6 +29,7 @@ namespace cest
     std::cout << "Command line options:" << std::endl;
     std::cout << "    -r/--randomize: Randomize test executions" << std::endl;
     std::cout << "    -o/--only-suite-result: Only output the test suite result" << std::endl;
+    std::cout << "    -t/--tree-suite-result: Output the test suite result in tree format" << std::endl;
     std::cout << "    -s/--seed <seed>: Inject seed for randomization uses (unsigned integer)";
     std::cout << std::endl;
   }
@@ -65,13 +70,12 @@ namespace cest
       printTestSuiteResult(pair.second);
   }
 
-  void printSuiteSummaryResult(cest::TestSuite *suite)
+  void printSingleSuiteSummaryResult(cest::TestSuite *suite)
   {
     bool any_test_failed = false;
 
-    for (size_t i = 0; i < suite->test_cases.size(); ++i)
+    for (cest::TestCase *test_case : suite->test_cases)
     {
-      cest::TestCase *test_case = suite->test_cases[i];
       if (test_case->failed)
       {
         any_test_failed = true;
@@ -81,6 +85,36 @@ namespace cest
 
     printTestBadge(any_test_failed);
     std::cout << ASCII_BOLD << " " << suite->name << ASCII_RESET << std::endl;
+  }
+
+  void printTreeSuiteResult(cest::TestSuite *suite, int indentation = 0)
+  {
+    std::string spacing = "  ";
+
+    for (int i = 0; i < indentation; ++i)
+      spacing += "  ";
+
+    std::cout << spacing << ASCII_BOLD << suite->name << ASCII_RESET << std::endl;
+
+    for (cest::TestCase *test_case : suite->test_cases)
+    {
+      if (test_case->failed)
+        std::cout << spacing << ASCII_RED << ASCII_CROSS << ASCII_RESET;
+      else if (test_case->condition == cest::TestCaseCondition::Skipped)
+        std::cout << spacing << ASCII_YELLOW << ASCII_TRIANGLE << ASCII_RESET;
+      else
+        std::cout << spacing << ASCII_GREEN << ASCII_CHECK << ASCII_RESET;
+
+      std::cout << " " << ASCII_GRAY << test_case->name << ASCII_RESET << std::endl;
+    }
+
+    for (auto &pair : suite->test_suites)
+      printTreeSuiteResult(pair.second, indentation + 1);
+  }
+
+  void printSuiteSummaryResult(cest::TestSuite *suite)
+  {
+    printSingleSuiteSummaryResult(suite);
 
     for (auto &pair : suite->test_suites)
       printSuiteSummaryResult(pair.second);

@@ -5,7 +5,7 @@ Cest C++ Testing Framework
 
 [https://cestframework.com/](https://cestframework.com/)
 
-A test-driven development framework for C++ inspired by Jest and similar frameworks.
+A test-driven development framework for C++ and C inspired by Jest and similar frameworks.
 
 Getting started
 ---------------
@@ -82,9 +82,10 @@ This will generate the final library build in the `build/` directory.
 - [x] macOS and Linux support
 - [x] Test parametrization support
 - [x] Basic expect matchers
-- [ ] Test cases run in an subprocess to avoid crashing the whole suite
-- [ ] `cest-runner` for watch mode functionality of multiple suites
-- [ ] Integrated optional malloc / free overrides
-- [ ] Complex expect matchers (comprehensive STD collection support)
+- [x] Nested test suite support
 - [ ] Simple integration of custom expect matchers
+- [ ] `cest-runner` for watch mode functionality of multiple suites
+- [ ] Complex expect matchers (comprehensive STD collection support)
+- [ ] Test cases run in an subprocess to avoid crashing the whole suite
+- [ ] Integrated optional malloc / free overrides
 - [ ] Windows support
