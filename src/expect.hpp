@@ -1,6 +1,7 @@
 #pragma once
 #include <sstream>
 #include <regex>
+#include <cmath>
 #include "types.hpp"
 
 #define CLIP_STRING_LENGTH 16
