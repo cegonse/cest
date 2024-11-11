@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <sstream>
 
@@ -22,6 +23,41 @@
 
 namespace cest
 {
+    void tryPrintFailedLines(cest::TestCase *test_case)
+  {
+    if (!test_case->failed) return;
+
+    std::ifstream file(test_case->failure_file);
+    if (!file.is_open()) return;
+
+    std::string line;
+    std::vector<std::string> lines;
+    int start_line = std::max(test_case->failure_line - 3, 0);
+    int end_line = start_line + 6;
+    int current_line = 0;
+
+    while (current_line < start_line && std::getline(file, line)) current_line++;
+
+    for (int i=start_line; i<=end_line && std::getline(file, line); ++i) lines.push_back(line);
+
+    int line_counter = start_line;
+    for (auto l : lines)
+    {
+      if (line_counter == test_case->failure_line)
+      {
+        std::cout << " " << ASCII_RED << ASCII_BOLD <<  "> " << line_counter << ASCII_RESET << ASCII_GRAY << " | " << ASCII_RESET;
+      }
+      else
+      {
+        std::cout << "   " << ASCII_GRAY << line_counter << " | " << ASCII_RESET;
+      }
+      std::cout << l << std::endl;
+      line_counter++;
+    }
+
+    file.close();
+  }
+
   void showHelp(std::string binary)
   {
     std::cout << "usage: " << binary << " [options]" << std::endl
@@ -58,6 +94,7 @@ namespace cest
     if (test_case->failed)
     {
       std::cout << " Failed at line " << test_case->failure_line << ": " << test_case->failure_message << std::endl;
+      tryPrintFailedLines(test_case);
     }
   }
 
@@ -84,7 +121,8 @@ namespace cest
     }
 
     printTestBadge(any_test_failed);
-    std::cout << ASCII_BOLD << " " << suite->name << ASCII_RESET << std::endl;
+
+    std::cout << ASCII_BOLD << " " << suite->test_cases[0]->fn.file << ASCII_RESET << std::endl;
   }
 
   void printTreeSuiteResult(cest::TestSuite *suite, int indentation = 0)
@@ -99,13 +137,19 @@ namespace cest
     for (cest::TestCase *test_case : suite->test_cases)
     {
       if (test_case->failed)
-        std::cout << spacing << ASCII_RED << ASCII_CROSS << ASCII_RESET;
+        std::cout << "  " << spacing << ASCII_RED << ASCII_CROSS << ASCII_RESET;
       else if (test_case->condition == cest::TestCaseCondition::Skipped)
-        std::cout << spacing << ASCII_YELLOW << ASCII_TRIANGLE << ASCII_RESET;
+        std::cout << "  " << spacing << ASCII_YELLOW << ASCII_TRIANGLE << ASCII_RESET;
       else
-        std::cout << spacing << ASCII_GREEN << ASCII_CHECK << ASCII_RESET;
+        std::cout << "  " << spacing << ASCII_GREEN << ASCII_CHECK << ASCII_RESET;
 
       std::cout << " " << ASCII_GRAY << test_case->name << ASCII_RESET << std::endl;
+
+      if (test_case->failed)
+      {
+        std::cout << "   Failed at line " << test_case->failure_line << ": " << test_case->failure_message << std::endl;
+        tryPrintFailedLines(test_case);
+      }
     }
 
     for (auto &pair : suite->test_suites)
