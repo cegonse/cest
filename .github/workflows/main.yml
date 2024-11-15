@@ -12,3 +12,5 @@ jobs:
       run: pip install quom
     - name: Build and run C++ tests
       run: make all
+    - name: Run cest-runner tests
+      run: make runner-tests
