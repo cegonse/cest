@@ -50,7 +50,7 @@ namespace cest
             }
             catch (const std::invalid_argument &err)
             {
-              std::cout << "Invalid seed value: " << argv[i + 1] << std::endl;
+              std::cerr << "Invalid seed value: " << argv[i + 1] << std::endl;
             }
           }
         }

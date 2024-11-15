@@ -19,13 +19,20 @@ ifeq ($(UNAME_S),Darwin)
 endif
 
 
+RUNNER_SRCS := runner/main.cpp runner/directory.cpp runner/process.cpp runner/output.cpp runner/runner.cpp
 TEST_SRCS := $(shell find test -name '*.cpp')
 TESTS := $(basename $(TEST_SRCS))
-
 
 test: all
 
 all: build $(TESTS) run
+
+runner: build
+	g++ $(RUNNER_SRCS) -std=c++17 -g -O0 -o build/cest-runner
+	g++ runner/test/runner.test.cpp runner/runner.cpp runner/test/helpers/helpers.cpp -Ibuild -std=c++17 -g -O0 -o runner/test/test_runner
+
+runner-tests: runner
+	cd runner && ../build/cest-runner
 
 build:
 	mkdir -p build
@@ -41,5 +48,6 @@ clean:
 	@rm -f log.xml
 	@rm -f *.jsonl
 	@rm -rf build
+	@rm -rf runner/test/test_runner
 
-.PHONY: clean run build test
+.PHONY: clean run build test runner runner-tests

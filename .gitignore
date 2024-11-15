@@ -20,6 +20,7 @@ build/
 # Test results
 log.xml
 test_summary.jsonl
+runner/test/test_runner
 test/examples/test_assertions
 test/examples/test_chatbot
 test/examples/test_description
