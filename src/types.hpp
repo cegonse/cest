@@ -76,4 +76,60 @@ namespace cest
 
     CestGlobals() : current_test_suite(nullptr) {}
   };
+
+  bool anyTestInSuiteFailed(cest::TestSuite *suite)
+  {
+    bool any_test_failed = false;
+
+    for (cest::TestCase *test_case : suite->test_cases)
+    {
+      if (test_case->failed)
+      {
+        any_test_failed = true;
+        break;
+      }
+    }
+
+    for (auto &pair : suite->test_suites)
+      any_test_failed |= anyTestInSuiteFailed(pair.second);
+
+    return any_test_failed;
+  }
+
+  int countTestsMatching(cest::TestSuite *suite, std::function<bool(cest::TestCase *)> condition)
+  {
+    int num_tests = 0;
+
+    for (cest::TestCase *test_case : suite->test_cases)
+    {
+      if (condition(test_case))
+        num_tests++;
+    }
+
+    for (auto &pair : suite->test_suites)
+      num_tests += countTestsMatching(pair.second, condition);
+
+    return num_tests;
+  }
+
+  int numPassedTests(cest::TestSuite *suite)
+  {
+    return countTestsMatching(suite, [](cest::TestCase *test_case) {
+      return !test_case->failed && test_case->condition != TestCaseCondition::Skipped;
+    });
+  }
+
+  int numFailedTests(cest::TestSuite *suite)
+  {
+    return countTestsMatching(suite, [](cest::TestCase *test_case) {
+      return test_case->failed;
+    });
+  }
+
+  int numSkippedTests(cest::TestSuite *suite)
+  {
+    return countTestsMatching(suite, [](cest::TestCase *test_case) {
+      return test_case->condition == TestCaseCondition::Skipped;
+    });
+  }
 }

@@ -3,5 +3,5 @@
 
 namespace Output
 {
-  void print(std::stringstream& text);
+  void print(const std::string& text);
 }

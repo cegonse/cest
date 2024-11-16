@@ -1,5 +1,7 @@
 #include "directory.h"
 #include <filesystem>
+#include <fstream>
+#include <sstream>
 #include <algorithm>
 
 constexpr bool hasPerms(std::filesystem::perms target, std::filesystem::perms other)
@@ -59,4 +61,16 @@ std::vector<std::string> Directory::findExecutableFiles(
 std::string Directory::cwd()
 {
   return std::filesystem::current_path();
+}
+
+std::string Directory::readTextFile(const std::string& path)
+{
+  std::stringstream buffer;
+  std::ifstream file(path);
+  if (!file) return "";
+
+  buffer << file.rdbuf();
+  file.close();
+
+  return buffer.str();
 }

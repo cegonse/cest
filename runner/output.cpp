@@ -1,8 +1,7 @@
 #include "output.h"
 #include <iostream>
 
-void Output::print(std::stringstream& text)
+void Output::print(const std::string& text)
 {
-  std::cout << text.str();
-  text.clear();
+  std::cout << text;
 }

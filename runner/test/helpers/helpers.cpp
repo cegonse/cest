@@ -15,7 +15,7 @@ static std::string __mock_run_executable_output;
 static bool __run_executable_has_been_called = false;
 static std::vector<std::string> __run_executable_path;
 
-void Output::print(std::stringstream& text)
+void Output::print(const std::string& text)
 {
 }
 
@@ -38,12 +38,17 @@ std::string Directory::cwd()
 {
   return "/cwd";
 }
+std::string Directory::readTextFile(const std::string& path)
+{
+  return "";
+}
+
 
 void Process::runExecutable_mockOutput(const std::string& output)
 {
   __mock_run_executable_output = output;
 }
-void Process::runExecutable(const std::string& path, std::function<void(std::string)> on_output)
+void Process::runExecutable(const std::string& path, std::function<void(std::string)> on_output, const std::vector<std::string>& args)
 {
   __run_executable_has_been_called = true;
   __run_executable_path.push_back(path);

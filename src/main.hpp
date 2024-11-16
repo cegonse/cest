@@ -12,6 +12,7 @@
 #include "randomized-tests.hpp"
 #include "signal-handler.hpp"
 #include "focus-test-suite.hpp"
+#include "summary-file.hpp"
 
 int main(int argc, const char *argv[])
 {
@@ -40,6 +41,10 @@ int main(int argc, const char *argv[])
     cest::printTreeSuiteResult(root_suite);
   else
     cest::printTestSuiteResult(root_suite);
+
+  std::string binary_path(argv[0]);
+  auto binary_name = binary_path.substr(binary_path.rfind('/') + 1);
+  cest::saveSummaryFile(binary_name, binary_path, root_suite);
 
   return 0;
 }

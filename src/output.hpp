@@ -138,25 +138,6 @@ namespace cest
       printTreeSuiteResult(pair.second, indentation + 1);
   }
 
-  bool anyTestInSuiteFailed(cest::TestSuite *suite)
-  {
-    bool any_test_failed = false;
-
-    for (cest::TestCase *test_case : suite->test_cases)
-    {
-      if (test_case->failed)
-      {
-        any_test_failed = true;
-        break;
-      }
-    }
-
-    for (auto &pair : suite->test_suites)
-      any_test_failed |= anyTestInSuiteFailed(pair.second);
-
-    return any_test_failed;
-  }
-
   void printSuiteSummaryResult(cest::TestSuite *suite)
   {
     bool any_test_failed = anyTestInSuiteFailed(suite);

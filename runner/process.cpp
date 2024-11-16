@@ -20,10 +20,10 @@ static void handleChildProcess(int pipe_fd[2], const std::string& path, std::vec
   close(pipe_fd[1]);
 
   c_args.fill(NULL);
-
+  c_args[0] = (char *)path.c_str();
   for (int i=0; i<args.size(); ++i)
   {
-    c_args[i] = (char *)args[i].c_str();
+    c_args[i+1] = (char *)args[i].c_str();
   }
 
   execv(path.c_str(), c_args.data());
@@ -50,20 +50,18 @@ static void handleParentProcess(int pipe_fd[2], std::function<void(std::string)>
   waitForChildren();
 }
 
-void Process::runExecutable(const std::string& path, std::function<void(std::string)> on_output)
-{
+void Process::runExecutable(
+  const std::string& path,
+  std::function<void(std::string)> on_output,
+  const std::vector<std::string>& args
+) {
   int pipe_fd[2];
   pipe(pipe_fd);
 
   const auto pid = fork();
 
   if (isChildProcess(pid))
-  {
-    std::vector<std::string> args = { "-o" };
     handleChildProcess(pipe_fd, path, args);
-  }
   else
-  {
     handleParentProcess(pipe_fd, on_output);
-  }
 }
