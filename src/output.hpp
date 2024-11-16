@@ -107,24 +107,6 @@ namespace cest
       printTestSuiteResult(pair.second);
   }
 
-  void printSingleSuiteSummaryResult(cest::TestSuite *suite)
-  {
-    bool any_test_failed = false;
-
-    for (cest::TestCase *test_case : suite->test_cases)
-    {
-      if (test_case->failed)
-      {
-        any_test_failed = true;
-        break;
-      }
-    }
-
-    printTestBadge(any_test_failed);
-
-    std::cout << ASCII_BOLD << " " << suite->test_cases[0]->fn.file << ASCII_RESET << std::endl;
-  }
-
   void printTreeSuiteResult(cest::TestSuite *suite, int indentation = 0)
   {
     std::string spacing = "  ";
@@ -156,11 +138,35 @@ namespace cest
       printTreeSuiteResult(pair.second, indentation + 1);
   }
 
-  void printSuiteSummaryResult(cest::TestSuite *suite)
+  bool anyTestInSuiteFailed(cest::TestSuite *suite)
   {
-    printSingleSuiteSummaryResult(suite);
+    bool any_test_failed = false;
+
+    for (cest::TestCase *test_case : suite->test_cases)
+    {
+      if (test_case->failed)
+      {
+        any_test_failed = true;
+        break;
+      }
+    }
 
     for (auto &pair : suite->test_suites)
-      printSuiteSummaryResult(pair.second);
+      any_test_failed |= anyTestInSuiteFailed(pair.second);
+
+    return any_test_failed;
+  }
+
+  void printSuiteSummaryResult(cest::TestSuite *suite)
+  {
+    bool any_test_failed = anyTestInSuiteFailed(suite);
+
+    printTestBadge(any_test_failed);
+
+    const auto file_separator_idx = suite->test_cases[0]->fn.file.rfind('/');
+    const auto directory = suite->test_cases[0]->fn.file.substr(0, file_separator_idx + 1);
+    const auto file = suite->test_cases[0]->fn.file.substr(file_separator_idx + 1);
+
+    std::cout << " " << ASCII_GRAY << directory << ASCII_RESET << ASCII_BOLD << file << ASCII_RESET << std::endl;
   }
 }
