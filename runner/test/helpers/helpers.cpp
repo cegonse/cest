@@ -49,7 +49,7 @@ std::string Directory::cwd()
 }
 std::string Directory::readTextFile(const std::string& path)
 {
-  return "";
+  return "a|a|0|0|0";
 }
 
 

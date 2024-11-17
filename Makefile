@@ -7,7 +7,6 @@ ifeq ($(UNAME_S),Linux)
 	CXXFLAGS = -O0 -g -Ibuild -Itest/framework -Wall
 	LDFLAGS =
 	CLEANFLAGS = find test -type f -executable -delete
-	RUNFLAGS = find test -type f -executable -print0 | xargs -0 -I % bash -c %
 endif
 # macOS build flags
 ifeq ($(UNAME_S),Darwin)
@@ -15,7 +14,6 @@ ifeq ($(UNAME_S),Darwin)
 	CXXFLAGS = -O0 -g -Ibuild -Itest/framework -Wall --std=c++14
 	LDFLAGS =
 	CLEANFLAGS = find test -type f -perm +111 -delete
-	RUNFLAGS = find test -type f -perm +111 -print0 | xargs -0 -I % bash -c %
 endif
 
 
@@ -25,14 +23,11 @@ TESTS := $(basename $(TEST_SRCS))
 
 test: all
 
-all: build $(TESTS) run
+all: build runner $(TESTS) run
 
 runner: build
 	g++ $(RUNNER_SRCS) -std=c++17 -g -O0 -o build/cest-runner
 	g++ runner/test/runner.test.cpp runner/runner.cpp runner/helpers.cpp runner/test/helpers/helpers.cpp -Ibuild -std=c++17 -g -O0 -o runner/test/test_runner
-
-runner-tests: runner
-	cd runner && ../build/cest-runner
 
 build:
 	mkdir -p build
@@ -41,7 +36,7 @@ build:
 	python scripts/remove_duplicated_once_blocks.py build/cest
 
 run:
-	@$(RUNFLAGS)
+	./build/cest-runner
 
 clean:
 	@$(CLEANFLAGS)
