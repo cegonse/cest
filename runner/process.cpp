@@ -29,15 +29,17 @@ static void handleChildProcess(int pipe_fd[2], const std::string& path, std::vec
   execv(path.c_str(), c_args.data());
 }
 
-static void waitForChildren()
+static int waitForChildren()
 {
   pid_t pid;
   int status = 0;
 
   while ((pid = wait(&status)) > 0);
+
+  return status;
 }
 
-static void handleParentProcess(int pipe_fd[2], std::function<void(std::string)> on_output)
+static int handleParentProcess(int pipe_fd[2], std::function<void(std::string)> on_output)
 {
   std::array<char, MAX_BUFFER> buffer;
 
@@ -47,21 +49,28 @@ static void handleParentProcess(int pipe_fd[2], std::function<void(std::string)>
 
   on_output(std::string(buffer.data()));
 
-  waitForChildren();
+  return waitForChildren();
 }
 
-void Process::runExecutable(
+int Process::runExecutable(
   const std::string& path,
   std::function<void(std::string)> on_output,
   const std::vector<std::string>& args
 ) {
+  int status = 0;
   int pipe_fd[2];
   pipe(pipe_fd);
 
   const auto pid = fork();
 
   if (isChildProcess(pid))
+  {
     handleChildProcess(pipe_fd, path, args);
+  }
   else
-    handleParentProcess(pipe_fd, on_output);
+  {
+    status = handleParentProcess(pipe_fd, on_output);
+  }
+
+  return status;
 }

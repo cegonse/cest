@@ -2,5 +2,5 @@
 
 namespace Runner
 {
-  void runTestsInCurrentPath();
+  int runTestsInCurrentPath();
 }
