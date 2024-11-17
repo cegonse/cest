@@ -1,6 +1,7 @@
 #include "process.h"
 #include <unistd.h>
 #include <sys/wait.h>
+#include <chrono>
 
 static constexpr int MAX_ARGS = 32;
 static constexpr int MAX_BUFFER = 4096;
@@ -55,8 +56,10 @@ static int handleParentProcess(int pipe_fd[2], std::function<void(std::string)> 
 int Process::runExecutable(
   const std::string& path,
   std::function<void(std::string)> on_output,
-  const std::vector<std::string>& args
+  const std::vector<std::string>& args,
+  int64_t& elapsed_time
 ) {
+  const auto start = std::chrono::high_resolution_clock::now();
   int status = 0;
   int pipe_fd[2];
   pipe(pipe_fd);
@@ -71,6 +74,9 @@ int Process::runExecutable(
   {
     status = handleParentProcess(pipe_fd, on_output);
   }
+
+  const auto end = std::chrono::high_resolution_clock::now();
+  elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
   return status;
 }

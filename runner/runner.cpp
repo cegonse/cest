@@ -19,15 +19,13 @@ int Runner::runTestsInCurrentPath()
 
   for (const auto& test_file : executables)
   {
-    const auto start = std::chrono::high_resolution_clock::now();
+    int64_t test_time = 0;
     const auto test_status = Process::runExecutable(test_file, [](const auto& output) {
       Output::print(output);
-    }, cest_args);
-    const auto end = std::chrono::high_resolution_clock::now();
+    }, cest_args, test_time);
 
     status_code |= test_status;
-
-    total_time_us += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    total_time_us += test_time;
 
     const auto results_path = "/tmp/cest_" + test_file.substr(test_file.rfind('/') + 1);
     const auto test_result = TestResults(Directory::readTextFile(results_path));

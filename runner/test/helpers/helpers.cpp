@@ -57,8 +57,12 @@ void Process::runExecutable_mockOutput(const std::string& output)
 {
   __mock_run_executable_output = output;
 }
-int Process::runExecutable(const std::string& path, std::function<void(std::string)> on_output, const std::vector<std::string>& args)
-{
+int Process::runExecutable(
+  const std::string& path,
+  std::function<void(std::string)> on_output,
+  const std::vector<std::string>& args,
+  int64_t& elapsed_time
+) {
   __run_executable_has_been_called = true;
   __run_executable_path.push_back(path);
   on_output(__mock_run_executable_output);
