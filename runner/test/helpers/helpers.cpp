@@ -27,6 +27,9 @@ void Output::printSummary(
   float time
 ) {
 }
+void Output::killedBySignal(const std::string& binary, int signal)
+{
+}
 
 void Directory::findExecutableFiles_mockFiles(std::vector<std::string> files)
 {
@@ -73,4 +76,8 @@ bool Process::runExecutable_hasBeenCalledWith(const std::string& path)
 {
   auto it = std::find(__run_executable_path.cbegin(), __run_executable_path.cend(), path);
   return __run_executable_has_been_called && it != __run_executable_path.end();
+}
+bool Process::killedBySignal(int status)
+{
+  return false;
 }

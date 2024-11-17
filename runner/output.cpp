@@ -1,7 +1,9 @@
 #include "output.h"
+#include <cstring>
 #include <iostream>
 #include <sstream>
 
+#define ASCII_BACKGROUND_RED "\u001b[41m"
 #define ASCII_RED "\033[1m\033[31m"
 #define ASCII_GREEN "\033[1m\033[32m"
 #define ASCII_GRAY "\u001b[38;5;243m"
@@ -122,5 +124,25 @@ void Output::printSummary(
     << ASCII_GRAY
     << "Ran all test suites."
     << ASCII_RESET
+    << std::endl;
+}
+
+void Output::killedBySignal(const std::string& binary, int signal)
+{
+  std::cout
+    << ASCII_BACKGROUND_RED
+    << ASCII_BOLD
+    << " FAIL "
+    << ASCII_RESET
+    << " "
+    << binary
+    << " → Killed by signal "
+    << signal
+    << " ("
+    << ASCII_BOLD
+    << ASCII_RED
+    << strsignal(signal)
+    << ASCII_RESET
+    << ")"
     << std::endl;
 }

@@ -80,3 +80,8 @@ int Process::runExecutable(
 
   return status;
 }
+
+bool Process::killedBySignal(int status)
+{
+  return status != 0 && WIFSIGNALED(status);
+}

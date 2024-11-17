@@ -9,4 +9,6 @@ namespace Process
     const std::vector<std::string>& args,
     int64_t& elapsed_time
   );
+
+  bool killedBySignal(int status);
 }

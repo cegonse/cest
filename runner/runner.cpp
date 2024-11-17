@@ -5,16 +5,33 @@
 #include "test-results.hpp"
 #include <chrono>
 
+struct TestCounts
+{
+  int total_passed_tests;
+  int total_failed_tests;
+  int total_skipped_tests;
+  int total_passed_suites;
+  int total_failed_suites;
+
+  TestCounts() : total_passed_tests(0),
+    total_failed_tests(0),
+    total_skipped_tests(0),
+    total_passed_suites(0),
+    total_failed_suites(0) {}
+};
+
+constexpr double toSeconds(int64_t us)
+{
+  return ((double)us) / 1000000.f;
+}
+
 int Runner::runTestsInCurrentPath()
 {
   int status_code = 0;
   int64_t total_time_us = 0;
-  int total_passed_tests = 0,
-      total_failed_tests = 0,
-      total_skipped_tests = 0,
-      total_passed_suites = 0,
-      total_failed_suites = 0;
+  TestCounts counts;
   std::vector<std::string> cest_args = { "-o" };
+
   const auto executables = Directory::findExecutableFiles(Directory::cwd(), "test_");
 
   for (const auto& test_file : executables)
@@ -27,26 +44,34 @@ int Runner::runTestsInCurrentPath()
     status_code |= test_status;
     total_time_us += test_time;
 
-    const auto results_path = "/tmp/cest_" + test_file.substr(test_file.rfind('/') + 1);
-    const auto test_result = TestResults(Directory::readTextFile(results_path));
+    if (!Process::killedBySignal(status_code))
+    {
+      const auto results_path = "/tmp/cest_" + test_file.substr(test_file.rfind('/') + 1);
+      const auto test_result = TestResults(Directory::readTextFile(results_path));
 
-    total_passed_tests += test_result.num_passed_tests;
-    total_failed_tests += test_result.num_failed_tests;
-    total_skipped_tests += test_result.num_skipped_tests;
+      counts.total_passed_tests += test_result.num_passed_tests;
+      counts.total_failed_tests += test_result.num_failed_tests;
+      counts.total_skipped_tests += test_result.num_skipped_tests;
 
-    if (test_result.num_failed_tests > 0)
-      total_failed_suites++;
+      if (test_result.num_failed_tests > 0)
+        counts.total_failed_suites++;
+      else
+        counts.total_passed_suites++;
+    }
     else
-      total_passed_suites++;
+    {
+      Output::killedBySignal(test_file, test_status);
+      counts.total_failed_suites++;
+    }
   }
 
   Output::printSummary(
-    total_passed_suites,
-    total_failed_suites,
-    total_passed_tests,
-    total_failed_tests,
-    total_skipped_tests,
-    ((double)total_time_us) / 1000000.f
+    counts.total_passed_suites,
+    counts.total_failed_suites,
+    counts.total_passed_tests,
+    counts.total_failed_tests,
+    counts.total_skipped_tests,
+    toSeconds(total_time_us)
   );
 
   return status_code;

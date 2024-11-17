@@ -4,6 +4,7 @@
 namespace Output
 {
   void print(const std::string& text);
+  void killedBySignal(const std::string& binary, int signal);
   void printSummary(
     int num_passed_suites,
     int num_failed_suites,
