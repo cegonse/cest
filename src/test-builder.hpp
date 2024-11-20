@@ -2,7 +2,10 @@
 #include "types.hpp"
 #include "globals.hpp"
 
-#define describe(...) __attribute__((unused)) static int dummy = cest::describeFn(__VA_ARGS__)
+#define PP(x,y) x##y
+#define P(x,y) PP(x,y)
+
+#define describe(...) __attribute__((unused)) static int P(dummy, __LINE__) = cest::describeFn(__VA_ARGS__)
 #define it(...) cest::itFn(__FILE__, __LINE__, __VA_ARGS__)
 #define xit(...) cest::xitFn(__FILE__, __LINE__, __VA_ARGS__)
 #define fit(...) cest::fitFn(__FILE__, __LINE__, __VA_ARGS__)
