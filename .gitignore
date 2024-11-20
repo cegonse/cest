@@ -21,6 +21,7 @@ build/
 log.xml
 test_summary.jsonl
 runner/test/test_runner
+runner/test/test_cmd_args
 test/examples/test_assertions
 test/examples/test_chatbot
 test/examples/test_description

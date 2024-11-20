@@ -84,6 +84,10 @@ std::string Directory::cwd()
 {
   return "/cwd";
 }
+std::string Directory::absolute(const std::string& path)
+{
+  return path;
+}
 void Directory::readTextFile_mockOutput(const std::string& output)
 {
   __read_text_file_mock_output.push_back(output);

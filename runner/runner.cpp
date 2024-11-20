@@ -35,14 +35,18 @@ int Runner::runTests(const std::vector<std::string>& executables)
   for (const auto& test_file : executables)
   {
     int64_t test_time = 0;
-    const auto test_status = Process::runExecutable(test_file, [](const auto& output) {
-      Output::print(output);
-    }, cest_args, test_time);
-
-    status_code |= test_status;
+    const auto test_status = Process::runExecutable(
+      test_file,
+      [](const auto& output) { Output::print(output); },
+      cest_args,
+      test_time
+    );
     total_time_us += test_time;
 
-    if (!Process::killedBySignal(status_code))
+    if (test_status != 0)
+      status_code = -1;
+
+    if (!Process::killedBySignal(test_status))
     {
       const auto results_path = "/tmp/cest_" + test_file.substr(test_file.rfind('/') + 1);
       const auto test_result = TestResults(Directory::readTextFile(results_path));

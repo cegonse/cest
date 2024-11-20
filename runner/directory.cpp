@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <cstdlib>
 
 constexpr bool hasPerms(std::filesystem::perms target, std::filesystem::perms other)
 {
@@ -61,6 +62,23 @@ std::vector<std::string> Directory::findExecutableFiles(
 std::string Directory::cwd()
 {
   return std::filesystem::current_path();
+}
+
+static bool isHomeRelative(const std::string& path)
+{
+  return !path.empty() && path[0] == '~';
+}
+
+static std::string transformHome(const std::string& path)
+{
+  auto home = std::getenv("HOME");
+  return std::string(home) + path.substr(1);
+}
+
+std::string Directory::absolute(const std::string& path)
+{
+  auto expanded_path = isHomeRelative(path) ? transformHome(path) : path;
+  return std::filesystem::absolute(path);
 }
 
 std::string Directory::readTextFile(const std::string& path)

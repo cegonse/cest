@@ -28,6 +28,7 @@ all: build runner $(TESTS) run
 runner: build
 	g++ $(RUNNER_SRCS) -std=c++17 -g -O0 -o build/cest-runner
 	g++ runner/test/runner.test.cpp runner/runner.cpp runner/helpers.cpp runner/test/helpers/helpers.cpp -Ibuild -std=c++17 -g -O0 -o runner/test/test_runner
+	g++ runner/test/cmd-args.test.cpp runner/cmd-args.cpp runner/test/helpers/helpers.cpp -Ibuild -std=c++17 -g -O0 -o runner/test/test_cmd_args
 
 build:
 	mkdir -p build
