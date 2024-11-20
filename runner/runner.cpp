@@ -25,14 +25,12 @@ constexpr double toSeconds(int64_t us)
   return ((double)us) / 1000000.f;
 }
 
-int Runner::runTestsInCurrentPath()
+int Runner::runTests(const std::vector<std::string>& executables)
 {
   int status_code = 0;
   int64_t total_time_us = 0;
   TestCounts counts;
   std::vector<std::string> cest_args = { "-o" };
-
-  const auto executables = Directory::findExecutableFiles(Directory::cwd(), "test_");
 
   for (const auto& test_file : executables)
   {

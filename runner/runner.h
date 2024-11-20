@@ -1,6 +1,8 @@
 #pragma once
+#include <vector>
+#include <string>
 
 namespace Runner
 {
-  int runTestsInCurrentPath();
+  int runTests(const std::vector<std::string>& executables);
 }

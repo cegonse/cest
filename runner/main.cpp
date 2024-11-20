@@ -1,6 +1,9 @@
 #include "runner.h"
+#include "directory.h"
 
 int main(int argc, char *argv[])
 {
-  return Runner::runTestsInCurrentPath();
+  const auto executables = Directory::findExecutableFiles(Directory::cwd(), "test_");
+
+  return Runner::runTests(executables);
 }
