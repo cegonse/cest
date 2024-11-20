@@ -132,4 +132,19 @@ namespace cest
       return test_case->condition == TestCaseCondition::Skipped;
     });
   }
+
+  std::string findSuiteSourceFile(cest::TestSuite *suite)
+  {
+    if (suite->test_cases.size() > 0)
+    {
+      return suite->test_cases[0]->fn.file;
+    }
+    else
+    {
+      for (const auto &pair : suite->test_suites)
+        return findSuiteSourceFile(pair.second);
+    }
+
+    return "";
+  }
 }

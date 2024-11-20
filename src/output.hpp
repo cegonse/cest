@@ -144,9 +144,10 @@ namespace cest
 
     printTestBadge(any_test_failed);
 
-    const auto file_separator_idx = suite->test_cases[0]->fn.file.rfind('/');
-    const auto directory = suite->test_cases[0]->fn.file.substr(0, file_separator_idx + 1);
-    const auto file = suite->test_cases[0]->fn.file.substr(file_separator_idx + 1);
+    const auto source_file = findSuiteSourceFile(suite);
+    const auto file_separator_idx = source_file.rfind('/');
+    const auto directory = source_file.substr(0, file_separator_idx + 1);
+    const auto file = source_file.substr(file_separator_idx + 1);
 
     std::cout << " " << ASCII_GRAY << directory << ASCII_RESET << ASCII_BOLD << file << ASCII_RESET << std::endl;
   }

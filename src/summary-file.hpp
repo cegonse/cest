@@ -21,7 +21,7 @@ namespace cest
     int skipped_tests = numSkippedTests(root_suite);
 
     buffer
-      << root_suite->test_cases[0]->fn.file
+      << findSuiteSourceFile(root_suite)
       << "|"
       << binary_path
       << "|"
