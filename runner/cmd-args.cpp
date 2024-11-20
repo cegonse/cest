@@ -6,7 +6,7 @@ static bool isCmdArg(const std::string& arg)
   return arg.substr(0, 2) == "--";
 }
 
-CmdArgs::CmdArgs(int argc, char* argv[]) : _path(Directory::cwd()), _watch(false)
+CmdArgs::CmdArgs(int argc, char* argv[]) : _path(Directory::cwd()), _watch(false), _help(false)
 {
   for (int i=1; i<argc; ++i)
   {
@@ -23,6 +23,9 @@ void CmdArgs::parseArg(const std::string& arg)
 {
   if (arg == "--watchAll")
     this->_watch = true;
+
+  if (arg == "--help")
+    this->_help = true;
 }
 
 const std::string& CmdArgs::path()
@@ -33,4 +36,9 @@ const std::string& CmdArgs::path()
 bool CmdArgs::watch()
 {
   return this->_watch;
+}
+
+bool CmdArgs::help()
+{
+  return this->_help;
 }

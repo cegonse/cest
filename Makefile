@@ -17,7 +17,7 @@ ifeq ($(UNAME_S),Darwin)
 endif
 
 
-RUNNER_SRCS := runner/main.cpp runner/helpers.cpp runner/directory.cpp runner/process.cpp runner/output.cpp runner/runner.cpp
+RUNNER_SRCS := runner/main.cpp runner/helpers.cpp runner/directory.cpp runner/process.cpp runner/output.cpp runner/runner.cpp runner/cmd-args.cpp
 TEST_SRCS := $(shell find test -name '*.cpp')
 TESTS := $(basename $(TEST_SRCS))
 

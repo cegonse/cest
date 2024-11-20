@@ -49,4 +49,25 @@ describe("CmdArgs", []() {
       expect(cmd_args.watch()).toBeTruthy();
     });
   });
+
+  describe("help()", []() {
+    it("defaults to false", []() {
+      std::string cmd_path = "/bin/test";
+      std::array<char *, 1> argv = { (char *)cmd_path.c_str() };
+
+      auto cmd_args = CmdArgs(argv.size(), argv.data());
+
+      expect(cmd_args.help()).toBeFalsy();
+    });
+
+    it("sets to true when --help is passed", []() {
+      std::string cmd_path = "/bin/test";
+      std::string help = "--help";
+      std::array<char *, 2> argv = { (char *)cmd_path.c_str(), (char *)help.c_str() };
+
+      auto cmd_args = CmdArgs(argv.size(), argv.data());
+
+      expect(cmd_args.help()).toBeTruthy();
+    });
+  });
 });
