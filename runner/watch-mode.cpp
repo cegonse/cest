@@ -53,9 +53,9 @@ void WatchMode::showHelp()
 {
   std::cout << std::endl;
   std::cout << ASCII_BOLD << "Watch Usage" << ASCII_RESET << std::endl;
-  std::cout << ASCII_GRAY << " › Press " << ASCII_BLACK << "f" << ASCII_GRAY <<" to run only failed tests." << ASCII_RESET << std::endl;
-  std::cout << ASCII_GRAY << " › Press " << ASCII_BLACK << "p" << ASCII_GRAY <<" to filter by a filename regex pattern." << ASCII_RESET << std::endl;
-  std::cout << ASCII_GRAY << " › Press " << ASCII_BLACK << "t" << ASCII_GRAY <<" to filter by a test name regex pattern." << ASCII_RESET << std::endl;
-  std::cout << ASCII_GRAY << " › Press " << ASCII_BLACK << "q" << ASCII_GRAY <<" to quit watch mode." << ASCII_RESET << std::endl;
-  std::cout << ASCII_GRAY << " › Press " << ASCII_BLACK << "Enter" ASCII_GRAY << " to trigger a test run." << ASCII_RESET << std::endl;
+  std::cout << ASCII_GRAY << " › Press " << ASCII_RESET << ASCII_BOLD << "f" << ASCII_RESET << ASCII_GRAY <<" to run only failed tests." << ASCII_RESET << std::endl;
+  std::cout << ASCII_GRAY << " › Press " << ASCII_RESET << ASCII_BOLD << "p" << ASCII_RESET << ASCII_GRAY <<" to filter by a filename regex pattern." << ASCII_RESET << std::endl;
+  std::cout << ASCII_GRAY << " › Press " << ASCII_RESET << ASCII_BOLD << "t" << ASCII_RESET << ASCII_GRAY <<" to filter by a test name regex pattern." << ASCII_RESET << std::endl;
+  std::cout << ASCII_GRAY << " › Press " << ASCII_RESET << ASCII_BOLD << "q" << ASCII_RESET << ASCII_GRAY <<" to quit watch mode." << ASCII_RESET << std::endl;
+  std::cout << ASCII_GRAY << " › Press " << ASCII_RESET << ASCII_BOLD << "Enter" << ASCII_RESET << ASCII_GRAY << " to trigger a test run." << ASCII_RESET << std::endl;
 }
