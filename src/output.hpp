@@ -129,8 +129,9 @@ namespace cest
 
       if (test_case->failed)
       {
-        std::cout << "   Failed at line " << test_case->failure_line << ": " << test_case->failure_message << std::endl;
+        std::cout << std::endl << "   Failed at line " << test_case->failure_line << ": " << test_case->failure_message << std::endl;
         tryPrintFailedLines(test_case);
+        std::cout << std::endl;
       }
     }
 
@@ -150,5 +151,28 @@ namespace cest
     const auto file = source_file.substr(file_separator_idx + 1);
 
     std::cout << " " << ASCII_GRAY << directory << ASCII_RESET << ASCII_BOLD << file << ASCII_RESET << std::endl;
+
+    const auto failed_tests = findFailedTestCases(suite);
+
+    for (const auto test_case : failed_tests)
+    {
+      std::cout
+        << std::endl
+        << ASCII_BOLD
+        << ASCII_RED
+        << ASCII_CROSS
+        << ASCII_RESET
+        << ASCII_BOLD
+        << "  "
+        << test_case->name
+        << ASCII_RESET
+        << std::endl
+        << std::endl;
+
+      std::cout << "   Failed at line " << test_case->failure_line << ": " << test_case->failure_message << std::endl << std::endl;
+      tryPrintFailedLines(test_case);
+
+      std::cout << std::endl;
+    }
   }
 }

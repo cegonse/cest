@@ -39,17 +39,23 @@ static int waitForChildren()
 
   return status;
 }
-
+#include <iostream>
 static int handleParentProcess(int pipe_fd[2], std::function<void(std::string)> on_output)
 {
-  std::array<char, MAX_BUFFER> buffer;
+  std::string output = "";
+    close(pipe_fd[1]);
 
-  buffer.fill('\0');
-  close(pipe_fd[1]);
-  if (read(pipe_fd[0], buffer.data(), buffer.size()) < 0)
-    return -1;
+  ssize_t read_bytes = 0;
+  do
+  {
+    std::array<char, MAX_BUFFER> buffer;
+    buffer.fill('\0');
+    read_bytes = read(pipe_fd[0], buffer.data(), buffer.size());
+    buffer[read_bytes + 1] = '\0';
+    output += buffer.data();
+  } while (read_bytes != 0);
 
-  on_output(std::string(buffer.data()));
+  on_output(output);
 
   return waitForChildren();
 }

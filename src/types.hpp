@@ -147,4 +147,23 @@ namespace cest
 
     return "";
   }
+
+  std::vector<cest::TestCase *> findFailedTestCases(cest::TestSuite *suite)
+  {
+    std::vector<cest::TestCase *> out;
+
+    for (auto test_case : suite->test_cases)
+    {
+      if (test_case->failed)
+        out.push_back(test_case);
+    }
+
+    for (const auto &pair : suite->test_suites)
+    {
+      auto nested = findFailedTestCases(pair.second);
+      out.insert(out.end(), nested.begin(), nested.end());
+    }
+
+    return out;
+  }
 }
