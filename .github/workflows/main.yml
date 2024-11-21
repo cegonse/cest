@@ -10,5 +10,7 @@ jobs:
     - uses: actions/checkout@master
     - name: Install dependencies
       run: pip install quom
+    - name: Run CMake
+      run: mkdir -p build && cd build && cmake ..
     - name: Build and run C++ tests
       run: make all
