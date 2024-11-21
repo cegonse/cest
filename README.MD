@@ -66,15 +66,15 @@ Documentation is hosted in GitHub Pages in a different repository, found here: h
 
 **Building**
 
-Cest source code is in the `src/` directory, separated in multiple header files. The final build is a single header library, which is built using [Quom](https://github.com/Viatorus/quom).
+Cest source code is in the `src/` directory, separated in multiple header files. Cest-runner code is in the `runner/` directory. The final build is a single header library plus `cest-runner`, which is built using [Quom](https://github.com/Viatorus/quom).
 
 To generate the library amalgam, install Quom and build doing:
 ```bash
 pip install quom
-make build
+make
 ```
 
-This will generate the final library build in the `build/` directory.
+This will generate the library and runner builds in the `build/` directory.
 
 **Roadmap**
 
@@ -83,7 +83,7 @@ This will generate the final library build in the `build/` directory.
 - [x] Test parametrization support
 - [x] Basic expect matchers
 - [x] Nested test suite support
-- [ ] Simple integration of custom expect matchers
+- [x] Simple integration of custom expect matchers
 - [ ] `cest-runner` for watch mode functionality of multiple suites
 - [ ] Complex expect matchers (comprehensive STD collection support)
 - [ ] Test cases run in an subprocess to avoid crashing the whole suite
