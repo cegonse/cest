@@ -9,6 +9,6 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Install dependencies
-      run: pip install quom
+      run: pip install quom && sudo apt-get install -y ninja-build
     - name: Run all tests
       run: make test

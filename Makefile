@@ -1,7 +1,7 @@
 all: test
 
 test: build-cest
-	cd build && cmake .. && make
+	cd build && cmake -G Ninja .. && cmake --build . -j8
 	./build/cest-runner
 
 build-cest:
