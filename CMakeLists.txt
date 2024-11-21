@@ -6,6 +6,7 @@ set(RUNNER_SOURCES
   ${PROJECT_SOURCE_DIR}/runner/helpers.cpp
   ${PROJECT_SOURCE_DIR}/runner/runner.cpp
   ${PROJECT_SOURCE_DIR}/runner/cmd-args.cpp
+  ${PROJECT_SOURCE_DIR}/runner/watch-mode.cpp
 )
 
 SET(RUNNER_OS_SOURCES
