@@ -22,7 +22,7 @@ static void handleChildProcess(int pipe_fd[2], const std::string& path, std::vec
 
   c_args.fill(NULL);
   c_args[0] = (char *)path.c_str();
-  for (int i=0; i<args.size(); ++i)
+  for (size_t i=0; i<args.size(); ++i)
   {
     c_args[i+1] = (char *)args[i].c_str();
   }
@@ -46,7 +46,8 @@ static int handleParentProcess(int pipe_fd[2], std::function<void(std::string)> 
 
   buffer.fill('\0');
   close(pipe_fd[1]);
-  read(pipe_fd[0], buffer.data(), buffer.size());
+  if (read(pipe_fd[0], buffer.data(), buffer.size()) < 0)
+    return -1;
 
   on_output(std::string(buffer.data()));
 
@@ -62,7 +63,8 @@ int Process::runExecutable(
   const auto start = std::chrono::high_resolution_clock::now();
   int status = 0;
   int pipe_fd[2];
-  pipe(pipe_fd);
+  if (pipe(pipe_fd) < 0)
+    return -1;
 
   const auto pid = fork();
 

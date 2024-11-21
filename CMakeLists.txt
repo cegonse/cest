@@ -15,8 +15,11 @@ SET(RUNNER_OS_SOURCES
   ${PROJECT_SOURCE_DIR}/runner/process.cpp
 )
 
+SET(RUNNER_CFLAGS -g -O2 -Wall -Werror -std=c++17)
+SET(TEST_CFLAGS -g -O0 -Wall -Werror -std=c++17)
+
 add_executable(cest-runner ${RUNNER_SOURCES} ${RUNNER_OS_SOURCES})
-target_compile_options(cest-runner PRIVATE -g -O2 -Werror -std=c++17)
+target_compile_options(cest-runner PRIVATE ${RUNNER_CFLAGS})
 
 # runner tests
 file(GLOB_RECURSE RUNNER_TESTS ${PROJECT_SOURCE_DIR}/runner/test/*.test.cpp)
@@ -26,7 +29,7 @@ foreach(TEST_FILE ${RUNNER_TESTS})
   set(EXEC_NAME test_${FILE_NAME})
   add_executable(${EXEC_NAME} ${TEST_FILE} ${RUNNER_SOURCES} runner/test/helpers/helpers.cpp)
   target_include_directories(${EXEC_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/build)
-  target_compile_options(${EXEC_NAME} PRIVATE -g -O0 -Werror -std=c++17)
+  target_compile_options(${EXEC_NAME} PRIVATE ${TEST_CFLAGS})
 endforeach()
 
 # cest tests
@@ -37,5 +40,5 @@ foreach(TEST_FILE ${CEST_TESTS})
   set(EXEC_NAME test_${FILE_NAME})
   add_executable(${EXEC_NAME} ${TEST_FILE})
   target_include_directories(${EXEC_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/build)
-  target_compile_options(${EXEC_NAME} PRIVATE -g -O0 -Werror -std=c++17)
+  target_compile_options(${EXEC_NAME} PRIVATE -g ${TEST_CFLAGS})
 endforeach()

@@ -16,7 +16,7 @@ std::vector<std::string> Helpers::tokenize(const std::string& str, char token)
 
 int Helpers::fromString(const std::string& str)
 {
-  int out;
+  int out = 0;
   std::from_chars(&str.c_str()[0], &str.c_str()[str.size()], out);
   return out;
 }
