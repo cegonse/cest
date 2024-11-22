@@ -1,17 +1,7 @@
 #pragma once
+#include <string>
 
 namespace WatchMode
 {
-  enum class Option
-  {
-    Failed,
-    FileName,
-    TestName,
-    Trigger,
-    Quit,
-    None
-  };
-
-  void showHelp();
-  Option waitForInput();
+  void runInPath(const std::string& path);
 }

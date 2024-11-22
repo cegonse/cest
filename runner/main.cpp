@@ -14,12 +14,6 @@ static void showHelp()
   exit(0);
 }
 
-static int runTestsInPath(const std::string& path)
-{
-  const auto executables = Directory::findExecutableFiles(path, "test_");
-  return Runner::runTests(executables);
-}
-
 int main(int argc, char *argv[])
 {
   CmdArgs args(argc, argv);
@@ -27,33 +21,16 @@ int main(int argc, char *argv[])
   if (args.help())
     showHelp();
 
-  auto status = runTestsInPath(args.path());
-
-  if (args.watch())
+  if (!args.watch())
   {
-    while (1)
-    {
-      auto option = WatchMode::Option::None;
-      WatchMode::showHelp();
-
-      do
-      {
-        option = WatchMode::waitForInput();
-      } while (option == WatchMode::Option::None);
-
-      switch (option)
-      {
-        case WatchMode::Option::Quit:
-          exit(0);
-          break;
-        case WatchMode::Option::Trigger:
-          runTestsInPath(args.path());
-          break;
-        default:
-          break;
-      }
-    }
+    std::vector<Runner::TestRun> results;
+    const auto executables = Directory::findExecutableFiles(args.path(), "test_");
+    return Runner::runTests(executables, results);
+  }
+  else
+  {
+    WatchMode::runInPath(args.path());
   }
 
-  return status;
+  return 0;
 }
