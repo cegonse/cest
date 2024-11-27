@@ -21,7 +21,7 @@ CmdArgs::CmdArgs(int argc, char* argv[]) : _path(Directory::cwd()), _watch(false
 
 void CmdArgs::parseArg(const std::string& arg)
 {
-  if (arg == "--watchAll")
+  if (arg == "--watch")
     this->_watch = true;
 
   if (arg == "--help")

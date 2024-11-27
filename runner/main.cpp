@@ -6,10 +6,10 @@
 
 static void showHelp()
 {
-  std::cout << "cest-runner [(Optional) Search Path][--watchAll][--help]" << std::endl;
+  std::cout << "cest-runner [(Optional) Search Path][--watch][--help]" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  [Search Path]: Directory to look for test executables" << std::endl;
-  std::cout << "  --watchAll: Run cest in watch mode" << std::endl;
+  std::cout << "  --watch: Run cest in watch mode" << std::endl;
   std::cout << "  --help: Show this help message" << std::endl;
   exit(0);
 }

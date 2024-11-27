@@ -15,7 +15,7 @@ describe("CmdArgs", []() {
 
     it("assumes non-first argument not starting with -- to be the path", []() {
       std::string cmd_path = "/bin/test";
-      std::string watch_mode = "--watchAll";
+      std::string watch_mode = "--watch";
       std::string path = "/home/tests";
       std::array<char *, 3> argv = {
         (char *)cmd_path.c_str(),
@@ -39,9 +39,9 @@ describe("CmdArgs", []() {
       expect(cmd_args.watch()).toBeFalsy();
     });
 
-    it("sets to true when --watchAll is passed", []() {
+    it("sets to true when --watch is passed", []() {
       std::string cmd_path = "/bin/test";
-      std::string watch = "--watchAll";
+      std::string watch = "--watch";
       std::array<char *, 2> argv = { (char *)cmd_path.c_str(), (char *)watch.c_str() };
 
       auto cmd_args = CmdArgs(argv.size(), argv.data());
