@@ -6,7 +6,7 @@
 
 #define CLIP_STRING_LENGTH 16
 
-#define expect(...) cest::expectFunction(__FILE__, __LINE__, __VA_ARGS__)
+#define expect(...) cest::expectFunction(__FILE__, ((__LINE__ - 1)), __VA_ARGS__)
 #define passTest() cest::forcedPass()
 #define failTest() cest::forcedFailure(__FILE__, __LINE__)
 #define Regex(x) x, std::regex(x)
@@ -45,28 +45,33 @@ namespace cest
   class Assertion
   {
   public:
-    Assertion(const char *file, int line, T value)
+    Assertion(const char *file, int line, T value, bool negated = false) : negated(false)
     {
       actual = value;
       assertion_file = std::string(file);
       assertion_line = line;
+
+      if (!negated)
+        this->Not = new Assertion<T>(file, line, value, true);
+      else
+        this->negated = true;
     }
 
     void toBeTruthy()
     {
-      if (!actual)
+      if (!actual ^ this->negated)
         throw AssertionError(assertion_file, assertion_line, "Expresion is not truthy");
     }
 
     void toBeFalsy()
     {
-      if (actual)
+      if (actual ^ this->negated)
         throw AssertionError(assertion_file, assertion_line, "Expresion is not falsy");
     }
 
     void toBe(T expected)
     {
-      if (expected != actual)
+      if ((expected != actual) ^ this->negated)
       {
 
         std::stringstream message;
@@ -83,22 +88,23 @@ namespace cest
     void toEqualMemory(T expected, int64_t length)
     {
       int i;
+      bool any_byte_differs = false;
 
       for (i = 0; i < length; ++i)
+        any_byte_differs |= expected[i] != actual[i];
+
+      if (any_byte_differs ^ negated)
       {
-        if (expected[i] != actual[i])
-        {
-          std::stringstream message;
-          message << "Memory mismatch at byte " << i << ", expected ";
-          message << std::hex << std::uppercase << (int)expected[i] << " but was " << std::hex << std::uppercase << (int)actual[i];
-          throw AssertionError(assertion_file, assertion_line, message.str());
-        }
+        std::stringstream message;
+        message << "Memory mismatch at byte " << i << ", expected ";
+        message << std::hex << std::uppercase << (int)expected[i] << " but was " << std::hex << std::uppercase << (int)actual[i];
+        throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
 
     void toBeNotNull()
     {
-      if (actual == NULL)
+      if ((actual == NULL) ^ negated)
       {
         std::stringstream message;
         message << "Expected 0x" << std::hex << std::uppercase << actual << " to be not null";
@@ -108,7 +114,7 @@ namespace cest
 
     void toBeNull()
     {
-      if (actual != NULL)
+      if ((actual != NULL) ^ negated)
       {
         std::stringstream message;
         message << "Expected 0x" << std::hex << std::uppercase << actual << " to be null";
@@ -116,7 +122,10 @@ namespace cest
       }
     }
 
+    Assertion<T> *Not;
+
   private:
+    bool negated;
     T actual;
     std::string assertion_file;
     int assertion_line;
@@ -126,16 +135,21 @@ namespace cest
   class Assertion<double>
   {
   public:
-    Assertion(const char *file, int line, double value)
+    Assertion(const char *file, int line, double value, bool negated = false) : negated(false)
     {
       actual = value;
       assertion_file = std::string(file);
       assertion_line = line;
+
+      if (!negated)
+        this->Not = new Assertion<double>(file, line, value, true);
+      else
+        this->negated = true;
     }
 
     void toBe(double expected, double epsilon = 0.0000001)
     {
-      if (fabs(actual - expected) > epsilon)
+      if ((fabs(actual - expected) > epsilon) ^ negated)
       {
         std::stringstream message;
         message << "Expected " << expected << ", was " << actual;
@@ -150,7 +164,7 @@ namespace cest
 
     void toBeGreaterThan(double expected)
     {
-      if (actual < expected)
+      if ((actual < expected) ^ negated)
       {
         std::stringstream message;
         message << "Expected " << expected << " to be greather than" << actual;
@@ -160,7 +174,7 @@ namespace cest
 
     void toBeLessThan(double expected)
     {
-      if (actual > expected)
+      if ((actual > expected) ^ negated)
       {
         std::stringstream message;
         message << "Expected " << expected << " to be less than" << actual;
@@ -168,7 +182,10 @@ namespace cest
       }
     }
 
+    Assertion<double> *Not;
+
   private:
+    bool negated;
     double actual;
     std::string assertion_file;
     int assertion_line;
@@ -178,16 +195,21 @@ namespace cest
   class Assertion<float>
   {
   public:
-    Assertion(const char *file, int line, float value)
+    Assertion(const char *file, int line, float value, bool negated = false) : negated(false)
     {
       actual = value;
       assertion_file = std::string(file);
       assertion_line = line;
+
+      if (!negated)
+        this->Not = new Assertion<float>(file, line, value, true);
+      else
+        this->negated = true;
     }
 
     void toBe(float expected, float epsilon = 0.00001f)
     {
-      if (fabs(actual - expected) > epsilon)
+      if ((fabs(actual - expected) > epsilon) ^ negated)
       {
         std::stringstream message;
         message << "Expected " << expected << ", was " << actual;
@@ -202,7 +224,7 @@ namespace cest
 
     void toBeGreaterThan(float expected)
     {
-      if (actual < expected)
+      if ((actual < expected) ^ negated)
       {
         std::stringstream message;
         message << "Expected " << expected << " to be greather than" << actual;
@@ -212,7 +234,7 @@ namespace cest
 
     void toBeLessThan(float expected)
     {
-      if (actual > expected)
+      if ((actual > expected) ^ negated)
       {
         std::stringstream message;
         message << "Expected " << expected << " to be less than" << actual;
@@ -220,7 +242,10 @@ namespace cest
       }
     }
 
+    Assertion<float> *Not;
+
   private:
+    bool negated;
     float actual;
     std::string assertion_file;
     int assertion_line;
@@ -230,30 +255,43 @@ namespace cest
   class Assertion<std::vector<T>>
   {
   public:
-    Assertion(const char *file, int line, std::vector<T> value)
+    Assertion(const char *file, int line, std::vector<T> value, bool negated = false) : negated(false)
     {
       actual = value;
       assertion_file = std::string(file);
       assertion_line = line;
+
+      if (!negated)
+        this->Not = new Assertion<std::vector<T>>(file, line, value, true);
+      else
+        this->negated = true;
     }
 
     void toBe(std::vector<T> expected)
     {
-      if (expected.size() != actual.size())
+      if ((expected.size() != actual.size()) ^ negated)
       {
         std::stringstream message;
         message << "Vector sizes do not match, expected " << expected.size() << " items but had " << actual.size() << " items";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
 
+      bool any_item_differs = false;
+      size_t found_difference = 0;
+
       for (size_t i = 0; i < expected.size(); ++i)
       {
+        any_item_differs |= expected[i] != actual[i];
+
         if (expected[i] != actual[i])
-        {
-          std::stringstream message;
-          message << "Vector item mismatch at position " << i << ", expected " << expected[i] << " but was " << actual[i];
-          throw AssertionError(assertion_file, assertion_line, message.str());
-        }
+          found_difference = i;
+      }
+
+      if (any_item_differs ^ negated)
+      {
+        std::stringstream message;
+        message << "Vector item mismatch at position " << found_difference << ", expected " << expected[found_difference] << " but was " << actual[found_difference];
+        throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
 
@@ -275,7 +313,7 @@ namespace cest
         }
       }
 
-      if (!found)
+      if (!found ^ negated)
       {
         std::stringstream message;
         message << "Item " << item << " not found in vector";
@@ -285,7 +323,7 @@ namespace cest
 
     void toHaveLength(size_t size)
     {
-      if (actual.size() != size)
+      if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
         message << "Vector sizes does not match, expected " << size << " items but had " << actual.size() << " items";
@@ -293,7 +331,10 @@ namespace cest
       }
     }
 
+    Assertion<std::vector<T>> *Not;
+
   private:
+    bool negated;
     std::vector<T> actual;
     std::string assertion_file;
     int assertion_line;
@@ -303,16 +344,21 @@ namespace cest
   class Assertion<std::string>
   {
   public:
-    Assertion(const char *file, int line, std::string value)
+    Assertion(const char *file, int line, std::string value, bool negated = false) : negated(false)
     {
       actual = value;
       assertion_file = std::string(file);
       assertion_line = line;
+
+      if (!negated)
+        this->Not = new Assertion<std::string>(file, line, value, true);
+      else
+        this->negated = true;
     }
 
     void toBe(std::string expected)
     {
-      if (expected != actual)
+      if ((expected != actual) ^ negated)
       {
         std::stringstream message;
 
@@ -338,7 +384,7 @@ namespace cest
 
     void toMatch(std::string expected_string, std::regex expected)
     {
-      if (!std::regex_search(actual, expected))
+      if (!std::regex_search(actual, expected) ^ negated)
       {
         std::stringstream message;
         if (expected_string.size() > CLIP_STRING_LENGTH || actual.size() > CLIP_STRING_LENGTH)
@@ -363,7 +409,7 @@ namespace cest
 
     void toContain(std::string expected)
     {
-      if (actual.find(expected) == std::string::npos)
+      if ((actual.find(expected) == std::string::npos) ^ negated)
       {
         std::stringstream message;
 
@@ -384,7 +430,7 @@ namespace cest
 
     void toHaveLength(size_t length)
     {
-      if (actual.length() != length)
+      if ((actual.length() != length) ^ negated)
       {
         std::stringstream message;
         message << "Length of \"" << actual << "\" expected to be " << length << ", was " << actual.length();
@@ -392,7 +438,10 @@ namespace cest
       }
     }
 
+    Assertion<std::string> *Not;
+
   private:
+    bool negated;
     std::string actual;
     std::string assertion_file;
 

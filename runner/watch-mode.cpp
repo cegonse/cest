@@ -104,12 +104,12 @@ static std::vector<std::string> filterTestsBy(
   return tests_to_run;
 }
 
-static bool isBackspace(char key)
+static constexpr bool isBackspace(char key)
 {
   return key == '\b' || key == '\x7f';
 }
 
-static bool isPrintableCharacter(char key)
+static constexpr bool isPrintableCharacter(char key)
 {
   return key >= ' ' && key <= '~';
 }
