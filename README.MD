@@ -84,8 +84,8 @@ This will generate the library and runner builds in the `build/` directory.
 - [x] Basic expect matchers
 - [x] Nested test suite support
 - [x] Simple integration of custom expect matchers
-- [ ] `cest-runner` for watch mode functionality of multiple suites
+- [x] `cest-runner` for watch mode functionality of multiple suites
+- [x] Test cases run in an subprocess to avoid crashing the whole suite
 - [ ] Complex expect matchers (comprehensive STD collection support)
-- [ ] Test cases run in an subprocess to avoid crashing the whole suite
 - [ ] Integrated optional malloc / free overrides
 - [ ] Windows support
