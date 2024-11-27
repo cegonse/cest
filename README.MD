@@ -1,8 +1,6 @@
 Cest C++ Testing Framework
 ==========================
 
-![CI](https://github.com/cegonse/cest/workflows/CI/badge.svg?branch=master)
-
 [https://cestframework.com/](https://cestframework.com/)
 
 A test-driven development framework for C++ and C inspired by Jest and similar frameworks.
