@@ -16,8 +16,8 @@ SET(RUNNER_OS_SOURCES
   ${PROJECT_SOURCE_DIR}/runner/process.cpp
 )
 
-SET(RUNNER_CFLAGS -g -O2 -Wall -Werror -std=c++17)
-SET(TEST_CFLAGS -g -O0 -Wall -Werror -std=c++17)
+SET(RUNNER_CFLAGS -g -O2 -Wall -Werror -std=c++20)
+SET(TEST_CFLAGS -g -O0 -Wall -Werror -std=c++20)
 
 add_executable(cest-runner ${RUNNER_SOURCES} ${RUNNER_OS_SOURCES})
 target_compile_options(cest-runner PRIVATE ${RUNNER_CFLAGS})
