@@ -66,4 +66,33 @@ namespace cest
     for (auto &pair : suite->test_suites)
       runTestSuite(pair.second);
   }
+
+  void xxx(
+    cest::TestSuite *test_suite,
+    std::vector<cest::TestSuite *>& suites_to_delete,
+    std::vector<cest::TestCase *>& tests_to_delete
+  ) {
+    if (test_suite != &__cest_globals.root_test_suite)
+      suites_to_delete.push_back(test_suite);
+
+    for (const auto test : test_suite->test_cases)
+      tests_to_delete.push_back(test);
+
+    for (auto &pair : test_suite->test_suites)
+      xxx(pair.second, suites_to_delete, tests_to_delete);
+  }
+
+  void cleanUpTestSuite(cest::TestSuite *test_suite)
+  {
+    std::vector<cest::TestSuite *> suites_to_delete;
+    std::vector<cest::TestCase *> tests_to_delete;
+
+    xxx(test_suite, suites_to_delete, tests_to_delete);
+
+    for (const auto test : tests_to_delete)
+      delete test;
+
+    for (const auto suite : suites_to_delete)
+      delete suite;
+  }
 }

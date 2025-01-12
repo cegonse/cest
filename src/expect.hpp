@@ -52,9 +52,20 @@ namespace cest
       assertion_line = line;
 
       if (!negated)
+      {
         this->Not = new Assertion<T>(file, line, value, true);
+      }
       else
+      {
+        this->Not = nullptr;
         this->negated = true;
+      }
+    }
+
+    ~Assertion()
+    {
+      if (this->Not)
+        delete this->Not;
     }
 
     void toBeTruthy()
@@ -142,9 +153,20 @@ namespace cest
       assertion_line = line;
 
       if (!negated)
+      {
         this->Not = new Assertion<double>(file, line, value, true);
+      }
       else
+      {
+        this->Not = nullptr;
         this->negated = true;
+      }
+    }
+
+    ~Assertion()
+    {
+      if (this->Not)
+        delete this->Not;
     }
 
     void toBe(double expected, double epsilon = 0.0000001)
@@ -202,9 +224,20 @@ namespace cest
       assertion_line = line;
 
       if (!negated)
+      {
         this->Not = new Assertion<float>(file, line, value, true);
+      }
       else
+      {
+        this->Not = nullptr;
         this->negated = true;
+      }
+    }
+
+    ~Assertion()
+    {
+      if (this->Not)
+        delete this->Not;
     }
 
     void toBe(float expected, float epsilon = 0.00001f)
@@ -262,9 +295,20 @@ namespace cest
       assertion_line = line;
 
       if (!negated)
+      {
         this->Not = new Assertion<std::vector<T>>(file, line, value, true);
+      }
       else
+      {
+        this->Not = nullptr;
         this->negated = true;
+      }
+    }
+
+    ~Assertion()
+    {
+      if (this->Not)
+        delete this->Not;
     }
 
     void toBe(std::vector<T> expected)
@@ -351,9 +395,20 @@ namespace cest
       assertion_line = line;
 
       if (!negated)
+      {
         this->Not = new Assertion<std::string>(file, line, value, true);
+      }
       else
+      {
+        this->Not = nullptr;
         this->negated = true;
+      }
+    }
+
+    ~Assertion()
+    {
+      if (this->Not)
+        delete this->Not;
     }
 
     void toBe(std::string expected)

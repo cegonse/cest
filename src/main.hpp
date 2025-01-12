@@ -46,5 +46,8 @@ int main(int argc, const char *argv[])
   auto binary_name = binary_path.substr(binary_path.rfind('/') + 1);
   cest::saveSummaryFile(binary_name, binary_path, root_suite);
 
-  return cest::numFailedTests(root_suite);
+  auto status_code = cest::numFailedTests(root_suite);
+
+  cest::cleanUpTestSuite(root_suite);
+  return status_code;
 }

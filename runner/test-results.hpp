@@ -11,6 +11,9 @@ struct TestResults
   TestResults(const std::string& input)
   {
     const auto parsed_results = Helpers::tokenize(input, RESULTS_TOKEN);
+
+    if (parsed_results.size() != 5) return;
+
     this->src_path = parsed_results[0];
     this->bin_path = parsed_results[1];
     this->num_passed_tests = Helpers::fromString(parsed_results[2]);
