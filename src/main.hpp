@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <unistd.h>
 
 #include "types.hpp"
 #include "globals.hpp"
@@ -49,5 +50,8 @@ int main(int argc, const char *argv[])
   auto status_code = cest::numFailedTests(root_suite);
 
   cest::cleanUpTestSuite(root_suite);
+
+  dup2(STDOUT_FILENO, STDERR_FILENO);
+
   return status_code;
 }

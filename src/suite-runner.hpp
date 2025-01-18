@@ -3,6 +3,7 @@
 
 #include "globals.hpp"
 #include "signal-handler.hpp"
+#include "address-sanitizer.hpp"
 
 namespace cest
 {
@@ -56,6 +57,12 @@ namespace cest
         handleFailedTest(test_case, message, test_case->fn.file, test_case->fn.line);
       }
 
+      if (cest::leaksDetected())
+      {
+        std::string message = "Detected memory leaks during test execution.";
+        handleFailedTest(test_case, message, test_case->fn.file, test_case->fn.line);
+      }
+
       if (suite->after_each.fn)
         suite->after_each.fn();
     }
@@ -67,7 +74,7 @@ namespace cest
       runTestSuite(pair.second);
   }
 
-  void xxx(
+  void cleanUpSingleSuite(
     cest::TestSuite *test_suite,
     std::vector<cest::TestSuite *>& suites_to_delete,
     std::vector<cest::TestCase *>& tests_to_delete
@@ -79,7 +86,7 @@ namespace cest
       tests_to_delete.push_back(test);
 
     for (auto &pair : test_suite->test_suites)
-      xxx(pair.second, suites_to_delete, tests_to_delete);
+      cleanUpSingleSuite(pair.second, suites_to_delete, tests_to_delete);
   }
 
   void cleanUpTestSuite(cest::TestSuite *test_suite)
@@ -87,7 +94,7 @@ namespace cest
     std::vector<cest::TestSuite *> suites_to_delete;
     std::vector<cest::TestCase *> tests_to_delete;
 
-    xxx(test_suite, suites_to_delete, tests_to_delete);
+    cleanUpSingleSuite(test_suite, suites_to_delete, tests_to_delete);
 
     for (const auto test : tests_to_delete)
       delete test;
