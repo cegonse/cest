@@ -21,16 +21,10 @@ int main(int argc, char *argv[])
   if (args.help())
     showHelp();
 
-  if (!args.watch())
-  {
-    std::vector<Runner::TestRun> results;
-    const auto executables = Directory::findExecutableFiles(args.path(), "test_");
-    return Runner::runTests(executables, results);
-  }
-  else
-  {
+  if (args.watch())
     WatchMode::runInPath(args.path());
-  }
 
-  return 0;
+  std::vector<Runner::TestRun> results;
+  const auto executables = Directory::findExecutableFiles(args.path(), "test_");
+  return Runner::runTests(executables, results);
 }

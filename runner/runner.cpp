@@ -58,15 +58,10 @@ int Runner::runTests(
       counts.total_failed_tests += test_result.num_failed_tests;
       counts.total_skipped_tests += test_result.num_skipped_tests;
 
-      results.push_back(
-        {
-          test_result.src_path,
-          test_result.bin_path,
-          test_result.num_failed_tests > 0
-        }
-      );
+      const auto failed = test_result.num_failed_tests > 0 || test_status != 0;
+      results.push_back({ test_result.src_path, test_result.bin_path, failed });
 
-      if (test_result.num_failed_tests > 0)
+      if (failed)
         counts.total_failed_suites++;
       else
         counts.total_passed_suites++;

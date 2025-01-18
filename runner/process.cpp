@@ -39,7 +39,7 @@ static int waitForChildren()
 
   return status;
 }
-#include <iostream>
+
 static int handleParentProcess(int pipe_fd[2], std::function<void(std::string)> on_output)
 {
   std::string output = "";
