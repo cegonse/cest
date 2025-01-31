@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "types.hpp"
+#include "globals.hpp"
 
 #define ASCII_BACKGROUND_GREEN "\u001b[42m"
 #define ASCII_BACKGROUND_YELLOW "\u001b[43m"
@@ -174,5 +175,11 @@ namespace cest
 
       std::cout << std::endl;
     }
+  }
+
+  void printAddressSanitizerClaim()
+  {
+    if (__cest_globals.leaks_detected)
+      std::cout << ASCII_BOLD << "AddressSanitizer result:" << ASCII_RESET << std::endl;
   }
 }

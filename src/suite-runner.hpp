@@ -59,7 +59,7 @@ namespace cest
 
       if (cest::leaksDetected())
       {
-        std::string message = "Detected memory leaks during test execution.";
+        std::string message = "Detected potential memory leaks during test execution.";
         handleFailedTest(test_case, message, test_case->fn.file, test_case->fn.line);
       }
 

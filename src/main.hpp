@@ -17,15 +17,17 @@
 
 int main(int argc, const char *argv[])
 {
-  cest::configureSignals();
   cest::TestSuite *root_suite = &__cest_globals.root_test_suite;
-
   cest::CommandLineOptions command_line_options = cest::parseArgs(argc, argv);
+
   if (command_line_options.help)
   {
     cest::showHelp(argv[0]);
+    cest::cleanUpTestSuite(root_suite);
     return 0;
   }
+
+  cest::configureSignals();
 
   if (command_line_options.randomize)
   {
@@ -34,6 +36,8 @@ int main(int argc, const char *argv[])
   }
 
   cest::configureFocusedTestSuite(root_suite);
+  cest::initAddressSanitizer();
+
   cest::runTestSuite(root_suite);
 
   if (command_line_options.only_test_suite_result)
@@ -49,9 +53,10 @@ int main(int argc, const char *argv[])
 
   auto status_code = cest::numFailedTests(root_suite);
 
-  cest::cleanUpTestSuite(root_suite);
+  cest::printAddressSanitizerClaim();
 
-  dup2(STDOUT_FILENO, STDERR_FILENO);
+  cest::cleanUpTestSuite(root_suite);
+  cest::deinitAddressSanitizer();
 
   return status_code;
 }

@@ -73,8 +73,11 @@ namespace cest
     TestSuite *current_test_suite;
     TestCase *current_test_case;
     jmp_buf jump_env;
+    bool leaks_detected;
+    int saved_stderr;
 
-    CestGlobals() : current_test_suite(nullptr) {}
+    CestGlobals() : current_test_suite(nullptr),
+    leaks_detected(false) {}
   };
 
   bool anyTestInSuiteFailed(cest::TestSuite *suite)
