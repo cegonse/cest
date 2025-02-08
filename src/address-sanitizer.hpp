@@ -1,12 +1,11 @@
 #pragma once
-//#define __SANITIZE_ADDRESS__
+
 #ifndef __SANITIZE_ADDRESS__
 namespace cest
 {
   bool leaksDetected() { return false; }
   void initAddressSanitizer() {}
   void deinitAddressSanitizer() {}
-  void printAddressSanitizerClaim() {}
 }
 #else
 #include <sanitizer/lsan_interface.h>
