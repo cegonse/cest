@@ -1,4 +1,5 @@
 #pragma once
+#include <source_location>
 #include "types.hpp"
 #include "globals.hpp"
 
@@ -6,13 +7,6 @@
 #define P(x,y) PP(x,y)
 
 #define describe(...) __attribute__((unused)) static int P(dummy, __LINE__) = cest::describeFn(__VA_ARGS__)
-#define it(...) cest::itFn(__FILE__, __LINE__, __VA_ARGS__)
-#define xit(...) cest::xitFn(__FILE__, __LINE__, __VA_ARGS__)
-#define fit(...) cest::fitFn(__FILE__, __LINE__, __VA_ARGS__)
-#define beforeEach(x) cest::beforeEachFn(__FILE__, __LINE__, x)
-#define afterEach(x) cest::afterEachFn(__FILE__, __LINE__, x)
-#define beforeAll(x) cest::beforeAllFn(__FILE__, __LINE__, x)
-#define afterAll(x) cest::afterAllFn(__FILE__, __LINE__, x)
 
 namespace cest
 {
@@ -70,42 +64,80 @@ namespace cest
 
     return 0;
   }
+}
 
-  void itFn(std::string file, int line, std::string name, std::function<void()> fn)
-  {
-    TestCase *test = TestCaseBuilder(file, line, name, fn).build();
-    __cest_globals.current_test_suite->test_cases.push_back(test);
-  }
+void it(
+  const std::string& name,
+  const std::function<void()>& fn,
+  const std::source_location location = std::source_location::current())
+{
+  const auto file = location.file_name();
+  const auto line = location.line();
 
-  void fitFn(std::string file, int line, std::string name, std::function<void()> fn)
-  {
-    TestCase *test = TestCaseBuilder(file, line, name, fn).Focused()->build();
-    __cest_globals.current_test_suite->test_cases.push_back(test);
-  }
+  cest::TestCase *test = cest::TestCaseBuilder(file, line, name, fn).build();
+  __cest_globals.current_test_suite->test_cases.push_back(test);
+}
 
-  void xitFn(std::string file, int line, std::string name, std::function<void()> fn)
-  {
-    TestCase *test = TestCaseBuilder(file, line, name, fn).skipped()->build();
-    __cest_globals.current_test_suite->test_cases.push_back(test);
-  }
+void fit(
+  const std::string& name,
+  const std::function<void()>& fn,
+  const std::source_location location = std::source_location::current())
+{
+  const auto file = location.file_name();
+  const auto line = location.line();
 
-  void beforeEachFn(std::string file, int line, std::function<void()> fn)
-  {
-    __cest_globals.current_test_suite->before_each = { file, line, fn};
-  }
+  cest::TestCase *test = cest::TestCaseBuilder(file, line, name, fn).Focused()->build();
+  __cest_globals.current_test_suite->test_cases.push_back(test);
+}
 
-  void afterEachFn(std::string file, int line, std::function<void()> fn)
-  {
-    __cest_globals.current_test_suite->after_each = { file, line, fn};
-  }
+void xit(
+  const std::string& name,
+  const std::function<void()>& fn,
+  const std::source_location location = std::source_location::current())
+{
+  const auto file = location.file_name();
+  const auto line = location.line();
 
-  void beforeAllFn(std::string file, int line, std::function<void()> fn)
-  {
-    __cest_globals.current_test_suite->before_all = { file, line, fn};
-  }
+  cest::TestCase *test = cest::TestCaseBuilder(file, line, name, fn).skipped()->build();
+  __cest_globals.current_test_suite->test_cases.push_back(test);
+}
 
-  void afterAllFn(std::string file, int line, std::function<void()> fn)
-  {
-    __cest_globals.current_test_suite->after_all = { file, line, fn};
-  }
+void beforeEach(
+  const std::function<void()>& fn,
+  const std::source_location location = std::source_location::current())
+{
+  const auto file = std::string(location.file_name());
+  int line = location.line();
+
+  __cest_globals.current_test_suite->before_each = { file, line, fn};
+}
+
+void afterEach(
+  const std::function<void()>& fn,
+  const std::source_location location = std::source_location::current())
+{
+  const auto file = location.file_name();
+  int line = location.line();
+
+  __cest_globals.current_test_suite->after_each = { file, line, fn};
+}
+
+void beforeAll(
+  const std::function<void()>& fn,
+  const std::source_location location = std::source_location::current())
+{
+  const auto file = location.file_name();
+  int line = location.line();
+
+  __cest_globals.current_test_suite->before_all = { file, line, fn};
+}
+
+void afterAll(
+  const std::function<void()>& fn,
+  const std::source_location location = std::source_location::current())
+{
+  const auto file = location.file_name();
+  int line = location.line();
+
+  __cest_globals.current_test_suite->after_all = { file, line, fn};
 }
