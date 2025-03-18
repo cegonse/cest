@@ -20,5 +20,7 @@ jobs:
       run: pip install quom
     - name: Build cest header
       run: make build-cest
-    - name: Run all tests
-      run: cd build && cmake .. && make
+    - name: Build all
+      run: cd build && cmake .. && make -j 8
+    - name: Run tests
+      run: cd build && ./cest-runner

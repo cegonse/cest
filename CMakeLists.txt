@@ -17,7 +17,7 @@ SET(RUNNER_OS_SOURCES
 )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  set(ASAN_CFLAGS "")
+  set(ASAN_CFLAGS "-DJSON_HAS_EXPERIMENTAL_FILESYSTEM=0")
   set(ASAN_LDFLAGS "")
 else()
   set(ASAN_CFLAGS -fsanitize=address)
