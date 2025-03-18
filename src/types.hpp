@@ -62,7 +62,7 @@ namespace cest
     bool randomize;
     unsigned int random_seed;
     bool random_seed_present;
-    bool generate_test_report;
+    bool json_output;
     bool only_test_suite_result;
     bool tree_test_suite_result;
   };
@@ -76,8 +76,9 @@ namespace cest
     bool leaks_detected;
     int saved_stderr;
 
-    CestGlobals() : current_test_suite(nullptr),
-    leaks_detected(false) {}
+    CestGlobals() :
+      current_test_suite(nullptr),
+      leaks_detected(false) {}
   };
 
   bool anyTestInSuiteFailed(cest::TestSuite *suite)

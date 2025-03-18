@@ -24,7 +24,7 @@
 
 namespace cest
 {
-    void tryPrintFailedLines(cest::TestCase *test_case)
+  void tryPrintFailedLines(cest::TestCase *test_case)
   {
     if (!test_case->failed) return;
 

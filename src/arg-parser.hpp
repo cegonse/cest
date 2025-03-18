@@ -24,9 +24,9 @@ namespace cest
           options.randomize = true;
         }
 
-        if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--report") == 0)
+        if (strcmp(argv[i], "-j") == 0 || strcmp(argv[i], "--json") == 0)
         {
-          options.generate_test_report = true;
+          options.json_output = true;
         }
 
         if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--only-suite-result") == 0)

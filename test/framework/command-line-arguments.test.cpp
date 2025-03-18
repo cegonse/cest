@@ -1,6 +1,5 @@
 #include <cest>
 
-
 describe("Cest command line options", []() {
     it("will use default behaviour if empty", []() {
         int argc = 1;
@@ -95,13 +94,13 @@ describe("Cest command line options", []() {
         expect(options.random_seed_present).toBe(false);
     });
 
-    it("generates test suite summary when -p is present", []() {
+    it("generates json output when -j is present", []() {
         int argc = 2;
-        const char *argv[] = { "/bin/cest", "-p" };
+        const char *argv[] = { "/bin/cest", "-j" };
         cest::CommandLineOptions options;
 
         options = cest::parseArgs(argc, argv);
 
-        expect(options.generate_test_report).toBe(true);
+        expect(options.json_output).toBe(true);
     });
 });
