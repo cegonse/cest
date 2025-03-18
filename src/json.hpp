@@ -4631,6 +4631,7 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/macro_scope.hpp>
 
 
+#undef JSON_HAS_EXPERIMENTAL_FILESYSTEM 0
 #if JSON_HAS_EXPERIMENTAL_FILESYSTEM
 #include <experimental/filesystem>
 NLOHMANN_JSON_NAMESPACE_BEGIN
