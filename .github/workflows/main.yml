@@ -18,5 +18,7 @@ jobs:
     - uses: actions/checkout@master
     - name: Install dependencies
       run: pip install quom
+    - name: Build cest header
+      run: make build-cest
     - name: Run all tests
-      run: mkdir build && cd build && cmake .. && make
+      run: cd build && cmake .. && make
