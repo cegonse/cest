@@ -16,12 +16,20 @@ SET(RUNNER_OS_SOURCES
   ${PROJECT_SOURCE_DIR}/runner/process.cpp
 )
 
-SET(RUNNER_CFLAGS -g -O2 -Wall -Werror -std=c++20 -fsanitize=address)
-SET(TEST_CFLAGS -g -O0 -Wall -Werror -std=c++20 -fsanitize=address)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(ASAN_CFLAGS "")
+  set(ASAN_LDFLAGS "")
+else()
+  set(ASAN_CFLAGS -fsanitize=address)
+  set(ASAN_LDFLAGS -fsanitize=address -static-libasan)
+endif()
+
+SET(RUNNER_CFLAGS -g -O2 -Wall -Werror -std=c++20 ${ASAN_CFLAGS})
+SET(TEST_CFLAGS -g -O0 -Wall -Werror -std=c++20 ${ASAN_CFLAGS})
 
 add_executable(cest-runner ${RUNNER_SOURCES} ${RUNNER_OS_SOURCES})
 target_compile_options(cest-runner PRIVATE ${RUNNER_CFLAGS})
-target_link_options(cest-runner PRIVATE -fsanitize=address -static-libasan)
+target_link_options(cest-runner PRIVATE ${ASAN_LDFLAGS})
 
 # runner tests
 file(GLOB_RECURSE RUNNER_TESTS ${PROJECT_SOURCE_DIR}/runner/test/*.test.cpp)
@@ -32,7 +40,7 @@ foreach(TEST_FILE ${RUNNER_TESTS})
   add_executable(${EXEC_NAME} ${TEST_FILE} ${RUNNER_SOURCES} runner/test/helpers/helpers.cpp)
   target_include_directories(${EXEC_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/build)
   target_compile_options(${EXEC_NAME} PRIVATE ${TEST_CFLAGS})
-  target_link_options(${EXEC_NAME} PRIVATE -fsanitize=address -static-libasan)
+  target_link_options(${EXEC_NAME} PRIVATE ${ASAN_LDFLAGS})
 endforeach()
 
 # cest tests
@@ -44,5 +52,5 @@ foreach(TEST_FILE ${CEST_TESTS})
   add_executable(${EXEC_NAME} ${TEST_FILE})
   target_include_directories(${EXEC_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/build)
   target_compile_options(${EXEC_NAME} PRIVATE -g ${TEST_CFLAGS})
-  target_link_options(${EXEC_NAME} PRIVATE -fsanitize=address -static-libasan)
+  target_link_options(${EXEC_NAME} PRIVATE ${ASAN_LDFLAGS})
 endforeach()
