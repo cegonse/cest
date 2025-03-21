@@ -8,38 +8,30 @@ namespace cest
 {
   CommandLineOptions parseArgs(int argc, const char *argv[])
   {
-    CommandLineOptions options = {0};
+    CommandLineOptions options;
+    std::map<std::string, std::function<void()>> parseSingle = {
+      {"--help", [&]() { options.help = true; }},
+      {"-h", [&]() { options.help = true; }},
+      {"--randomize", [&]() { options.randomize = true; }},
+      {"-r", [&]() { options.randomize = true; }},
+      {"--json", [&]() { options.json_output = true; }},
+      {"-j", [&]() { options.json_output = true; }},
+      {"--only-suite-result", [&]() { options.only_test_suite_result = true; }},
+      {"-o", [&]() { options.only_test_suite_result = true; }},
+      {"--tree-suite-result", [&]() { options.only_test_suite_result = true; }},
+      {"-t", [&]() { options.tree_test_suite_result = true; }}
+    };
 
     if (argc > 1)
     {
       for (int i = 0; i < argc; ++i)
       {
-        if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
-        {
-          options.help = true;
-        }
+        const auto arg = std::string(argv[i]);
 
-        if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--randomize") == 0)
-        {
-          options.randomize = true;
-        }
+        if (parseSingle.contains(arg))
+          parseSingle[arg]();
 
-        if (strcmp(argv[i], "-j") == 0 || strcmp(argv[i], "--json") == 0)
-        {
-          options.json_output = true;
-        }
-
-        if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--only-suite-result") == 0)
-        {
-          options.only_test_suite_result = true;
-        }
-
-        if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--tree-suite-result") == 0)
-        {
-          options.tree_test_suite_result = true;
-        }
-
-        if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--seed") == 0)
+        if (arg == "-s" || arg == "--seed")
         {
           if (i + 1 < argc)
           {

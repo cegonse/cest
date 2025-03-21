@@ -65,6 +65,15 @@ namespace cest
     bool json_output;
     bool only_test_suite_result;
     bool tree_test_suite_result;
+
+    CommandLineOptions() :
+      help(false),
+      randomize(false),
+      random_seed(0),
+      random_seed_present(false),
+      json_output(false),
+      only_test_suite_result(false),
+      tree_test_suite_result(false) {}
   };
 
   struct CestGlobals
