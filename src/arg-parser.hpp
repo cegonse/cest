@@ -19,7 +19,9 @@ namespace cest
       {"--only-suite-result", [&]() { options.only_test_suite_result = true; }},
       {"-o", [&]() { options.only_test_suite_result = true; }},
       {"--tree-suite-result", [&]() { options.only_test_suite_result = true; }},
-      {"-t", [&]() { options.tree_test_suite_result = true; }}
+      {"-t", [&]() { options.tree_test_suite_result = true; }},
+      {"--print-test-list", [&]() { options.print_test_list = true; }},
+      {"-l", [&]() { options.print_test_list = true; }}
     };
 
     if (argc > 1)
@@ -40,9 +42,7 @@ namespace cest
               options.random_seed = std::stoi(argv[i + 1]);
               options.random_seed_present = true;
             }
-            catch (const std::invalid_argument &err)
-            {
-            }
+            catch (const std::invalid_argument &err) {}
           }
         }
       }

@@ -27,10 +27,17 @@ int main(int argc, const char *argv[])
   cest::TestSuite *root_suite = &__cest_globals.root_test_suite;
   cest::CommandLineOptions command_line_options = cest::parseArgs(argc, argv);
 
+  std::atexit([]() { cest::cleanUpTestSuite(&__cest_globals.root_test_suite); });
+
   if (command_line_options.help)
   {
     cest::showHelp(argv[0]);
-    cest::cleanUpTestSuite(root_suite);
+    return 0;
+  }
+
+  if (command_line_options.print_test_list)
+  {
+    cest::dumpJsonTestList(root_suite);
     return 0;
   }
 
@@ -65,7 +72,6 @@ int main(int argc, const char *argv[])
 
   auto status_code = cest::numFailedTests(root_suite);
   cest::saveSummaryFile(binaryPath(argv[0]), std::string(argv[0]), root_suite);
-  cest::cleanUpTestSuite(root_suite);
   cest::deinitAddressSanitizer();
 
   return status_code;

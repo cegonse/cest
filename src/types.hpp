@@ -65,6 +65,7 @@ namespace cest
     bool json_output;
     bool only_test_suite_result;
     bool tree_test_suite_result;
+    bool print_test_list;
 
     CommandLineOptions() :
       help(false),
@@ -73,7 +74,8 @@ namespace cest
       random_seed_present(false),
       json_output(false),
       only_test_suite_result(false),
-      tree_test_suite_result(false) {}
+      tree_test_suite_result(false),
+      print_test_list(false) {}
   };
 
   struct CestGlobals

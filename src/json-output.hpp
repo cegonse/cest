@@ -47,4 +47,26 @@ namespace cest
 
     std::cout << output.dump(2) << std::endl;
   }
+
+  void addSuiteJsonTestCases(
+    cest::TestSuite *test_suite,
+    nlohmann::json& output)
+  {
+    for (auto &test_case : test_suite->test_cases)
+      output["test_cases"].push_back(test_case->name);
+
+    for (auto &pair : test_suite->test_suites)
+      addSuiteJsonTestCases(pair.second, output);
+  }
+
+  void dumpJsonTestList(cest::TestSuite *root_suite)
+  {
+    nlohmann::json output;
+    output["file"] = cest::findSuiteSourceFile(root_suite);
+    output["test_cases"] = std::vector<std::string>();
+
+    addSuiteJsonTestCases(root_suite, output);
+
+    std::cout << output.dump(2) << std::endl;
+  }
 }

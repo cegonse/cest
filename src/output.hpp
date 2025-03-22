@@ -68,6 +68,8 @@ namespace cest
     std::cout << "    -o/--only-suite-result: Only output the test suite result" << std::endl;
     std::cout << "    -t/--tree-suite-result: Output the test suite result in tree format" << std::endl;
     std::cout << "    -s/--seed <seed>: Inject seed for randomization uses (unsigned integer)";
+    std::cout << "    -j/--json: Print test results as JSON";
+    std::cout << "    -l/--print-test-list: Print JSON list of included test cases";
     std::cout << std::endl;
   }
 
