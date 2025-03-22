@@ -53,7 +53,7 @@ To see an integration example, check the [cpm package manager](https://github.co
 License
 -------
 
-Cest is MIT licensed.
+Cest is MIT licensed. Cest makes use of [nlohmann/JSON](https://github.com/nlohmann/json), which is MIT licensed.
 
 Contributing and roadmap
 ------------------------
