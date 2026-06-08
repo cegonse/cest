@@ -14,7 +14,7 @@ namespace cest
   {
     random_fn(seed, suite);
 
-    for (auto &pair : suite->test_suites)
-      randomizeTests(pair.second, seed, random_fn);
+    for (cest::TestSuite *nested_suite : suite->test_suites)
+      randomizeTests(nested_suite, seed, random_fn);
   }
 }

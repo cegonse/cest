@@ -10,6 +10,16 @@ namespace cest
     cest::TestSuite *test_suite,
     nlohmann::json& output)
   {
+    bool is_root = test_suite == &__cest_globals.root_test_suite;
+
+    if (is_root)
+    {
+      for (cest::TestSuite *nested_suite : test_suite->test_suites)
+        addSuiteJsonResult(nested_suite, output);
+
+      return;
+    }
+
     nlohmann::json suite;
 
     suite["tests"] = std::vector<nlohmann::json>();
@@ -32,8 +42,8 @@ namespace cest
 
     output["suites"].push_back(suite);
 
-    for (auto &pair : test_suite->test_suites)
-      addSuiteJsonResult(pair.second, output);
+    for (cest::TestSuite *nested_suite : test_suite->test_suites)
+      addSuiteJsonResult(nested_suite, output);
   }
 
   void dumpJsonResult(cest::TestSuite *root_suite)
@@ -55,8 +65,8 @@ namespace cest
     for (auto &test_case : test_suite->test_cases)
       output["test_cases"].push_back(test_case->name);
 
-    for (auto &pair : test_suite->test_suites)
-      addSuiteJsonTestCases(pair.second, output);
+    for (cest::TestSuite *nested_suite : test_suite->test_suites)
+      addSuiteJsonTestCases(nested_suite, output);
   }
 
   void dumpJsonTestList(cest::TestSuite *root_suite)

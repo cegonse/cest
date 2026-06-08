@@ -27,7 +27,7 @@ namespace cest
       }
     }
 
-    for (auto &pair : test_suite->test_suites)
-      configureFocusedTestSuite(pair.second);
+    for (cest::TestSuite *nested_suite : test_suite->test_suites)
+      configureFocusedTestSuite(nested_suite);
   }
 }
