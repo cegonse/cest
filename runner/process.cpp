@@ -49,11 +49,11 @@ static int handleParentProcess(int pipe_fd[2], std::function<void(std::string)> 
   do
   {
     std::array<char, MAX_BUFFER> buffer;
-    buffer.fill('\0');
     read_bytes = read(pipe_fd[0], buffer.data(), buffer.size());
-    buffer[read_bytes + 1] = '\0';
-    output += buffer.data();
-  } while (read_bytes != 0);
+    if (read_bytes > 0) {
+      output.append(buffer.data(), read_bytes);
+    }
+  } while (read_bytes > 0);
 
   on_output(output);
 
