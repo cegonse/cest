@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <map>
+#include <vector>
 #include <string>
 #include <csetjmp>
 
@@ -39,7 +40,7 @@ namespace cest
     TestFunction before_all;
     TestFunction after_all;
     std::vector<TestCase *> test_cases;
-    std::map<std::string, TestSuite *> test_suites;
+    std::vector<TestSuite *> test_suites;
   };
 
   class AssertionError : public std::exception
@@ -86,6 +87,7 @@ namespace cest
     jmp_buf jump_env;
     bool leaks_detected;
     int saved_stderr;
+    std::vector<std::string> registration_errors;
 
     CestGlobals() :
       current_test_suite(nullptr),
@@ -105,8 +107,8 @@ namespace cest
       }
     }
 
-    for (auto &pair : suite->test_suites)
-      any_test_failed |= anyTestInSuiteFailed(pair.second);
+    for (cest::TestSuite *nested_suite : suite->test_suites)
+      any_test_failed |= anyTestInSuiteFailed(nested_suite);
 
     return any_test_failed;
   }
@@ -121,8 +123,8 @@ namespace cest
         num_tests++;
     }
 
-    for (auto &pair : suite->test_suites)
-      num_tests += countTestsMatching(pair.second, condition);
+    for (cest::TestSuite *nested_suite : suite->test_suites)
+      num_tests += countTestsMatching(nested_suite, condition);
 
     return num_tests;
   }
@@ -156,8 +158,8 @@ namespace cest
     }
     else
     {
-      for (const auto &pair : suite->test_suites)
-        return findSuiteSourceFile(pair.second);
+      for (cest::TestSuite *nested_suite : suite->test_suites)
+        return findSuiteSourceFile(nested_suite);
     }
 
     return "";
@@ -173,9 +175,9 @@ namespace cest
         out.push_back(test_case);
     }
 
-    for (const auto &pair : suite->test_suites)
+    for (cest::TestSuite *nested_suite : suite->test_suites)
     {
-      auto nested = findFailedTestCases(pair.second);
+      auto nested = findFailedTestCases(nested_suite);
       out.insert(out.end(), nested.begin(), nested.end());
     }
 

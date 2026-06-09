@@ -35,6 +35,14 @@ int main(int argc, const char *argv[])
     return 0;
   }
 
+  if (!__cest_globals.registration_errors.empty())
+  {
+    for (const std::string &error : __cest_globals.registration_errors)
+      std::cout << error << std::endl;
+
+    return 1;
+  }
+
   if (command_line_options.print_test_list)
   {
     cest::dumpJsonTestList(root_suite);

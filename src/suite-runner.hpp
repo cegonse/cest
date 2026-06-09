@@ -70,8 +70,8 @@ namespace cest
     if (suite->after_all.fn)
       suite->after_all.fn();
 
-    for (auto &pair : suite->test_suites)
-      runTestSuite(pair.second);
+    for (cest::TestSuite *nested_suite : suite->test_suites)
+      runTestSuite(nested_suite);
   }
 
   void cleanUpSingleSuite(
@@ -85,8 +85,8 @@ namespace cest
     for (const auto test : test_suite->test_cases)
       tests_to_delete.push_back(test);
 
-    for (auto &pair : test_suite->test_suites)
-      cleanUpSingleSuite(pair.second, suites_to_delete, tests_to_delete);
+    for (cest::TestSuite *nested_suite : test_suite->test_suites)
+      cleanUpSingleSuite(nested_suite, suites_to_delete, tests_to_delete);
   }
 
   void cleanUpTestSuite(cest::TestSuite *test_suite)

@@ -20,7 +20,8 @@ describe("randomized tests", []() {
     root_suite.test_cases.push_back(&b);
     child_suite.test_cases.push_back(&c);
     child_suite.test_cases.push_back(&d);
-    root_suite.test_suites["child"] = &child_suite;
+    child_suite.name = "child";
+    root_suite.test_suites.push_back(&child_suite);
 
     cest::randomizeTests(&root_suite, seed, fn);
 

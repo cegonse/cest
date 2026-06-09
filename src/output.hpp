@@ -106,12 +106,22 @@ namespace cest
     for (cest::TestCase *test_case : suite->test_cases)
       printTestCaseResult(test_case);
 
-    for (auto &pair : suite->test_suites)
-      printTestSuiteResult(pair.second);
+    for (cest::TestSuite *nested_suite : suite->test_suites)
+      printTestSuiteResult(nested_suite);
   }
 
   void printTreeSuiteResult(cest::TestSuite *suite, int indentation = 0)
   {
+    bool is_root = suite == &__cest_globals.root_test_suite;
+
+    if (is_root)
+    {
+      for (cest::TestSuite *nested_suite : suite->test_suites)
+        printTreeSuiteResult(nested_suite, indentation);
+
+      return;
+    }
+
     std::string spacing = "  ";
 
     for (int i = 0; i < indentation; ++i)
@@ -138,8 +148,8 @@ namespace cest
       }
     }
 
-    for (auto &pair : suite->test_suites)
-      printTreeSuiteResult(pair.second, indentation + 1);
+    for (cest::TestSuite *nested_suite : suite->test_suites)
+      printTreeSuiteResult(nested_suite, indentation + 1);
   }
 
   void printSuiteSummaryResult(cest::TestSuite *suite)

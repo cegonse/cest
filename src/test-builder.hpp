@@ -51,22 +51,37 @@ namespace cest
     }
   };
 
+  bool suiteNameAlreadyUsed(TestSuite *parent, const std::string &name)
+  {
+    for (TestSuite *sibling : parent->test_suites)
+    {
+      if (sibling->name == name)
+        return true;
+    }
+
+    return false;
+  }
+
   int describeFn(std::string name, std::function<void()> fn)
   {
-    if (__cest_globals.current_test_suite == nullptr)
+    TestSuite *parent = &__cest_globals.root_test_suite;
+
+    if (__cest_globals.current_test_suite != nullptr)
+      parent = __cest_globals.current_test_suite;
+
+    if (suiteNameAlreadyUsed(parent, name))
     {
-      __cest_globals.current_test_suite = &__cest_globals.root_test_suite;
-    }
-    else
-    {
-      TestSuite *new_suite = new TestSuite();
-      __cest_globals.current_test_suite->test_suites[name] = new_suite;
-      __cest_globals.current_test_suite = new_suite;
+      __cest_globals.registration_errors.push_back(
+        "Duplicate test suite name \"" + name + "\" at the same level.");
     }
 
-    __cest_globals.current_test_suite->name = name;
+    TestSuite *suite = new TestSuite();
+    suite->name = name;
+    parent->test_suites.push_back(suite);
 
+    __cest_globals.current_test_suite = suite;
     fn();
+    __cest_globals.current_test_suite = parent;
 
     return 0;
   }

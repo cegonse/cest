@@ -24,4 +24,8 @@ describe("the first test suite", []() {
       expect(v).toBe(20);
     });
   });
+
+  it("still belongs to the outer suite", [&]() {
+    expect(v).toEqual(10);
+  });
 });
