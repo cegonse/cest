@@ -4,6 +4,7 @@
 #include "expect/assertion-float.hpp"
 #include "expect/assertion-vector.hpp"
 #include "expect/assertion-string.hpp"
+#include "expect/assertion-set.hpp"
 
 #define expect(...) cest::expectFunction(__FILE__, ((__LINE__ - 1)), __VA_ARGS__)
 #define passTest() cest::forcedPass()
