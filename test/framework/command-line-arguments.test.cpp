@@ -103,4 +103,34 @@ describe("Cest command line options", []() {
 
         expect(options.json_output).toBe(true);
     });
+
+    it("will set filter when --grep is present", []() {
+        int argc = 3;
+        const char *argv[] = { "/bin/cest", "--grep", "booleans" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.filter).toBe("booleans");
+    });
+
+    it("will set filter when -g is present", []() {
+        int argc = 3;
+        const char *argv[] = { "/bin/cest", "-g", "strings" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.filter).toBe("strings");
+    });
+
+    it("will have empty filter if --grep has no value", []() {
+        int argc = 2;
+        const char *argv[] = { "/bin/cest", "--grep" };
+        cest::CommandLineOptions options;
+
+        options = cest::parseArgs(argc, argv);
+
+        expect(options.filter).toBe("");
+    });
 });

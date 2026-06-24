@@ -58,6 +58,10 @@ int main(int argc, const char *argv[])
   }
 
   cest::configureFocusedTestSuite(root_suite);
+
+  if (!command_line_options.filter.empty())
+    cest::filterTestSuite(root_suite, command_line_options.filter);
+
   cest::initAddressSanitizer();
 
   cest::runTestSuite(root_suite);

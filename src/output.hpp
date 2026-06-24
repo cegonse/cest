@@ -78,6 +78,7 @@ namespace cest
     std::cout << "    -s/--seed <seed>: Inject seed for randomization uses (unsigned integer)";
     std::cout << "    -j/--json: Print test results as JSON";
     std::cout << "    -l/--print-test-list: Print JSON list of included test cases";
+    std::cout << "    -g/--grep <pattern>: Only run tests whose name contains <pattern>";
     std::cout << std::endl;
   }
 

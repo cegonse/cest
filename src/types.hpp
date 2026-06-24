@@ -70,6 +70,7 @@ namespace cest
     bool only_test_suite_result;
     bool tree_test_suite_result;
     bool print_test_list;
+    std::string filter;
 
     CommandLineOptions() :
       help(false),

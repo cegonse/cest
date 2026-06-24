@@ -30,4 +30,18 @@ namespace cest
     for (cest::TestSuite *nested_suite : test_suite->test_suites)
       configureFocusedTestSuite(nested_suite);
   }
+
+  void filterTestSuite(cest::TestSuite *suite, const std::string& filter)
+  {
+    for (cest::TestCase *test_case : suite->test_cases)
+    {
+      if (test_case->condition == cest::TestCaseCondition::Todo)
+        continue;
+      if (test_case->name.find(filter) == std::string::npos)
+        test_case->condition = cest::TestCaseCondition::Skipped;
+    }
+
+    for (cest::TestSuite *nested_suite : suite->test_suites)
+      filterTestSuite(nested_suite, filter);
+  }
 }

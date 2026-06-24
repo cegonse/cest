@@ -45,6 +45,12 @@ namespace cest
             catch (const std::invalid_argument &err) {}
           }
         }
+
+        if (arg == "-g" || arg == "--grep")
+        {
+          if (i + 1 < argc)
+            options.filter = std::string(argv[i + 1]);
+        }
       }
     }
 
