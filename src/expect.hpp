@@ -1,6 +1,8 @@
 #pragma once
 #include <string_view>
+#include <type_traits>
 #include "expect/assertion-base.hpp"
+#include "expect/assertion-callable.hpp"
 #include "expect/assertion-double.hpp"
 #include "expect/assertion-float.hpp"
 #include "expect/assertion-vector.hpp"
@@ -83,5 +85,12 @@ namespace cest
   Assertion<std::string> expectFunction(const char *file, int line, std::string_view actual)
   {
     return Assertion<std::string>(file, line, std::string(actual));
+  }
+
+  template <class Fn>
+    requires std::is_invocable_r_v<void, Fn>
+  CallableAssertion expectFunction(const char *file, int line, Fn actual)
+  {
+    return CallableAssertion(file, line, std::function<void()>(actual));
   }
 }
