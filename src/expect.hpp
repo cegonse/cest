@@ -12,6 +12,7 @@
 #include "expect/assertion-deque.hpp"
 #include "expect/assertion-list.hpp"
 #include "expect/assertion-multi.hpp"
+#include <string_view>
 #include "expect/assertion-smart-ptr.hpp"
 #include "expect/assertion-chrono.hpp"
 #include "expect/assertion-path.hpp"
@@ -77,5 +78,10 @@ namespace cest
   Assertion<std::string> expectFunction(const char *file, int line, const char *actual)
   {
     return Assertion<std::string>(file, line, (std::string)actual);
+  }
+
+  Assertion<std::string> expectFunction(const char *file, int line, std::string_view actual)
+  {
+    return Assertion<std::string>(file, line, std::string(actual));
   }
 }
