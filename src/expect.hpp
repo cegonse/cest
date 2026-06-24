@@ -11,6 +11,7 @@
 #include "expect/assertion-tuple.hpp"
 #include "expect/assertion-deque.hpp"
 #include "expect/assertion-list.hpp"
+#include "expect/assertion-multi.hpp"
 
 #define expect(...) cest::expectFunction(__FILE__, ((__LINE__ - 1)), __VA_ARGS__)
 #define passTest() cest::forcedPass()
