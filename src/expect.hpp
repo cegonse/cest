@@ -13,6 +13,27 @@
 
 namespace cest
 {
+  template <typename T, typename = void>
+  struct is_streamable : std::false_type {};
+
+  template <typename T>
+  struct is_streamable<T, std::void_t<decltype(std::declval<std::ostream&>() << std::declval<const T&>())>>
+    : std::true_type {};
+
+  template <typename T>
+  std::string formatValue(const T& value)
+  {
+    if constexpr (is_streamable<T>::value)
+    {
+      std::stringstream ss;
+      ss << value;
+      return ss.str();
+    }
+    else
+    {
+      return "<non-printable>";
+    }
+  }
   void forcedPass()
   {
     throw ForcedPassError();
@@ -85,9 +106,8 @@ namespace cest
       if ((expected != actual) ^ this->negated)
       {
 
-        std::stringstream message;
-        message << "Expected " << expected << ", was " << actual;
-        throw AssertionError(assertion_file, assertion_line, message.str());
+        std::string message = "Expected " + formatValue(expected) + ", was " + formatValue(actual);
+        throw AssertionError(assertion_file, assertion_line, message);
       }
     }
 
@@ -313,11 +333,16 @@ namespace cest
 
     void toBe(std::vector<T> expected)
     {
-      if ((expected.size() != actual.size()) ^ negated)
+      if (expected.size() != actual.size())
       {
-        std::stringstream message;
-        message << "Vector sizes do not match, expected " << expected.size() << " items but had " << actual.size() << " items";
-        throw AssertionError(assertion_file, assertion_line, message.str());
+        if (!negated)
+        {
+          std::stringstream message;
+          message << "Vector sizes do not match, expected " << expected.size() << " items but had " << actual.size() << " items";
+          throw AssertionError(assertion_file, assertion_line, message.str());
+        }
+
+        return;
       }
 
       bool any_item_differs = false;
@@ -333,9 +358,8 @@ namespace cest
 
       if (any_item_differs ^ negated)
       {
-        std::stringstream message;
-        message << "Vector item mismatch at position " << found_difference << ", expected " << expected[found_difference] << " but was " << actual[found_difference];
-        throw AssertionError(assertion_file, assertion_line, message.str());
+        std::string message = "Vector item mismatch at position " + std::to_string(found_difference) + ", expected " + formatValue(expected[found_difference]) + " but was " + formatValue(actual[found_difference]);
+        throw AssertionError(assertion_file, assertion_line, message);
       }
     }
 
@@ -359,9 +383,8 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::stringstream message;
-        message << "Item " << item << " not found in vector";
-        throw AssertionError(assertion_file, assertion_line, message.str());
+        std::string message = "Item " + formatValue(item) + " not found in vector";
+        throw AssertionError(assertion_file, assertion_line, message);
       }
     }
 
