@@ -6,6 +6,8 @@
 #define P(x,y) PP(x,y)
 
 #define describe(...) __attribute__((unused)) static int P(dummy, __LINE__) = cest::describeFn(__VA_ARGS__)
+#define xdescribe(...) __attribute__((unused)) static int P(dummy, __LINE__) = cest::xdescribeFn(__VA_ARGS__)
+#define fdescribe(...) __attribute__((unused)) static int P(dummy, __LINE__) = cest::fdescribeFn(__VA_ARGS__)
 #define it(...) cest::itFn(__FILE__, __LINE__, __VA_ARGS__)
 #define xit(...) cest::xitFn(__FILE__, __LINE__, __VA_ARGS__)
 #define fit(...) cest::fitFn(__FILE__, __LINE__, __VA_ARGS__)
@@ -62,7 +64,7 @@ namespace cest
     return false;
   }
 
-  int describeFn(std::string name, std::function<void()> fn)
+  int describeFnWithCondition(std::string name, std::function<void()> fn, TestCaseCondition condition)
   {
     TestSuite *parent = &__cest_globals.root_test_suite;
 
@@ -77,6 +79,7 @@ namespace cest
 
     TestSuite *suite = new TestSuite();
     suite->name = name;
+    suite->condition = condition;
     parent->test_suites.push_back(suite);
 
     __cest_globals.current_test_suite = suite;
@@ -86,9 +89,32 @@ namespace cest
     return 0;
   }
 
+  int describeFn(std::string name, std::function<void()> fn)
+  {
+    return describeFnWithCondition(name, fn, TestCaseCondition::Normal);
+  }
+
+  int xdescribeFn(std::string name, std::function<void()> fn)
+  {
+    return describeFnWithCondition(name, fn, TestCaseCondition::Skipped);
+  }
+
+  int fdescribeFn(std::string name, std::function<void()> fn)
+  {
+    return describeFnWithCondition(name, fn, TestCaseCondition::Focused);
+  }
+
   void itFn(std::string file, int line, std::string name, std::function<void()> fn)
   {
-    TestCase *test = TestCaseBuilder(file, line, name, fn).build();
+    TestCaseCondition suite_condition = __cest_globals.current_test_suite->condition;
+    TestCaseBuilder builder(file, line, name, fn);
+
+    if (suite_condition == TestCaseCondition::Skipped)
+      builder.skipped();
+    else if (suite_condition == TestCaseCondition::Focused)
+      builder.Focused();
+
+    TestCase *test = builder.build();
     __cest_globals.current_test_suite->test_cases.push_back(test);
   }
 

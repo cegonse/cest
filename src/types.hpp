@@ -35,6 +35,7 @@ namespace cest
   struct TestSuite
   {
     std::string name;
+    TestCaseCondition condition = TestCaseCondition::Normal;
     TestFunction before_each;
     TestFunction after_each;
     TestFunction before_all;
