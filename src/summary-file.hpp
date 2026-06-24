@@ -19,6 +19,7 @@ namespace cest
     int passed_tests = numPassedTests(root_suite);
     int failed_tests = numFailedTests(root_suite);
     int skipped_tests = numSkippedTests(root_suite);
+    int todo_tests = numTodoTests(root_suite);
 
     buffer
       << findSuiteSourceFile(root_suite)
@@ -29,7 +30,9 @@ namespace cest
       << "|"
       << failed_tests
       << "|"
-      << skipped_tests;
+      << skipped_tests
+      << "|"
+      << todo_tests;
 
     writeTextFile("/tmp/cest_" + file_name, buffer.str());
   }

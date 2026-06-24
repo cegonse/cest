@@ -22,7 +22,7 @@ namespace cest
 
     for (cest::TestCase *test_case : suite->test_cases)
     {
-      if (test_case->condition == cest::TestCaseCondition::Skipped)
+      if (test_case->condition == cest::TestCaseCondition::Skipped || test_case->condition == cest::TestCaseCondition::Todo)
         continue;
 
       __cest_globals.current_test_case = test_case;

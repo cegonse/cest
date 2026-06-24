@@ -11,6 +11,7 @@ namespace Output
     int num_passed_tests,
     int num_failed_tests,
     int num_skipped_tests,
+    int num_todo_tests,
     float time
   );
 }

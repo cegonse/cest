@@ -23,12 +23,14 @@ void Output::printSummary(
   int num_passed_tests,
   int num_failed_tests,
   int num_skipped_tests,
+  int num_todo_tests,
   float time
 ) {
   int num_total =
     num_passed_tests +
     num_failed_tests +
-    num_skipped_tests;
+    num_skipped_tests +
+    num_todo_tests;
   int num_total_suites =
     num_passed_suites +
     num_failed_suites;
@@ -38,6 +40,7 @@ void Output::printSummary(
     passed,
     failed,
     skipped,
+    todo,
     total;
 
   passed_suites
@@ -89,6 +92,15 @@ void Output::printSummary(
     << ", "
     << ASCII_RESET;
 
+  todo
+    << ASCII_BOLD
+    << ASCII_YELLOW
+    << num_todo_tests
+    << " todo"
+    << ASCII_BLACK
+    << ", "
+    << ASCII_RESET;
+
   total
     << num_total
     << " total";
@@ -109,6 +121,7 @@ void Output::printSummary(
     << (num_failed_tests > 0 ? failed.str() : "")
     << (num_passed_tests > 0 ? passed.str() : "")
     << (num_skipped_tests > 0 ? skipped.str() : "")
+    << (num_todo_tests > 0 ? todo.str() : "")
     << total.str()
     << std::endl;
 

@@ -73,11 +73,15 @@ namespace cest
     std::cout << std::endl;
   }
 
-  void printTestBadge(bool failed, bool skipped = false)
+  void printTestBadge(bool failed, bool skipped = false, bool todo = false)
   {
     if (failed)
     {
       std::cout << ASCII_BACKGROUND_RED << ASCII_BLACK << ASCII_BOLD << " FAIL " << ASCII_RESET;
+    }
+    else if (todo)
+    {
+      std::cout << ASCII_BACKGROUND_MAGENTA << ASCII_BLACK << ASCII_BOLD << " TODO " << ASCII_RESET;
     }
     else if (skipped)
     {
@@ -91,7 +95,7 @@ namespace cest
 
   void printTestCaseResult(cest::TestCase *test_case)
   {
-    printTestBadge(test_case->failed, test_case->condition == cest::TestCaseCondition::Skipped);
+    printTestBadge(test_case->failed, test_case->condition == cest::TestCaseCondition::Skipped, test_case->condition == cest::TestCaseCondition::Todo);
     std::cout << ASCII_GRAY << " " << test_case->fn.file << ":" << test_case->fn.line << ASCII_RESET << ASCII_BOLD << " " << test_case->name << ASCII_RESET << std::endl;
 
     if (test_case->failed)
@@ -133,6 +137,8 @@ namespace cest
     {
       if (test_case->failed)
         std::cout << "  " << spacing << ASCII_RED << ASCII_CROSS << ASCII_RESET;
+      else if (test_case->condition == cest::TestCaseCondition::Todo)
+        std::cout << "  " << spacing << ASCII_YELLOW << ASCII_TRIANGLE << ASCII_RESET;
       else if (test_case->condition == cest::TestCaseCondition::Skipped)
         std::cout << "  " << spacing << ASCII_YELLOW << ASCII_TRIANGLE << ASCII_RESET;
       else

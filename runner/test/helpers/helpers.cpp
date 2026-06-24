@@ -13,6 +13,7 @@ static int __output_print_summary_num_failed_suites;
 static int __output_print_summary_num_passed_tests;
 static int __output_print_summary_num_failed_tests;
 static int __output_print_summary_num_skipped_tests;
+static int __output_print_summary_num_todo_tests;
 static float __output_print_summary_time;
 
 static std::vector<std::string> __mock_executable_files;
@@ -37,6 +38,7 @@ void Output::printSummary(
   int num_passed_tests,
   int num_failed_tests,
   int num_skipped_tests,
+  int num_todo_tests,
   float time
 ) {
   __output_print_summary_num_passed_suites = num_passed_suites;
@@ -44,6 +46,7 @@ void Output::printSummary(
   __output_print_summary_num_failed_tests = num_failed_tests;
   __output_print_summary_num_passed_tests = num_passed_tests;
   __output_print_summary_num_skipped_tests = num_skipped_tests;
+  __output_print_summary_num_todo_tests = num_todo_tests;
   __output_print_summary_time = time;
 }
 bool Output::printSummary_hasBeenCalledWith(
@@ -52,6 +55,7 @@ bool Output::printSummary_hasBeenCalledWith(
   int num_passed_tests,
   int num_failed_tests,
   int num_skipped_tests,
+  int num_todo_tests,
   float time
 ) {
   return
@@ -60,6 +64,7 @@ bool Output::printSummary_hasBeenCalledWith(
     __output_print_summary_num_failed_tests == num_failed_tests &&
     __output_print_summary_num_passed_tests == num_passed_tests &&
     __output_print_summary_num_skipped_tests == num_skipped_tests &&
+    __output_print_summary_num_todo_tests == num_todo_tests &&
     __output_print_summary_time == time;
 }
 void Output::killedBySignal(const std::string& binary, int signal)

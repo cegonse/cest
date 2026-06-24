@@ -11,6 +11,7 @@
 #define it(...) cest::itFn(__FILE__, __LINE__, __VA_ARGS__)
 #define xit(...) cest::xitFn(__FILE__, __LINE__, __VA_ARGS__)
 #define fit(...) cest::fitFn(__FILE__, __LINE__, __VA_ARGS__)
+#define todo(...) cest::todoFn(__FILE__, __LINE__, __VA_ARGS__)
 #define beforeEach(x) cest::beforeEachFn(__FILE__, __LINE__, x)
 #define afterEach(x) cest::afterEachFn(__FILE__, __LINE__, x)
 #define beforeAll(x) cest::beforeAllFn(__FILE__, __LINE__, x)
@@ -127,6 +128,17 @@ namespace cest
   void xitFn(std::string file, int line, std::string name, std::function<void()> fn)
   {
     TestCase *test = TestCaseBuilder(file, line, name, fn).skipped()->build();
+    __cest_globals.current_test_suite->test_cases.push_back(test);
+  }
+
+  void todoFn(std::string file, int line, std::string name)
+  {
+    TestCase *test = new TestCase();
+    test->name = name;
+    test->condition = TestCaseCondition::Todo;
+    test->fn.file = file;
+    test->fn.line = line;
+    test->failed = false;
     __cest_globals.current_test_suite->test_cases.push_back(test);
   }
 

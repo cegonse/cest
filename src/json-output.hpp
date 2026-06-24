@@ -30,6 +30,8 @@ namespace cest
       nlohmann::json test;
       test["name"] = test_case->name;
       test["failed"] = test_case->failed;
+      test["skipped"] = test_case->condition == cest::TestCaseCondition::Skipped;
+      test["todo"] = test_case->condition == cest::TestCaseCondition::Todo;
 
       if (test_case->failed)
       {

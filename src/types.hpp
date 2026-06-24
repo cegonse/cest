@@ -18,7 +18,8 @@ namespace cest
   {
     Normal,
     Skipped,
-    Focused
+    Focused,
+    Todo
   };
 
   struct TestCase
@@ -133,7 +134,7 @@ namespace cest
   int numPassedTests(cest::TestSuite *suite)
   {
     return countTestsMatching(suite, [](cest::TestCase *test_case) {
-      return !test_case->failed && test_case->condition != TestCaseCondition::Skipped;
+      return !test_case->failed && test_case->condition != TestCaseCondition::Skipped && test_case->condition != TestCaseCondition::Todo;
     });
   }
 
@@ -148,6 +149,13 @@ namespace cest
   {
     return countTestsMatching(suite, [](cest::TestCase *test_case) {
       return test_case->condition == TestCaseCondition::Skipped;
+    });
+  }
+
+  int numTodoTests(cest::TestSuite *suite)
+  {
+    return countTestsMatching(suite, [](cest::TestCase *test_case) {
+      return test_case->condition == TestCaseCondition::Todo;
     });
   }
 

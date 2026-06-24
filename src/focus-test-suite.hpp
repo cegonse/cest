@@ -22,7 +22,7 @@ namespace cest
       {
         cest::TestCase *test_case = test_suite->test_cases[i];
 
-        if (i != focused_test_idx)
+        if (i != focused_test_idx && test_case->condition != cest::TestCaseCondition::Todo)
           test_case->condition = cest::TestCaseCondition::Skipped;
       }
     }

@@ -32,6 +32,7 @@ describe("Runner", []() {
     auto num_passed_tests = 2;
     auto num_failed_tests = 2;
     auto num_skipped_tests = 2;
+    auto num_todo_tests = 0;
     auto elapsed_time = 2.0f;
 
     Runner::runTests({ "test/first_test", "test/second_test" }, results);
@@ -44,6 +45,7 @@ describe("Runner", []() {
       num_passed_tests,
       num_failed_tests,
       num_skipped_tests,
+      num_todo_tests,
       elapsed_time)
     ).toBeTruthy();
   });

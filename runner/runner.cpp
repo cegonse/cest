@@ -10,12 +10,14 @@ struct TestCounts
   int total_passed_tests;
   int total_failed_tests;
   int total_skipped_tests;
+  int total_todo_tests;
   int total_passed_suites;
   int total_failed_suites;
 
   TestCounts() : total_passed_tests(0),
     total_failed_tests(0),
     total_skipped_tests(0),
+    total_todo_tests(0),
     total_passed_suites(0),
     total_failed_suites(0) {}
 };
@@ -57,6 +59,7 @@ int Runner::runTests(
       counts.total_passed_tests += test_result.num_passed_tests;
       counts.total_failed_tests += test_result.num_failed_tests;
       counts.total_skipped_tests += test_result.num_skipped_tests;
+      counts.total_todo_tests += test_result.num_todo_tests;
 
       const auto failed = test_result.num_failed_tests > 0 || test_status != 0;
       results.push_back({ test_result.src_path, test_result.bin_path, failed });
@@ -79,6 +82,7 @@ int Runner::runTests(
     counts.total_passed_tests,
     counts.total_failed_tests,
     counts.total_skipped_tests,
+    counts.total_todo_tests,
     toSeconds(total_time_us)
   );
 

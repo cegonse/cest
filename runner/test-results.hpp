@@ -12,13 +12,14 @@ struct TestResults
   {
     const auto parsed_results = Helpers::tokenize(input, RESULTS_TOKEN);
 
-    if (parsed_results.size() != 5) return;
+    if (parsed_results.size() < 5) return;
 
     this->src_path = parsed_results[0];
     this->bin_path = parsed_results[1];
     this->num_passed_tests = Helpers::fromString(parsed_results[2]);
     this->num_failed_tests = Helpers::fromString(parsed_results[3]);
     this->num_skipped_tests = Helpers::fromString(parsed_results[4]);
+    this->num_todo_tests = parsed_results.size() > 5 ? Helpers::fromString(parsed_results[5]) : 0;
   }
 
   std::string src_path;
@@ -26,4 +27,5 @@ struct TestResults
   int num_passed_tests;
   int num_failed_tests;
   int num_skipped_tests;
+  int num_todo_tests;
 };
