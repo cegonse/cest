@@ -7,6 +7,7 @@
 #include "expect/assertion-set.hpp"
 #include "expect/assertion-map.hpp"
 #include "expect/assertion-array.hpp"
+#include "expect/assertion-optional.hpp"
 
 #define expect(...) cest::expectFunction(__FILE__, ((__LINE__ - 1)), __VA_ARGS__)
 #define passTest() cest::forcedPass()
