@@ -32,6 +32,7 @@ namespace cest
       test["failed"] = test_case->failed;
       test["skipped"] = test_case->condition == cest::TestCaseCondition::Skipped;
       test["todo"] = test_case->condition == cest::TestCaseCondition::Todo;
+      test["duration_ms"] = test_case->duration_us / 1000;
 
       if (test_case->failed)
       {

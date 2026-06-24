@@ -31,6 +31,7 @@ namespace cest
     std::string failure_message;
     std::string failure_file;
     int failure_line;
+    int64_t duration_us = 0;
   };
 
   struct TestSuite

@@ -24,6 +24,14 @@
 
 namespace cest
 {
+  std::string formatDuration(int64_t duration_us)
+  {
+    if (duration_us < 1000)
+      return "< 1 ms";
+
+    return std::to_string(duration_us / 1000) + " ms";
+  }
+
   void tryPrintFailedLines(cest::TestCase *test_case)
   {
     if (!test_case->failed) return;
@@ -96,7 +104,12 @@ namespace cest
   void printTestCaseResult(cest::TestCase *test_case)
   {
     printTestBadge(test_case->failed, test_case->condition == cest::TestCaseCondition::Skipped, test_case->condition == cest::TestCaseCondition::Todo);
-    std::cout << ASCII_GRAY << " " << test_case->fn.file << ":" << test_case->fn.line << ASCII_RESET << ASCII_BOLD << " " << test_case->name << ASCII_RESET << std::endl;
+    std::cout << ASCII_GRAY << " " << test_case->fn.file << ":" << test_case->fn.line << ASCII_RESET << ASCII_BOLD << " " << test_case->name << ASCII_RESET;
+
+    if (test_case->condition != cest::TestCaseCondition::Skipped && test_case->condition != cest::TestCaseCondition::Todo)
+      std::cout << ASCII_GRAY << " (" << formatDuration(test_case->duration_us) << ")" << ASCII_RESET;
+
+    std::cout << std::endl;
 
     if (test_case->failed)
     {
@@ -144,7 +157,12 @@ namespace cest
       else
         std::cout << "  " << spacing << ASCII_GREEN << ASCII_CHECK << ASCII_RESET;
 
-      std::cout << " " << ASCII_GRAY << test_case->name << ASCII_RESET << std::endl;
+      std::cout << " " << ASCII_GRAY << test_case->name;
+
+      if (test_case->condition != cest::TestCaseCondition::Skipped && test_case->condition != cest::TestCaseCondition::Todo)
+        std::cout << " (" << formatDuration(test_case->duration_us) << ")";
+
+      std::cout << ASCII_RESET << std::endl;
 
       if (test_case->failed)
       {

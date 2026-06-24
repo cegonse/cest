@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <chrono>
 
 #include "globals.hpp"
 #include "signal-handler.hpp"
@@ -26,6 +27,8 @@ namespace cest
         continue;
 
       __cest_globals.current_test_case = test_case;
+
+      auto test_start = std::chrono::steady_clock::now();
 
       if (suite->before_each.fn)
         suite->before_each.fn();
@@ -65,6 +68,9 @@ namespace cest
 
       if (suite->after_each.fn)
         suite->after_each.fn();
+
+      auto test_end = std::chrono::steady_clock::now();
+      test_case->duration_us = std::chrono::duration_cast<std::chrono::microseconds>(test_end - test_start).count();
     }
 
     if (suite->after_all.fn)
