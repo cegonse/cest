@@ -14,6 +14,7 @@
 #include "expect/assertion-multi.hpp"
 #include "expect/assertion-smart-ptr.hpp"
 #include "expect/assertion-chrono.hpp"
+#include "expect/assertion-complex.hpp"
 #include "expect/assertion-bitset.hpp"
 
 #define expect(...) cest::expectFunction(__FILE__, ((__LINE__ - 1)), __VA_ARGS__)
