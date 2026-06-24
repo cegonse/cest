@@ -1,4 +1,5 @@
 #pragma once
+#include <string_view>
 #include "expect/assertion-base.hpp"
 #include "expect/assertion-double.hpp"
 #include "expect/assertion-float.hpp"
@@ -12,7 +13,6 @@
 #include "expect/assertion-deque.hpp"
 #include "expect/assertion-list.hpp"
 #include "expect/assertion-multi.hpp"
-#include <string_view>
 #include "expect/assertion-smart-ptr.hpp"
 #include "expect/assertion-chrono.hpp"
 #include "expect/assertion-path.hpp"

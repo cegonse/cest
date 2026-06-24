@@ -56,13 +56,13 @@ namespace cest
     void toBeTruthy()
     {
       if (!actual ^ this->negated)
-        throw AssertionError(assertion_file, assertion_line, "Expresion is not truthy");
+        throw AssertionError(assertion_file, assertion_line, "Expression is not truthy");
     }
 
     void toBeFalsy()
     {
       if (actual ^ this->negated)
-        throw AssertionError(assertion_file, assertion_line, "Expresion is not falsy");
+        throw AssertionError(assertion_file, assertion_line, "Expression is not falsy");
     }
 
     void toBe(T expected)
