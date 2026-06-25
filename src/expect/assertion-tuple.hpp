@@ -115,7 +115,7 @@ namespace cest
     size_t findMismatchIndex(const std::tuple<Ts...> &expected, std::index_sequence<Is...>)
     {
       size_t index = 0;
-      ((std::get<Is>(expected) != std::get<Is>(actual) ? (index = Is, true) : false) || ...);
+      (void)((std::get<Is>(expected) != std::get<Is>(actual) ? (index = Is, true) : false) || ...);
       return index;
     }
   };
