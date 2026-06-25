@@ -86,7 +86,11 @@ namespace cest
 
   Assertion<std::string> expectFunction(const char *file, int line, const char *actual)
   {
-    return Assertion<std::string>(file, line, (std::string)actual);
+    if (actual == NULL)
+    {
+      throw AssertionError(file, line, "expect() received a NULL string pointer — use expect((void*)ptr) for null checks");
+    }
+    return Assertion<std::string>(file, line, std::string(actual));
   }
 
   Assertion<std::string> expectFunction(const char *file, int line, std::string_view actual)

@@ -122,6 +122,20 @@ describe("test common assertions", []() {
         expect(numbers).Not->toHaveLength(4);
     });
 
+    it("gives a clear error for NULL C strings instead of crashing", []() {
+        expect([]() {
+            const char *null_str = NULL;
+            expect(null_str).toBe("x");
+        }).toThrow();
+    });
+
+    it("checks null pointers via void* cast", []() {
+        char *ptr = NULL;
+
+        expect((void *)ptr).toBeNull();
+        expect((void *)ptr).Not->toBeNotNull();
+    });
+
     it("can be forced to always pass", []() {
         passTest();
 
