@@ -29,16 +29,24 @@ constexpr double toSeconds(int64_t us)
 
 int Runner::runTests(
   const std::vector<std::string>& executables,
-  std::vector<TestRun>& results
+  std::vector<TestRun>& results,
+  const std::string& grep
 ) {
   int status_code = 0;
   int64_t total_time_us = 0;
   TestCounts counts;
   std::string arg = executables.size() > 1 ? "-o" : "-t";
-  std::vector<std::string> cest_args = { arg };
 
   for (const auto& test_file : executables)
   {
+    if (!grep.empty() && test_file.find(grep) == std::string::npos)
+      continue;
+
+    std::vector<std::string> cest_args = { arg };
+
+    if (!grep.empty())
+      cest_args.insert(cest_args.end(), { "-g", grep });
+
     int64_t test_time = 0;
     const auto test_status = Process::runExecutable(
       test_file,

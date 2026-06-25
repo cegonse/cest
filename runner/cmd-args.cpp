@@ -12,7 +12,11 @@ CmdArgs::CmdArgs(int argc, char* argv[]) : _path(Directory::cwd()), _watch(false
   {
     std::string arg(argv[i]);
 
-    if (!isCmdArg(arg))
+    if (arg == "--grep" && i + 1 < argc)
+    {
+      this->_grep = std::string(argv[++i]);
+    }
+    else if (!isCmdArg(arg))
       this->_path = Directory::absolute(arg);
     else
       parseArg(arg);
@@ -41,4 +45,9 @@ bool CmdArgs::watch()
 bool CmdArgs::help()
 {
   return this->_help;
+}
+
+const std::string& CmdArgs::grep()
+{
+  return this->_grep;
 }

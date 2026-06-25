@@ -70,4 +70,38 @@ describe("CmdArgs", []() {
       expect(cmd_args.help()).toBeTruthy();
     });
   });
+
+  describe("grep()", []() {
+    it("defaults to empty string", []() {
+      std::string cmd_path = "/bin/test";
+      std::array<char *, 1> argv = { (char *)cmd_path.c_str() };
+
+      auto cmd_args = CmdArgs(argv.size(), argv.data());
+
+      expect(cmd_args.grep()).toBe("");
+    });
+
+    it("captures value after --grep", []() {
+      std::string cmd_path = "/bin/test";
+      std::string flag = "--grep";
+      std::string pattern = "assertions";
+      std::array<char *, 3> argv = { (char *)cmd_path.c_str(), (char *)flag.c_str(), (char *)pattern.c_str() };
+
+      auto cmd_args = CmdArgs(argv.size(), argv.data());
+
+      expect(cmd_args.grep()).toBe("assertions");
+    });
+
+    it("does not treat grep value as path", []() {
+      std::string cmd_path = "/bin/test";
+      std::string flag = "--grep";
+      std::string pattern = "foo";
+      std::array<char *, 3> argv = { (char *)cmd_path.c_str(), (char *)flag.c_str(), (char *)pattern.c_str() };
+
+      auto cmd_args = CmdArgs(argv.size(), argv.data());
+
+      expect(cmd_args.grep()).toBe("foo");
+      expect(cmd_args.path()).toEqual(Directory::cwd());
+    });
+  });
 });

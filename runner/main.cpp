@@ -10,6 +10,7 @@ static void showHelp()
   std::cout << "Options:" << std::endl;
   std::cout << "  [Search Path]: Directory to look for test executables" << std::endl;
   std::cout << "  --watch: Run cest in watch mode" << std::endl;
+  std::cout << "  --grep <pattern>: Only run test files/cases whose name contains <pattern>" << std::endl;
   std::cout << "  --help: Show this help message" << std::endl;
   exit(0);
 }
@@ -26,5 +27,5 @@ int main(int argc, char *argv[])
 
   std::vector<Runner::TestRun> results;
   const auto executables = Directory::findExecutableFiles(args.path(), "test_");
-  return Runner::runTests(executables, results);
+  return Runner::runTests(executables, results, args.grep());
 }

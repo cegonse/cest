@@ -13,6 +13,7 @@ namespace Runner
 
   int runTests(
     const std::vector<std::string>& executables,
-    std::vector<TestRun>& results
+    std::vector<TestRun>& results,
+    const std::string& grep = ""
   );
 }
