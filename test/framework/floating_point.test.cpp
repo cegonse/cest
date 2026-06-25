@@ -30,4 +30,14 @@ describe("Working with floating point numbers", []() {
     expect(2.0).Not->toBeGreaterThan(5.0);
     expect(2.0).Not->toBeLessThan(1.0);
   });
+
+  it("supports range checks with floats and doubles", []() {
+    expect(0.5f).toBeInRange(0.0f, 1.0f);
+    expect(0.0f).toBeInRange(0.0f, 1.0f);
+    expect(1.0f).toBeInRange(0.0f, 1.0f);
+    expect(3.14).toBeInRange(3.0, 4.0);
+
+    expect(1.1f).Not->toBeInRange(0.0f, 1.0f);
+    expect(5.0).Not->toBeInRange(0.0, 1.0);
+  });
 });

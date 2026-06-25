@@ -53,6 +53,17 @@ describe("test common assertions", []() {
         expect(3).Not->toBeLessThan(3);
     });
 
+    it("asserts integer ranges", []() {
+        expect(50).toBeInRange(0, 100);
+        expect(0).toBeInRange(0, 100);
+        expect(100).toBeInRange(0, 100);
+        expect(-5).toBeInRange(-10, 0);
+
+        expect(101).Not->toBeInRange(0, 100);
+        expect(-1).Not->toBeInRange(0, 100);
+        expect(50).Not->toBeInRange(51, 100);
+    });
+
     it("asserts strings", []() {
         expect("hello").toBe("hello");
         expect("world").toContain("rld");

@@ -67,6 +67,17 @@ namespace cest
       }
     }
 
+    void toBeInRange(float min, float max)
+    {
+      bool in_range = actual >= min && actual <= max;
+      if (!in_range ^ negated)
+      {
+        std::stringstream message;
+        message << "Expected " << actual << (negated ? " not" : "") << " to be in range [" << min << ", " << max << "]";
+        throw AssertionError(assertion_file, assertion_line, message.str());
+      }
+    }
+
     Assertion<float> *Not;
 
   private:

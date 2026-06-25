@@ -103,6 +103,16 @@ namespace cest
       }
     }
 
+    void toBeInRange(T min, T max) requires requires(T a, T b) { { a >= b }; { a <= b }; }
+    {
+      bool in_range = actual >= min && actual <= max;
+      if (!in_range ^ negated)
+      {
+        std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be in range [" + formatValue(min) + ", " + formatValue(max) + "]";
+        throw AssertionError(assertion_file, assertion_line, message);
+      }
+    }
+
     void toEqualMemory(T expected, int64_t length)
     {
       int i;
