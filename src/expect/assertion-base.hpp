@@ -1,5 +1,7 @@
 #pragma once
 #include <sstream>
+#include <cstring>
+#include <type_traits>
 #include "../types.hpp"
 
 namespace cest
@@ -71,11 +73,21 @@ namespace cest
       }
     }
 
-    void toBe(T expected)
+    void toBe(T expected) requires requires(T a, T b) { { a != b }; }
     {
       if ((expected != actual) ^ this->negated)
       {
         std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be " + formatValue(expected);
+        throw AssertionError(assertion_file, assertion_line, message);
+      }
+    }
+
+    void toBe(T expected) requires (std::is_enum_v<T> && !requires(T a, T b) { { a != b }; })
+    {
+      bool differs = std::memcmp(&actual, &expected, sizeof(T)) != 0;
+      if (differs ^ negated)
+      {
+        std::string message = "Expected value" + std::string(negated ? " not" : "") + " to be the expected enum value";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -109,6 +121,17 @@ namespace cest
       if (!in_range ^ negated)
       {
         std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be in range [" + formatValue(min) + ", " + formatValue(max) + "]";
+        throw AssertionError(assertion_file, assertion_line, message);
+      }
+    }
+
+    void toEqualBytes(T expected) requires std::is_trivially_copyable_v<T>
+    {
+      bool differs = std::memcmp(&actual, &expected, sizeof(T)) != 0;
+      if (differs ^ negated)
+      {
+        std::string message = "Expected value" + std::string(negated ? "" : " not") +
+                              " to be byte-equal (memcmp of " + std::to_string(sizeof(T)) + " bytes)";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
