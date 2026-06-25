@@ -125,6 +125,32 @@ namespace cest
       }
     }
 
+    void toHaveBitsSet(T mask) requires std::is_integral_v<T>
+    {
+      bool has_bits = (actual & mask) == mask;
+      if (!has_bits ^ negated)
+      {
+        std::stringstream message;
+        message << "Expected 0x" << std::hex << std::uppercase << actual
+                << (negated ? " not" : "") << " to have bits 0x"
+                << std::hex << std::uppercase << mask << " set";
+        throw AssertionError(assertion_file, assertion_line, message.str());
+      }
+    }
+
+    void toHaveBitsClear(T mask) requires std::is_integral_v<T>
+    {
+      bool bits_clear = (actual & mask) == 0;
+      if (!bits_clear ^ negated)
+      {
+        std::stringstream message;
+        message << "Expected 0x" << std::hex << std::uppercase << actual
+                << (negated ? " not" : "") << " to have bits 0x"
+                << std::hex << std::uppercase << mask << " clear";
+        throw AssertionError(assertion_file, assertion_line, message.str());
+      }
+    }
+
     void toEqualBytes(T expected) requires std::is_trivially_copyable_v<T>
     {
       bool differs = std::memcmp(&actual, &expected, sizeof(T)) != 0;
