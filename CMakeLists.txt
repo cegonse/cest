@@ -24,8 +24,8 @@ else()
   set(ASAN_LDFLAGS -fsanitize=address -static-libasan)
 endif()
 
-SET(RUNNER_CFLAGS -g -O2 -Wall -Werror -std=c++20 ${ASAN_CFLAGS})
-SET(TEST_CFLAGS -g -O0 -Wall -Werror -std=c++20 ${ASAN_CFLAGS})
+SET(RUNNER_CFLAGS -g -O2 -Wall -Wunused-value -Werror -std=c++20 ${ASAN_CFLAGS})
+SET(TEST_CFLAGS -g -O0 -Wall -Wunused-value -Werror -std=c++20 ${ASAN_CFLAGS})
 
 add_executable(cest-runner ${RUNNER_SOURCES} ${RUNNER_OS_SOURCES})
 target_compile_options(cest-runner PRIVATE ${RUNNER_CFLAGS})
