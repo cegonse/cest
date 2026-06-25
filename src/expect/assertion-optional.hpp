@@ -38,11 +38,11 @@ namespace cest
       {
         std::stringstream message;
         if (!expected.has_value())
-          message << "Expected std::nullopt, was " << formatValue(*actual);
+          message << "Expected " << formatValue(*actual) << (negated ? " not" : "") << " to be std::nullopt";
         else if (!actual.has_value())
-          message << "Expected " << formatValue(*expected) << ", was std::nullopt";
+          message << "Expected std::nullopt" << (negated ? " not" : "") << " to be " << formatValue(*expected);
         else
-          message << "Expected " << formatValue(*expected) << ", was " << formatValue(*actual);
+          message << "Expected " << formatValue(*actual) << (negated ? " not" : "") << " to be " << formatValue(*expected);
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -56,7 +56,7 @@ namespace cest
     {
       if (!actual.has_value() ^ negated)
       {
-        throw AssertionError(assertion_file, assertion_line, "Expected optional to have a value");
+        throw AssertionError(assertion_file, assertion_line, std::string("Expected optional") + (negated ? " not" : "") + " to have a value");
       }
     }
 
@@ -68,9 +68,9 @@ namespace cest
       {
         std::stringstream message;
         if (!actual.has_value())
-          message << "Expected optional with value " << formatValue(expected) << ", was std::nullopt";
+          message << "Expected optional" << (negated ? " not" : "") << " to have value " << formatValue(expected) << ", was std::nullopt";
         else
-          message << "Expected optional with value " << formatValue(expected) << ", was " << formatValue(*actual);
+          message << "Expected optional value " << formatValue(*actual) << (negated ? " not" : "") << " to be " << formatValue(expected);
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -79,7 +79,7 @@ namespace cest
     {
       if (actual.has_value() ^ negated)
       {
-        std::string message = "Expected optional to be empty, but had value " + formatValue(*actual);
+        std::string message = std::string("Expected optional") + (negated ? " not" : "") + " to be empty, but had value " + formatValue(*actual);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }

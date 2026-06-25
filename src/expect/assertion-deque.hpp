@@ -39,7 +39,7 @@ namespace cest
         if (!negated)
         {
           std::stringstream message;
-          message << "Deque sizes do not match, expected " << expected.size() << " items but had " << actual.size() << " items";
+          message << "Expected deque of size " << actual.size() << " to have " << expected.size() << " items";
           throw AssertionError(assertion_file, assertion_line, message.str());
         }
 
@@ -59,7 +59,7 @@ namespace cest
 
       if (any_item_differs ^ negated)
       {
-        std::string message = "Deque item mismatch at position " + std::to_string(found_difference) + ", expected " + formatValue(expected[found_difference]) + " but was " + formatValue(actual[found_difference]);
+        std::string message = "Expected " + formatValue(actual[found_difference]) + " at position " + std::to_string(found_difference) + (negated ? " not" : "") + " to be " + formatValue(expected[found_difference]);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -84,7 +84,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in deque";
+        std::string message = "Expected deque" + std::string(negated ? " not" : "") + " to contain " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -94,7 +94,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Deque length does not match, expected " << size << " items but had " << actual.size() << " items";
+        message << "Expected deque" << (negated ? " not" : "") << " to have length " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

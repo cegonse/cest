@@ -60,7 +60,7 @@ namespace cest
     {
       if ((expected != actual) ^ negated)
       {
-        std::string message = "Expected " + formatDuration(expected) + ", was " + formatDuration(actual);
+        std::string message = "Expected " + formatDuration(actual) + std::string(negated ? " not" : "") + " to be " + formatDuration(expected);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -74,7 +74,7 @@ namespace cest
     {
       if ((actual <= expected) ^ negated)
       {
-        std::string message = "Expected " + formatDuration(actual) + " to be greater than " + formatDuration(expected);
+        std::string message = "Expected " + formatDuration(actual) + std::string(negated ? " not" : "") + " to be greater than " + formatDuration(expected);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -83,7 +83,7 @@ namespace cest
     {
       if ((actual >= expected) ^ negated)
       {
-        std::string message = "Expected " + formatDuration(actual) + " to be less than " + formatDuration(expected);
+        std::string message = "Expected " + formatDuration(actual) + std::string(negated ? " not" : "") + " to be less than " + formatDuration(expected);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -96,7 +96,7 @@ namespace cest
 
       if (!within ^ negated)
       {
-        std::string message = "Expected " + formatDuration(actual) + " to be within " + formatDuration(tolerance) + " of " + formatDuration(expected);
+        std::string message = "Expected " + formatDuration(actual) + std::string(negated ? " not" : "") + " to be within " + formatDuration(tolerance) + " of " + formatDuration(expected);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }

@@ -43,13 +43,13 @@ namespace cest
 
         if (expected.size() > CLIP_STRING_LENGTH || actual.size() > CLIP_STRING_LENGTH)
         {
-          message << "String mismatch," << std::endl;
+          message << "Expected string" << (negated ? " not" : "") << " to be" << std::endl;
           message << "  Expected: \"" << expected << "\"" << std::endl;
-          message << "  Actual  : \"" << actual << "\"";
+          message << "  Actual:   \"" << actual << "\"";
         }
         else
         {
-          message << "Expected \"" << expected << "\", was \"" << actual << "\"";
+          message << "Expected \"" << actual << "\"" << (negated ? " not" : "") << " to be \"" << expected << "\"";
         }
 
         throw AssertionError(assertion_file, assertion_line, message.str());
@@ -68,13 +68,13 @@ namespace cest
         std::stringstream message;
         if (expected_string.size() > CLIP_STRING_LENGTH || actual.size() > CLIP_STRING_LENGTH)
         {
-          message << "Expected pattern mismatch," << std::endl;
-          message << "  Regexp: \"" << expected_string << "\"" << std::endl;
-          message << "  Actual: \"" << actual << "\"";
+          message << "Expected string" << (negated ? " not" : "") << " to match pattern" << std::endl;
+          message << "  Pattern: \"" << expected_string << "\"" << std::endl;
+          message << "  Actual:  \"" << actual << "\"";
         }
         else
         {
-          message << "Expected pattern \"" << expected_string << "\" did not match with \"" << actual << "\"";
+          message << "Expected \"" << actual << "\"" << (negated ? " not" : "") << " to match pattern \"" << expected_string << "\"";
         }
 
         throw AssertionError(assertion_file, assertion_line, message.str());
@@ -94,13 +94,13 @@ namespace cest
 
         if (expected.size() > CLIP_STRING_LENGTH || actual.size() > CLIP_STRING_LENGTH)
         {
-          message << "Substring not found," << std::endl;
-          message << "  Expected: \"" << expected << "\"" << std::endl;
-          message << "  Actual  : \"" << actual << "\"";
+          message << "Expected string" << (negated ? " not" : "") << " to contain" << std::endl;
+          message << "  Substring: \"" << expected << "\"" << std::endl;
+          message << "  Actual:    \"" << actual << "\"";
         }
         else
         {
-          message << "\"" << expected << "\" not present inside \"" << actual << "\"";
+          message << "Expected \"" << actual << "\"" << (negated ? " not" : "") << " to contain \"" << expected << "\"";
         }
 
         throw AssertionError(assertion_file, assertion_line, message.str());
@@ -112,7 +112,7 @@ namespace cest
       if ((actual.length() != length) ^ negated)
       {
         std::stringstream message;
-        message << "Length of \"" << actual << "\" expected to be " << length << ", was " << actual.length();
+        message << "Expected \"" << actual << "\"" << (negated ? " not" : "") << " to have length " << length << ", was " << actual.length();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

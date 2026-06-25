@@ -56,21 +56,26 @@ namespace cest
     void toBeTruthy()
     {
       if (!actual ^ this->negated)
-        throw AssertionError(assertion_file, assertion_line, "Expression is not truthy");
+      {
+        std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be truthy";
+        throw AssertionError(assertion_file, assertion_line, message);
+      }
     }
 
     void toBeFalsy()
     {
       if (actual ^ this->negated)
-        throw AssertionError(assertion_file, assertion_line, "Expression is not falsy");
+      {
+        std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be falsy";
+        throw AssertionError(assertion_file, assertion_line, message);
+      }
     }
 
     void toBe(T expected)
     {
       if ((expected != actual) ^ this->negated)
       {
-
-        std::string message = "Expected " + formatValue(expected) + ", was " + formatValue(actual);
+        std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be " + formatValue(expected);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -91,8 +96,10 @@ namespace cest
       if (any_byte_differs ^ negated)
       {
         std::stringstream message;
-        message << "Memory mismatch at byte " << i << ", expected ";
-        message << std::hex << std::uppercase << (int)expected[i] << " but was " << std::hex << std::uppercase << (int)actual[i];
+        if (negated)
+          message << "Expected memory not to match";
+        else
+          message << "Expected byte " << i << " to be 0x" << std::hex << std::uppercase << (int)expected[i] << ", was 0x" << std::hex << std::uppercase << (int)actual[i];
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -101,9 +108,8 @@ namespace cest
     {
       if ((actual == NULL) ^ negated)
       {
-        std::stringstream message;
-        message << "Expected 0x" << std::hex << std::uppercase << actual << " to be not null";
-        throw AssertionError(assertion_file, assertion_line, message.str());
+        std::string message = std::string("Expected value") + (negated ? "" : " not") + " to be null";
+        throw AssertionError(assertion_file, assertion_line, message);
       }
     }
 
@@ -112,7 +118,7 @@ namespace cest
       if ((actual != NULL) ^ negated)
       {
         std::stringstream message;
-        message << "Expected 0x" << std::hex << std::uppercase << actual << " to be null";
+        message << "Expected 0x" << std::hex << std::uppercase << actual << (negated ? " not" : "") << " to be null";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

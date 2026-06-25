@@ -36,7 +36,7 @@ namespace cest
     {
       if ((expected != actual) ^ negated)
       {
-        std::string message = "Expected path \"" + expected.string() + "\", was \"" + actual.string() + "\"";
+        std::string message = "Expected path \"" + actual.string() + "\"" + (negated ? " not" : "") + " to be \"" + expected.string() + "\"";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -52,7 +52,7 @@ namespace cest
 
       if ((actual_ext != ext) ^ negated)
       {
-        std::string message = "Expected extension \"" + ext + "\", was \"" + actual_ext + "\" in path \"" + actual.string() + "\"";
+        std::string message = "Expected extension \"" + actual_ext + "\"" + (negated ? " not" : "") + " to be \"" + ext + "\" in path \"" + actual.string() + "\"";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -63,7 +63,7 @@ namespace cest
 
       if ((actual_name != name) ^ negated)
       {
-        std::string message = "Expected filename \"" + name + "\", was \"" + actual_name + "\" in path \"" + actual.string() + "\"";
+        std::string message = "Expected filename \"" + actual_name + "\"" + (negated ? " not" : "") + " to be \"" + name + "\" in path \"" + actual.string() + "\"";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -72,7 +72,7 @@ namespace cest
     {
       if (!actual.is_absolute() ^ negated)
       {
-        std::string message = "Expected path \"" + actual.string() + "\" to be absolute";
+        std::string message = "Expected path \"" + actual.string() + "\"" + (negated ? " not" : "") + " to be absolute";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -81,7 +81,7 @@ namespace cest
     {
       if (!actual.is_relative() ^ negated)
       {
-        std::string message = "Expected path \"" + actual.string() + "\" to be relative";
+        std::string message = "Expected path \"" + actual.string() + "\"" + (negated ? " not" : "") + " to be relative";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }

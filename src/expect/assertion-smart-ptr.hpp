@@ -37,7 +37,7 @@ namespace cest
     {
       if ((actual != nullptr) ^ negated)
       {
-        throw AssertionError(assertion_file, assertion_line, "Expected shared_ptr to be null");
+        throw AssertionError(assertion_file, assertion_line, std::string("Expected shared_ptr") + (negated ? " not" : "") + " to be null");
       }
     }
 
@@ -45,7 +45,7 @@ namespace cest
     {
       if ((actual == nullptr) ^ negated)
       {
-        throw AssertionError(assertion_file, assertion_line, "Expected shared_ptr to be not null");
+        throw AssertionError(assertion_file, assertion_line, std::string("Expected shared_ptr") + (negated ? "" : " not") + " to be null");
       }
     }
 
@@ -60,7 +60,7 @@ namespace cest
 
       if ((*actual != expected) ^ negated)
       {
-        std::string message = "Expected shared_ptr to point to " + formatValue(expected) + ", was " + formatValue(*actual);
+        std::string message = "Expected shared_ptr value " + formatValue(*actual) + (negated ? " not" : "") + " to be " + formatValue(expected);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -70,7 +70,7 @@ namespace cest
       if ((actual_use_count != expected) ^ negated)
       {
         std::stringstream message;
-        message << "Expected use_count " << expected << ", was " << actual_use_count;
+        message << "Expected use_count " << actual_use_count << (negated ? " not" : "") << " to be " << expected;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -122,7 +122,7 @@ namespace cest
     {
       if ((actual != nullptr) ^ negated)
       {
-        throw AssertionError(assertion_file, assertion_line, "Expected unique_ptr to be null");
+        throw AssertionError(assertion_file, assertion_line, std::string("Expected unique_ptr") + (negated ? " not" : "") + " to be null");
       }
     }
 
@@ -130,7 +130,7 @@ namespace cest
     {
       if ((actual == nullptr) ^ negated)
       {
-        throw AssertionError(assertion_file, assertion_line, "Expected unique_ptr to be not null");
+        throw AssertionError(assertion_file, assertion_line, std::string("Expected unique_ptr") + (negated ? "" : " not") + " to be null");
       }
     }
 
@@ -145,7 +145,7 @@ namespace cest
 
       if ((*actual != expected) ^ negated)
       {
-        std::string message = "Expected unique_ptr to point to " + formatValue(expected) + ", was " + formatValue(*actual);
+        std::string message = "Expected unique_ptr value " + formatValue(*actual) + (negated ? " not" : "") + " to be " + formatValue(expected);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }

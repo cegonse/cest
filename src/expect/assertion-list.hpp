@@ -41,7 +41,7 @@ namespace cest
         if (!negated)
         {
           std::stringstream message;
-          message << "List sizes do not match, expected " << expected.size() << " items but had " << actual.size() << " items";
+          message << "Expected list of size " << actual.size() << " to have " << expected.size() << " items";
           throw AssertionError(assertion_file, assertion_line, message.str());
         }
 
@@ -58,7 +58,7 @@ namespace cest
         {
           if (!negated)
           {
-            std::string message = "List item mismatch at position " + std::to_string(position) + ", expected " + formatValue(*it_expected) + " but was " + formatValue(*it_actual);
+            std::string message = "Expected " + formatValue(*it_actual) + " at position " + std::to_string(position) + " to be " + formatValue(*it_expected);
             throw AssertionError(assertion_file, assertion_line, message);
           }
 
@@ -72,7 +72,7 @@ namespace cest
 
       if (negated)
       {
-        throw AssertionError(assertion_file, assertion_line, "Expected lists to differ, but they are equal");
+        throw AssertionError(assertion_file, assertion_line, "Expected list not to be equal");
       }
     }
 
@@ -96,7 +96,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in list";
+        std::string message = "Expected list" + std::string(negated ? " not" : "") + " to contain " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -106,7 +106,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "List size does not match, expected " << size << " items but had " << actual.size() << " items";
+        message << "Expected list" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -159,7 +159,7 @@ namespace cest
         {
           if (!negated)
           {
-            std::string message = "Forward list item mismatch at position " + std::to_string(position) + ", expected " + formatValue(*it_expected) + " but was " + formatValue(*it_actual);
+            std::string message = "Expected " + formatValue(*it_actual) + " at position " + std::to_string(position) + " to be " + formatValue(*it_expected);
             throw AssertionError(assertion_file, assertion_line, message);
           }
 
@@ -180,7 +180,7 @@ namespace cest
           size_t expected_size = std::distance(expected.begin(), expected.end());
           size_t actual_size = std::distance(actual.begin(), actual.end());
           std::stringstream message;
-          message << "Forward list sizes do not match, expected " << expected_size << " items but had " << actual_size << " items";
+          message << "Expected forward_list of size " << actual_size << " to have " << expected_size << " items";
           throw AssertionError(assertion_file, assertion_line, message.str());
         }
 
@@ -189,7 +189,7 @@ namespace cest
 
       if (negated)
       {
-        throw AssertionError(assertion_file, assertion_line, "Expected forward lists to differ, but they are equal");
+        throw AssertionError(assertion_file, assertion_line, "Expected forward_list not to be equal");
       }
     }
 
@@ -213,7 +213,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in forward list";
+        std::string message = "Expected forward_list" + std::string(negated ? " not" : "") + " to contain " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -225,7 +225,7 @@ namespace cest
       if ((actual_size != size) ^ negated)
       {
         std::stringstream message;
-        message << "Forward list size does not match, expected " << size << " items but had " << actual_size << " items";
+        message << "Expected forward_list" << (negated ? " not" : "") << " to have size " << size << ", was " << actual_size;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

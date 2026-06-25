@@ -39,9 +39,9 @@ namespace cest
       {
         std::string message;
         if (expected.first != actual.first)
-          message = "Pair first element mismatch, expected " + formatValue(expected.first) + " but was " + formatValue(actual.first);
+          message = "Expected pair first element " + formatValue(actual.first) + std::string(negated ? " not" : "") + " to be " + formatValue(expected.first);
         else
-          message = "Pair second element mismatch, expected " + formatValue(expected.second) + " but was " + formatValue(actual.second);
+          message = "Expected pair second element " + formatValue(actual.second) + std::string(negated ? " not" : "") + " to be " + formatValue(expected.second);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -93,7 +93,7 @@ namespace cest
       {
         size_t mismatch_index = findMismatchIndex(expected, std::index_sequence_for<Ts...>{});
         std::stringstream message;
-        message << "Tuple element mismatch at position " << mismatch_index;
+        message << "Expected tuple" << (negated ? " not" : "") << " to match at position " << mismatch_index;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

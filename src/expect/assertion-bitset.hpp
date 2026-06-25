@@ -36,7 +36,7 @@ namespace cest
     {
       if ((expected != actual) ^ negated)
       {
-        std::string message = "Expected " + expected.to_string() + ", was " + actual.to_string();
+        std::string message = "Expected " + actual.to_string() + std::string(negated ? " not" : "") + " to be " + expected.to_string();
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -51,7 +51,7 @@ namespace cest
       if (!actual.test(pos) ^ negated)
       {
         std::stringstream message;
-        message << "Expected bit " << pos << " to be set in " << actual.to_string();
+        message << "Expected bit " << pos << (negated ? " not" : "") << " to be set in " << actual.to_string();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -61,7 +61,7 @@ namespace cest
       if ((actual.count() != n) ^ negated)
       {
         std::stringstream message;
-        message << "Expected " << n << " bits set, was " << actual.count() << " in " << actual.to_string();
+        message << "Expected " << actual.count() << " bits" << (negated ? " not" : "") << " to be " << n << " in " << actual.to_string();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -70,7 +70,7 @@ namespace cest
     {
       if (!actual.all() ^ negated)
       {
-        std::string message = "Expected all bits set in " + actual.to_string();
+        std::string message = std::string("Expected") + (negated ? " not" : "") + " all bits set in " + actual.to_string();
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -79,7 +79,7 @@ namespace cest
     {
       if (!actual.none() ^ negated)
       {
-        std::string message = "Expected no bits set in " + actual.to_string();
+        std::string message = std::string("Expected") + (negated ? " not" : "") + " no bits set in " + actual.to_string();
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }

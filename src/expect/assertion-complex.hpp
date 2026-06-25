@@ -41,8 +41,8 @@ namespace cest
       if (!(real_matches && imag_matches) ^ negated)
       {
         std::stringstream message;
-        message << "Expected (" << expected.real() << " + " << expected.imag() << "i)";
-        message << ", was (" << actual.real() << " + " << actual.imag() << "i)";
+        message << "Expected (" << actual.real() << " + " << actual.imag() << "i)";
+        message << (negated ? " not" : "") << " to be (" << expected.real() << " + " << expected.imag() << "i)";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -57,7 +57,7 @@ namespace cest
       if ((std::fabs(actual.real() - expected) > epsilon) ^ negated)
       {
         std::stringstream message;
-        message << "Expected real part " << expected << ", was " << actual.real();
+        message << "Expected real part " << actual.real() << (negated ? " not" : "") << " to be " << expected;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -67,7 +67,7 @@ namespace cest
       if ((std::fabs(actual.imag() - expected) > epsilon) ^ negated)
       {
         std::stringstream message;
-        message << "Expected imaginary part " << expected << ", was " << actual.imag();
+        message << "Expected imaginary part " << actual.imag() << (negated ? " not" : "") << " to be " << expected;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

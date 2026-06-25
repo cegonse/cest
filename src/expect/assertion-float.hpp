@@ -37,7 +37,7 @@ namespace cest
       if ((fabs(actual - expected) > epsilon) ^ negated)
       {
         std::stringstream message;
-        message << "Expected " << expected << ", was " << actual;
+        message << "Expected " << actual << (negated ? " not" : "") << " to be " << expected;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -52,7 +52,7 @@ namespace cest
       if ((actual < expected) ^ negated)
       {
         std::stringstream message;
-        message << "Expected " << expected << " to be greather than" << actual;
+        message << "Expected " << actual << (negated ? " not" : "") << " to be greater than " << expected;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -62,7 +62,7 @@ namespace cest
       if ((actual > expected) ^ negated)
       {
         std::stringstream message;
-        message << "Expected " << expected << " to be less than" << actual;
+        message << "Expected " << actual << (negated ? " not" : "") << " to be less than " << expected;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

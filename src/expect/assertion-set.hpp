@@ -38,7 +38,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Set mismatch, expected " << expected.size() << " items but had " << actual.size() << " items";
+        message << "Expected set of size " << actual.size() << (negated ? " not" : "") << " to be " << expected.size() << " items";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -52,7 +52,7 @@ namespace cest
     {
       if (!actual.count(item) ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in set";
+        std::string message = "Expected set" + std::string(negated ? " not" : "") + " to include " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -62,7 +62,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Set size does not match, expected " << size << " items but had " << actual.size() << " items";
+        message << "Expected set" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -108,7 +108,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered set mismatch, expected " << expected.size() << " items but had " << actual.size() << " items";
+        message << "Expected unordered_set of size " << actual.size() << (negated ? " not" : "") << " to be " << expected.size() << " items";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -122,7 +122,7 @@ namespace cest
     {
       if (!actual.count(item) ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in unordered set";
+        std::string message = "Expected unordered_set" + std::string(negated ? " not" : "") + " to include " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -132,7 +132,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered set size does not match, expected " << size << " items but had " << actual.size() << " items";
+        message << "Expected unordered_set" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

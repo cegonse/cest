@@ -53,7 +53,7 @@ namespace cest
       return;
     }
 
-    throw AssertionError(file, line, "Expected exception not raised");
+    throw AssertionError(file, line, "Expected function to throw, but no exception was thrown");
   }
 
   template <class T>

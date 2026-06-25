@@ -38,7 +38,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Map mismatch, expected " << expected.size() << " entries but had " << actual.size() << " entries";
+        message << "Expected map of size " << actual.size() << (negated ? " not" : "") << " to have " << expected.size() << " entries";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -55,7 +55,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Entry {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "} not found in map";
+        std::string message = "Expected map" + std::string(negated ? " not" : "") + " to include {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "}";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -64,7 +64,7 @@ namespace cest
     {
       if (!actual.count(key) ^ negated)
       {
-        std::string message = "Key " + formatValue(key) + " not found in map";
+        std::string message = "Expected map" + std::string(negated ? " not" : "") + " to have key " + formatValue(key);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -74,7 +74,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Map size does not match, expected " << size << " entries but had " << actual.size() << " entries";
+        message << "Expected map" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -120,7 +120,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered map mismatch, expected " << expected.size() << " entries but had " << actual.size() << " entries";
+        message << "Expected unordered_map of size " << actual.size() << (negated ? " not" : "") << " to have " << expected.size() << " entries";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -137,7 +137,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Entry {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "} not found in unordered map";
+        std::string message = "Expected unordered_map" + std::string(negated ? " not" : "") + " to include {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "}";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -146,7 +146,7 @@ namespace cest
     {
       if (!actual.count(key) ^ negated)
       {
-        std::string message = "Key " + formatValue(key) + " not found in unordered map";
+        std::string message = "Expected unordered_map" + std::string(negated ? " not" : "") + " to have key " + formatValue(key);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -156,7 +156,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered map size does not match, expected " << size << " entries but had " << actual.size() << " entries";
+        message << "Expected unordered_map" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

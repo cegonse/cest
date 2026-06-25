@@ -47,7 +47,7 @@ namespace cest
 
       if (any_item_differs ^ negated)
       {
-        std::string message = "Array item mismatch at position " + std::to_string(found_difference) + ", expected " + formatValue(expected[found_difference]) + " but was " + formatValue(actual[found_difference]);
+        std::string message = "Expected " + formatValue(actual[found_difference]) + " at position " + std::to_string(found_difference) + (negated ? " not" : "") + " to be " + formatValue(expected[found_difference]);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -72,7 +72,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in array";
+        std::string message = "Expected array" + std::string(negated ? " not" : "") + " to contain " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -82,7 +82,7 @@ namespace cest
       if ((N != size) ^ negated)
       {
         std::stringstream message;
-        message << "Array length does not match, expected " << size << " items but had " << N << " items";
+        message << "Expected array" << (negated ? " not" : "") << " to have length " << size << ", was " << N;
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

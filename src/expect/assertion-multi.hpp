@@ -40,7 +40,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Multiset mismatch, expected " << expected.size() << " items but had " << actual.size() << " items";
+        message << "Expected multiset of size " << actual.size() << (negated ? " not" : "") << " to be " << expected.size() << " items";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -54,7 +54,7 @@ namespace cest
     {
       if (!actual.count(item) ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in multiset";
+        std::string message = "Expected multiset" + std::string(negated ? " not" : "") + " to include " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -64,7 +64,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Multiset size does not match, expected " << size << " items but had " << actual.size() << " items";
+        message << "Expected multiset" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -110,7 +110,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered multiset mismatch, expected " << expected.size() << " items but had " << actual.size() << " items";
+        message << "Expected unordered_multiset of size " << actual.size() << (negated ? " not" : "") << " to be " << expected.size() << " items";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -124,7 +124,7 @@ namespace cest
     {
       if (!actual.count(item) ^ negated)
       {
-        std::string message = "Item " + formatValue(item) + " not found in unordered multiset";
+        std::string message = "Expected unordered_multiset" + std::string(negated ? " not" : "") + " to include " + formatValue(item);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -134,7 +134,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered multiset size does not match, expected " << size << " items but had " << actual.size() << " items";
+        message << "Expected unordered_multiset" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -180,7 +180,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Multimap mismatch, expected " << expected.size() << " entries but had " << actual.size() << " entries";
+        message << "Expected multimap of size " << actual.size() << (negated ? " not" : "") << " to have " << expected.size() << " entries";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -206,7 +206,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Entry {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "} not found in multimap";
+        std::string message = "Expected multimap" + std::string(negated ? " not" : "") + " to include {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "}";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -215,7 +215,7 @@ namespace cest
     {
       if (!actual.count(key) ^ negated)
       {
-        std::string message = "Key " + formatValue(key) + " not found in multimap";
+        std::string message = "Expected multimap" + std::string(negated ? " not" : "") + " to have key " + formatValue(key);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -225,7 +225,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Multimap size does not match, expected " << size << " entries but had " << actual.size() << " entries";
+        message << "Expected multimap" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -271,7 +271,7 @@ namespace cest
       if ((expected != actual) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered multimap mismatch, expected " << expected.size() << " entries but had " << actual.size() << " entries";
+        message << "Expected unordered_multimap of size " << actual.size() << (negated ? " not" : "") << " to have " << expected.size() << " entries";
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }
@@ -297,7 +297,7 @@ namespace cest
 
       if (!found ^ negated)
       {
-        std::string message = "Entry {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "} not found in unordered multimap";
+        std::string message = "Expected unordered_multimap" + std::string(negated ? " not" : "") + " to include {" + formatValue(entry.first) + ": " + formatValue(entry.second) + "}";
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -306,7 +306,7 @@ namespace cest
     {
       if (!actual.count(key) ^ negated)
       {
-        std::string message = "Key " + formatValue(key) + " not found in unordered multimap";
+        std::string message = "Expected unordered_multimap" + std::string(negated ? " not" : "") + " to have key " + formatValue(key);
         throw AssertionError(assertion_file, assertion_line, message);
       }
     }
@@ -316,7 +316,7 @@ namespace cest
       if ((actual.size() != size) ^ negated)
       {
         std::stringstream message;
-        message << "Unordered multimap size does not match, expected " << size << " entries but had " << actual.size() << " entries";
+        message << "Expected unordered_multimap" << (negated ? " not" : "") << " to have size " << size << ", was " << actual.size();
         throw AssertionError(assertion_file, assertion_line, message.str());
       }
     }

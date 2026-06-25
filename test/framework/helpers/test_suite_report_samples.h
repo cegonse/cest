@@ -68,7 +68,7 @@ std::string sample_json_with_one_failed_test_case_and_escaped_backslashes_and_do
 {\
 \"name\":\"should fail\",\
 \"time\":\"\",\
-\"failure_message\":\"Expected pattern .*\\\\d+ apples did not match with I have 12 \\\"apples\"\
+\"failure_message\":\"Expected \\\"I have 12 \\\\\\\"apples\\\" to match pattern \\\".*\\\\\\\\d+ apples\\\"\"\
 }\
 ]\
 }\
