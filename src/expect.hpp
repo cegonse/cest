@@ -10,6 +10,7 @@
 #include "expect/assertion-set.hpp"
 #include "expect/assertion-map.hpp"
 #include "expect/assertion-array.hpp"
+#include "expect/assertion-c-array.hpp"
 #include "expect/assertion-optional.hpp"
 #include "expect/assertion-tuple.hpp"
 #include "expect/assertion-deque.hpp"
@@ -60,6 +61,12 @@ namespace cest
   Assertion<T> expectFunction(const char *file, int line, T actual)
   {
     return Assertion<T>(file, line, actual);
+  }
+
+  template <class T, std::size_t N>
+  Assertion<T[N]> expectFunction(const char *file, int line, const T (&actual)[N])
+  {
+    return Assertion<T[N]>(file, line, actual);
   }
 
   Assertion<bool> expectFunction(const char *file, int line, bool actual)
