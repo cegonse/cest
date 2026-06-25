@@ -85,6 +85,24 @@ namespace cest
       toBe(expected);
     }
 
+    void toBeGreaterThan(T expected) requires requires(T a, T b) { { a > b }; }
+    {
+      if (!(actual > expected) ^ negated)
+      {
+        std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be greater than " + formatValue(expected);
+        throw AssertionError(assertion_file, assertion_line, message);
+      }
+    }
+
+    void toBeLessThan(T expected) requires requires(T a, T b) { { a < b }; }
+    {
+      if (!(actual < expected) ^ negated)
+      {
+        std::string message = "Expected " + formatValue(actual) + (negated ? " not" : "") + " to be less than " + formatValue(expected);
+        throw AssertionError(assertion_file, assertion_line, message);
+      }
+    }
+
     void toEqualMemory(T expected, int64_t length)
     {
       int i;

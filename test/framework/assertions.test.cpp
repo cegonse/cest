@@ -38,6 +38,21 @@ describe("test common assertions", []() {
         expect(big_number).Not->toBe(0);
     });
 
+    it("asserts integer comparisons", []() {
+        expect(5).toBeGreaterThan(3);
+        expect(10).toBeGreaterThan(9);
+        expect(-1).toBeGreaterThan(-5);
+
+        expect(3).toBeLessThan(5);
+        expect(0).toBeLessThan(1);
+        expect(-5).toBeLessThan(-1);
+
+        expect(3).Not->toBeGreaterThan(5);
+        expect(3).Not->toBeGreaterThan(3);
+        expect(5).Not->toBeLessThan(3);
+        expect(3).Not->toBeLessThan(3);
+    });
+
     it("asserts strings", []() {
         expect("hello").toBe("hello");
         expect("world").toContain("rld");
