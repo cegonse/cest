@@ -1,6 +1,6 @@
 #include <iostream>
 #include <chrono>
-#include <unistd.h>
+#include <filesystem>
 
 #include "types.hpp"
 #include "globals.hpp"
@@ -18,8 +18,7 @@
 
 static std::string binaryPath(const char *argv)
 {
-  std::string binary_path(argv);
-  return binary_path.substr(binary_path.rfind('/') + 1);
+  return std::filesystem::path(argv).filename().string();
 }
 
 int main(int argc, const char *argv[])

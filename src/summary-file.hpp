@@ -1,6 +1,7 @@
 #pragma once
 #include <sstream>
 #include <fstream>
+#include <filesystem>
 #include "types.hpp"
 
 namespace cest
@@ -34,6 +35,7 @@ namespace cest
       << "|"
       << todo_tests;
 
-    writeTextFile("/tmp/cest_" + file_name, buffer.str());
+    auto results_path = (std::filesystem::temp_directory_path() / ("cest_" + file_name)).string();
+    writeTextFile(results_path, buffer.str());
   }
 }

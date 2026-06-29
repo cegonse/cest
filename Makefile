@@ -9,6 +9,7 @@ build-cest:
 	quom src/main.hpp build/cest
 	python scripts/remove_duplicated_headers.py build/cest
 	python scripts/remove_duplicated_once_blocks.py build/cest
+	python scripts/remove_sanitizer_includes.py build/cest
 
 clean:
 	@rm -rf build

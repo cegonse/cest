@@ -6,6 +6,7 @@
 #include "../../output.h"
 #include "../../process.h"
 #include "../../directory.h"
+#include "../../terminal.h"
 #include <iostream>
 
 static int __output_print_summary_num_passed_suites;
@@ -93,6 +94,15 @@ std::string Directory::cwd()
 std::string Directory::absolute(const std::string& path)
 {
   return path;
+}
+std::string Directory::homeDirectory()
+{
+  return "/home/test";
+}
+
+char Terminal::waitForKey()
+{
+  return '\n';
 }
 void Directory::readTextFile_mockOutput(const std::string& output)
 {

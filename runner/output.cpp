@@ -1,5 +1,4 @@
 #include "output.h"
-#include <cstring>
 #include <iostream>
 #include <sstream>
 
@@ -140,22 +139,3 @@ void Output::printSummary(
     << std::endl;
 }
 
-void Output::killedBySignal(const std::string& binary, int signal)
-{
-  std::cout
-    << ASCII_BACKGROUND_RED
-    << ASCII_BOLD
-    << " FAIL "
-    << ASCII_RESET
-    << " "
-    << binary
-    << " → Killed by signal "
-    << signal
-    << " ("
-    << ASCII_BOLD
-    << ASCII_RED
-    << strsignal(signal)
-    << ASCII_RESET
-    << ")"
-    << std::endl;
-}

@@ -1,16 +1,16 @@
 #pragma once
 #include <csignal>
 #include <csetjmp>
-#include <cstring>
 #include <string>
 
 #include "globals.hpp"
+#include "platform.hpp"
 
 namespace cest
 {
   void onSignalRaised(int sig)
   {
-    std::string signal_as_string(strsignal(sig));
+    std::string signal_as_string = cest::platformSignalName(sig);
     cest::TestCase *test_case = __cest_globals.current_test_case;
 
     test_case->failed = true;
@@ -23,13 +23,7 @@ namespace cest
 
   void configureSignals()
   {
-    signal(SIGSEGV, cest::onSignalRaised);
-    signal(SIGFPE, cest::onSignalRaised);
-    signal(SIGBUS, cest::onSignalRaised);
-    signal(SIGILL, cest::onSignalRaised);
-    signal(SIGTERM, cest::onSignalRaised);
-    signal(SIGXCPU, cest::onSignalRaised);
-    signal(SIGXFSZ, cest::onSignalRaised);
+    cest::configurePlatformSignals(cest::onSignalRaised);
   }
 
   void registerSignalHandler()

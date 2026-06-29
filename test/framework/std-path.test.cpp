@@ -3,18 +3,28 @@
 
 namespace fs = std::filesystem;
 
+#ifdef _WIN32
+static const fs::path ABSOLUTE_PATH = "C:\\Users\\user";
+static const fs::path ABSOLUTE_PATH_WITH_FILE = "C:\\Users\\user\\file.txt";
+static const fs::path ABSOLUTE_PATH_NO_EXT = "C:\\Users\\user\\gcc";
+#else
+static const fs::path ABSOLUTE_PATH = "/home/user";
+static const fs::path ABSOLUTE_PATH_WITH_FILE = "/home/user/file.txt";
+static const fs::path ABSOLUTE_PATH_NO_EXT = "/usr/bin/gcc";
+#endif
+
 describe("std::filesystem::path assertions", []() {
     it("asserts path equality", []() {
-        fs::path p = "/home/user/file.txt";
+        fs::path p = ABSOLUTE_PATH_WITH_FILE;
 
-        expect(p).toBe(fs::path("/home/user/file.txt"));
-        expect(p).toEqual(fs::path("/home/user/file.txt"));
+        expect(p).toBe(ABSOLUTE_PATH_WITH_FILE);
+        expect(p).toEqual(ABSOLUTE_PATH_WITH_FILE);
 
         expect(p).Not->toBe(fs::path("/other/path"));
     });
 
     it("asserts path extension", []() {
-        fs::path p = "/home/user/file.txt";
+        fs::path p = ABSOLUTE_PATH_WITH_FILE;
 
         expect(p).toHaveExtension(".txt");
 
@@ -23,7 +33,7 @@ describe("std::filesystem::path assertions", []() {
     });
 
     it("asserts path filename", []() {
-        fs::path p = "/home/user/file.txt";
+        fs::path p = ABSOLUTE_PATH_WITH_FILE;
 
         expect(p).toHaveFilename("file.txt");
 
@@ -31,21 +41,18 @@ describe("std::filesystem::path assertions", []() {
     });
 
     it("asserts absolute and relative paths", []() {
-        fs::path absolute = "/home/user";
         fs::path relative = "src/main.cpp";
 
-        expect(absolute).toBeAbsolute();
+        expect(ABSOLUTE_PATH).toBeAbsolute();
         expect(relative).toBeRelative();
 
-        expect(absolute).Not->toBeRelative();
+        expect(ABSOLUTE_PATH).Not->toBeRelative();
         expect(relative).Not->toBeAbsolute();
     });
 
     it("works with paths without extension", []() {
-        fs::path p = "/usr/bin/gcc";
-
-        expect(p).toHaveExtension("");
-        expect(p).toHaveFilename("gcc");
-        expect(p).toBeAbsolute();
+        expect(ABSOLUTE_PATH_NO_EXT).toHaveExtension("");
+        expect(ABSOLUTE_PATH_NO_EXT).toHaveFilename("gcc");
+        expect(ABSOLUTE_PATH_NO_EXT).toBeAbsolute();
     });
 });

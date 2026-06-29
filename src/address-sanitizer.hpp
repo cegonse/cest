@@ -1,13 +1,6 @@
 #pragma once
 
-#ifndef __SANITIZE_ADDRESS__
-namespace cest
-{
-  bool leaksDetected() { return false; }
-  void initAddressSanitizer() {}
-  void deinitAddressSanitizer() {}
-}
-#else
+#if defined(__SANITIZE_ADDRESS__) && !defined(_WIN32)
 #include <sanitizer/lsan_interface.h>
 #include <iostream>
 #include <cstring>
@@ -35,5 +28,12 @@ namespace cest
     __cest_globals.leaks_detected |= has_leaks;
     return has_leaks;
   }
+}
+#else
+namespace cest
+{
+  bool leaksDetected() { return false; }
+  void initAddressSanitizer() {}
+  void deinitAddressSanitizer() {}
 }
 #endif

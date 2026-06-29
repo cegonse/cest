@@ -1,11 +1,10 @@
 #include "watch-mode.h"
 #include "directory.h"
 #include "runner.h"
+#include "terminal.h"
 #include <iostream>
 #include <array>
 #include <functional>
-#include <termios.h>
-#include <unistd.h>
 
 #define ASCII_GRAY "\u001b[38;5;243m"
 #define ASCII_BLACK "\u001b[38;5;232m"
@@ -31,17 +30,7 @@ static void clearScreen()
 
 static char waitForKey()
 {
-  struct termios old_term, new_term;
-  tcgetattr(STDIN_FILENO, &old_term);
-
-  new_term = old_term;
-  new_term.c_lflag &= ~(ICANON | ECHO);
-
-  tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
-  char ch = getchar();
-  tcsetattr(STDIN_FILENO, TCSANOW, &old_term);
-
-  return ch;
+  return Terminal::waitForKey();
 }
 
 static Option waitForInput()

@@ -1,5 +1,8 @@
+#pragma once
+#include <cstdint>
 #include <functional>
 #include <string>
+#include <vector>
 
 namespace Process
 {

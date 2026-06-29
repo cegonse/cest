@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(CestFramework)
 
-# cest-runner
+# cest-runner: portable sources (also linked into runner tests)
 set(RUNNER_SOURCES
   ${PROJECT_SOURCE_DIR}/runner/helpers.cpp
   ${PROJECT_SOURCE_DIR}/runner/runner.cpp
@@ -9,14 +9,34 @@ set(RUNNER_SOURCES
   ${PROJECT_SOURCE_DIR}/runner/watch-mode.cpp
 )
 
-SET(RUNNER_OS_SOURCES
+# cest-runner: portable sources with functions mocked in tests
+set(RUNNER_COMMON_SOURCES
   ${PROJECT_SOURCE_DIR}/runner/main.cpp
-  ${PROJECT_SOURCE_DIR}/runner/directory.cpp
   ${PROJECT_SOURCE_DIR}/runner/output.cpp
-  ${PROJECT_SOURCE_DIR}/runner/process.cpp
+  ${PROJECT_SOURCE_DIR}/runner/directory.cpp
 )
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+# cest-runner: platform-specific sources
+if(WIN32)
+  set(RUNNER_PLATFORM_SOURCES
+    ${PROJECT_SOURCE_DIR}/runner/process_win32.cpp
+    ${PROJECT_SOURCE_DIR}/runner/terminal_win32.cpp
+    ${PROJECT_SOURCE_DIR}/runner/output_win32.cpp
+    ${PROJECT_SOURCE_DIR}/runner/directory_win32.cpp
+  )
+else()
+  set(RUNNER_PLATFORM_SOURCES
+    ${PROJECT_SOURCE_DIR}/runner/process_posix.cpp
+    ${PROJECT_SOURCE_DIR}/runner/terminal_posix.cpp
+    ${PROJECT_SOURCE_DIR}/runner/output_posix.cpp
+    ${PROJECT_SOURCE_DIR}/runner/directory_posix.cpp
+  )
+endif()
+
+if (WIN32)
+  set(ASAN_CFLAGS "-DJSON_HAS_EXPERIMENTAL_FILESYSTEM=0" "-U__SANITIZE_ADDRESS__")
+  set(ASAN_LDFLAGS "")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(ASAN_CFLAGS "-DJSON_HAS_EXPERIMENTAL_FILESYSTEM=0")
   set(ASAN_LDFLAGS "")
 else()
@@ -27,7 +47,7 @@ endif()
 SET(RUNNER_CFLAGS -g -O2 -Wall -Wunused-value -Werror -std=c++20 ${ASAN_CFLAGS})
 SET(TEST_CFLAGS -g -O0 -Wall -Wunused-value -Werror -std=c++20 ${ASAN_CFLAGS})
 
-add_executable(cest-runner ${RUNNER_SOURCES} ${RUNNER_OS_SOURCES})
+add_executable(cest-runner ${RUNNER_SOURCES} ${RUNNER_COMMON_SOURCES} ${RUNNER_PLATFORM_SOURCES})
 target_compile_options(cest-runner PRIVATE ${RUNNER_CFLAGS})
 target_link_options(cest-runner PRIVATE ${ASAN_LDFLAGS})
 

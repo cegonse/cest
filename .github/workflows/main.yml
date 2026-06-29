@@ -3,18 +3,177 @@ name: CI
 on: [push]
 
 jobs:
-  cpp-tests:
+  test:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-14, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4
+    - name: Setup MSYS2 (Windows)
+      if: runner.os == 'Windows'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja python-pip make
+    - name: Install dependencies (Unix)
+      if: runner.os != 'Windows'
+      run: pip install quom || pip install --break-system-packages quom
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: pip install --break-system-packages quom
+    - name: Build cest header (Unix)
+      if: runner.os != 'Windows'
+      run: make build-cest
+    - name: Build cest header (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: make build-cest
+    - name: Build all (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        cd build
+        cmake -G Ninja ..
+        cmake --build . -j8
+    - name: Build all (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: |
+        cd build
+        cmake -G Ninja ..
+        cmake --build . -j8
+    - name: Run tests (Unix)
+      if: runner.os != 'Windows'
+      run: ./build/cest-runner
+    - name: Run tests (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: ./build/cest-runner
+
+  release-build:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: x64
+            artifact: cest-runner-linux-x64
+          - os: ubuntu-latest
+            arch: x86
+            artifact: cest-runner-linux-x86
+          - os: ubuntu-24.04-arm
+            arch: aarch64
+            artifact: cest-runner-linux-aarch64
+          - os: macos-15-intel
+            arch: x64
+            artifact: cest-runner-macos-x64
+          - os: macos-14
+            arch: aarch64
+            artifact: cest-runner-macos-aarch64
+          - os: windows-latest
+            arch: x64
+            artifact: cest-runner-windows-x64.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup MSYS2 (Windows)
+      if: runner.os == 'Windows'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja python-pip make
+    - name: Install dependencies (Unix)
+      if: runner.os != 'Windows'
+      run: pip install quom || pip install --break-system-packages quom
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: pip install --break-system-packages quom
+    - name: Install multilib (Linux x86)
+      if: matrix.arch == 'x86'
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install -y g++-multilib gcc-multilib
+    - name: Build cest header (Unix)
+      if: runner.os != 'Windows'
+      run: make build-cest
+    - name: Build cest header (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: make build-cest
+    - name: Build release binary (Unix)
+      if: runner.os != 'Windows' && matrix.arch != 'x86'
+      run: |
+        cd build
+        cmake -G Ninja ..
+        cmake --build . --target cest-runner -j8
+    - name: Build release binary (Unix x86)
+      if: matrix.arch == 'x86'
+      run: |
+        cd build
+        cmake -G Ninja .. -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_C_FLAGS=-m32
+        cmake --build . --target cest-runner -j8
+    - name: Build release binary (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: |
+        cd build
+        cmake -G Ninja ..
+        cmake --build . --target cest-runner -j8
+    - name: Rename binary
+      if: runner.os != 'Windows'
+      run: mv build/cest-runner build/${{ matrix.artifact }}
+    - name: Rename binary (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: mv build/cest-runner.exe build/${{ matrix.artifact }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact }}
+        path: build/${{ matrix.artifact }}
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: release-build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - name: Install dependencies
-      run: pip install quom
+      run: pip install quom || pip install --break-system-packages quom
     - name: Build cest header
       run: make build-cest
-    - name: Build all
-      run: cd build && cmake .. && make -j 8
-    - name: Run tests
-      run: cd build && ./cest-runner
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: release-artifacts
+        merge-multiple: true
+    - name: Copy cest header to release artifacts
+      run: cp build/cest release-artifacts/cest
+    - name: Generate changelog
+      run: |
+        CURRENT_TAG="${GITHUB_REF#refs/tags/}"
+        PREVIOUS_TAG=$(git tag --sort=-creatordate | grep -A1 "^${CURRENT_TAG}$" | tail -1)
+        if [ -z "$PREVIOUS_TAG" ] || [ "$PREVIOUS_TAG" = "$CURRENT_TAG" ]; then
+          CHANGELOG=$(git log --pretty=format:"- %s" "$CURRENT_TAG")
+        else
+          CHANGELOG=$(git log --pretty=format:"- %s" "${PREVIOUS_TAG}..${CURRENT_TAG}")
+        fi
+        echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+        echo "$CHANGELOG" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: ${{ github.ref_name }}
+        body: ${{ env.CHANGELOG }}
+        files: release-artifacts/*

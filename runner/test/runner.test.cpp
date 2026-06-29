@@ -2,6 +2,7 @@
 #include "../runner.h"
 #include "../directory.h"
 #include "helpers/helpers.h"
+#include <filesystem>
 
 
 describe("Runner", []() {
@@ -37,8 +38,9 @@ describe("Runner", []() {
 
     Runner::runTests({ "test/first_test", "test/second_test" }, results);
 
-    expect(Directory::readTextFile_hasBeenCalledWith("/tmp/cest_first_test")).toBeTruthy();
-    expect(Directory::readTextFile_hasBeenCalledWith("/tmp/cest_second_test")).toBeTruthy();
+    auto tmp = std::filesystem::temp_directory_path();
+    expect(Directory::readTextFile_hasBeenCalledWith((tmp / "cest_first_test").string())).toBeTruthy();
+    expect(Directory::readTextFile_hasBeenCalledWith((tmp / "cest_second_test").string())).toBeTruthy();
     expect(Output::printSummary_hasBeenCalledWith(
       num_passed_suites,
       num_failed_suites,

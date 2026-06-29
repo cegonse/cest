@@ -4,6 +4,8 @@
 #include "output.h"
 #include "test-results.hpp"
 #include <chrono>
+#include <cstdint>
+#include <filesystem>
 
 struct TestCounts
 {
@@ -61,7 +63,8 @@ int Runner::runTests(
 
     if (!Process::killedBySignal(test_status))
     {
-      const auto results_path = "/tmp/cest_" + test_file.substr(test_file.rfind('/') + 1);
+      const auto file_name = std::filesystem::path(test_file).filename().string();
+      const auto results_path = (std::filesystem::temp_directory_path() / ("cest_" + file_name)).string();
       const auto test_result = TestResults(Directory::readTextFile(results_path));
 
       counts.total_passed_tests += test_result.num_passed_tests;
@@ -70,7 +73,7 @@ int Runner::runTests(
       counts.total_todo_tests += test_result.num_todo_tests;
 
       const auto failed = test_result.num_failed_tests > 0 || test_status != 0;
-      results.push_back({ test_result.src_path, test_result.bin_path, failed });
+      results.push_back(Runner::TestRun{ test_result.src_path, test_result.bin_path, failed });
 
       if (failed)
         counts.total_failed_suites++;
