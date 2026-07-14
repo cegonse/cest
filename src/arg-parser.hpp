@@ -18,7 +18,7 @@ namespace cest
       {"-j", [&]() { options.json_output = true; }},
       {"--only-suite-result", [&]() { options.only_test_suite_result = true; }},
       {"-o", [&]() { options.only_test_suite_result = true; }},
-      {"--tree-suite-result", [&]() { options.only_test_suite_result = true; }},
+      {"--tree-suite-result", [&]() { options.tree_test_suite_result = true; }},
       {"-t", [&]() { options.tree_test_suite_result = true; }},
       {"--print-test-list", [&]() { options.print_test_list = true; }},
       {"-l", [&]() { options.print_test_list = true; }}
