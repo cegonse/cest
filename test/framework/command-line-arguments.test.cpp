@@ -1,4 +1,5 @@
 #include <cest>
+#include <array>
 
 describe("Cest command line options", []() {
     it("will use default behaviour if empty", []() {
@@ -102,6 +103,20 @@ describe("Cest command line options", []() {
         options = cest::parseArgs(argc, argv);
 
         expect(options.json_output).toBe(true);
+    });
+
+    it("will use tree suite output for the long and short options", []() {
+        int argc = 2;
+        std::array<const char *, 2> long_argv = { "/bin/cest", "--tree-suite-result" };
+        std::array<const char *, 2> short_argv = { "/bin/cest", "-t" };
+
+        auto long_options = cest::parseArgs(argc, long_argv.data());
+        auto short_options = cest::parseArgs(argc, short_argv.data());
+
+        expect(long_options.tree_test_suite_result).toBe(true);
+        expect(long_options.only_test_suite_result).toBe(false);
+        expect(short_options.tree_test_suite_result).toBe(true);
+        expect(short_options.only_test_suite_result).toBe(false);
     });
 
     it("will set filter when --grep is present", []() {
