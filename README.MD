@@ -85,5 +85,5 @@ This will generate the library and runner builds in the `build/` directory.
 - [x] `cest-runner` for watch mode functionality of multiple suites
 - [x] Test cases run in an subprocess to avoid crashing the whole suite
 - [x] Leak sanitizer integration (memory leak detector)
-- [ ] Complex expect matchers (comprehensive STD collection support)
-- [ ] Windows support
+- [x] Complex expect matchers (comprehensive STD collection support)
+- [x] Windows support
